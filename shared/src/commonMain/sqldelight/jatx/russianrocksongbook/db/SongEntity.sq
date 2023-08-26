@@ -1,0 +1,48 @@
+CREATE TABLE IF NOT EXISTS songEntity
+(id INTEGER PRIMARY KEY AUTOINCREMENT,
+artist TEXT NOT NULL,
+title TEXT NOT NULL,
+text TEXT NOT NULL,
+favorite INTEGER NOT NULL DEFAULT 0,
+deleted INTEGER NOT NULL DEFAULT 0 ,
+outOfTheBox INTEGER NOT NULL DEFAULT 1,
+origTextMD5 TEXT NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS the_index ON songEntity (artist, title);
+
+getArtists:
+SELECT DISTINCT artist FROM songEntity WHERE deleted=0 ORDER BY artist;
+
+getSongsByArtist:
+SELECT * FROM songEntity WHERE artist=? AND deleted=0 ORDER BY title;
+
+getSongsFavorite:
+SELECT * FROM songEntity WHERE favorite=1 AND deleted=0 ORDER BY artist||title;
+
+insertReplaceSong:
+INSERT OR REPLACE INTO songEntity
+(artist, title, text, favorite, deleted, outOfTheBox, origTextMD5)
+VALUES
+(?, ?, ?, ?, ?, ?, ?);
+
+insertIgnoreSong:
+INSERT OR IGNORE INTO songEntity
+(artist, title, text, favorite, deleted, outOfTheBox, origTextMD5)
+VALUES
+(?, ?, ?, ?, ?, ?, ?);
+
+getCountByArtist:
+SELECT COUNT(*) AS count FROM songEntity WHERE artist=? AND deleted=0;
+
+getCountFavorite:
+SELECT COUNT(*) AS count FROM songEntity WHERE favorite=1 AND deleted=0;
+
+getSongByPositionAndArtist:
+SELECT * FROM songEntity WHERE artist=:artist AND deleted=0
+ORDER BY title LIMIT 1 OFFSET :offset;
+
+getSongByPositionFavorite:
+SELECT * FROM songEntity WHERE favorite=1 AND deleted=0
+ORDER BY artist||title LIMIT 1 OFFSET :offset;
+
+updateSong:
+UPDATE songEntity SET text=:text, favorite=:favorite, deleted=:deleted WHERE id=:id;

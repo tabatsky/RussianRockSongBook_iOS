@@ -32,7 +32,7 @@ struct ContentView: View {
             if !self.isDrawerOpen {
                 NavigationView {
                     if (self.currentScreenVariant == ScreenVariant.songList) {
-                        SongListView(artist: currentArtist, onSongClick: selectSong)
+                        SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong)
                             .toolbar(content: {
                                 ToolbarItemGroup(placement: .navigationBarLeading) {
                                     Button(action: {
@@ -205,38 +205,46 @@ struct ContentView_Previews: PreviewProvider {
 
 struct SongListView: View {
     let artist: String
+    let songIndex: Int
     let onSongClick: (Int) -> ()
 
     var body: some View {
         GeometryReader { geometry in
-            ScrollView(.vertical) {
-                let columns = [
-                    GridItem(.flexible())
-                ]
-                let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.artist)
-                LazyVGrid(columns: columns, spacing: 0) {
-                    ForEach(0..<currentSongList.count, id: \.self) { index in
-                        let title = currentSongList[index].title
-                        Text(title)
-                            .foregroundColor(Theme.colorMain)
-                            .padding(16)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Theme.colorBg)
-                            .highPriorityGesture(
-                                 TapGesture()
-                                     .onEnded { _ in
-                                         onSongClick(index)
-                                     }
-                             )
-                        Rectangle()
-                            .fill(Theme.colorCommon)
-                            .frame(height: 3)
-                            .edgesIgnoringSafeArea(.horizontal)
-                    }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
+            ScrollViewReader { sp in
+                ScrollView(.vertical) {
+                    let columns = [
+                        GridItem(.flexible())
+                    ]
+                    let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.artist)
+                    LazyVGrid(columns: columns, spacing: 0) {
+                        ForEach(0..<currentSongList.count, id: \.self) { index in
+                            let song = currentSongList[index]
+                            let title = song.title
+                            Text(title)
+                                .id(song)
+                                .foregroundColor(Theme.colorMain)
+                                .padding(16)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Theme.colorBg)
+                                .highPriorityGesture(
+                                     TapGesture()
+                                         .onEnded { _ in
+                                             onSongClick(index)
+                                         }
+                                 )
+                            Rectangle()
+                                .fill(Theme.colorCommon)
+                                .frame(height: 3)
+                                .edgesIgnoringSafeArea(.horizontal)
+                        }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
+                    }
+                    .onAppear(perform: {
+                        sp.scrollTo(currentSongList[songIndex], anchor: .top)
+                    })
+                    Spacer()
                 }
-                Spacer()
+                .background(Theme.colorBg)
             }
-            .background(Theme.colorBg)
         }
     }
 }

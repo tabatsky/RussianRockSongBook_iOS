@@ -23,17 +23,20 @@ struct SongTextView: View {
             VStack {
                 Text(title)
                     .bold()
+                    .foregroundColor(Theme.colorMain)
                     .padding(24)
                     .frame(maxWidth: geometry.size.width, alignment: .leading)
                 
                 ScrollView(.vertical) {
                     let text = song.text
                     Text(text)
+                        .foregroundColor(Theme.colorMain)
                         .padding(8)
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
                 }
             }
         }
+        .background(Theme.colorBg)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {

@@ -1,7 +1,14 @@
-package jatx.russianrocksongbook.common.data.impl
+package jatx.russianrocksongbook.common.data.repository.impl
 
-import jatx.russianrocksongbook.common.data.*
-import jatx.russianrocksongbook.common.domain.Song
+import jatx.russianrocksongbook.common.data.converters.toSong
+import jatx.russianrocksongbook.common.data.converters.toSongEntity
+import jatx.russianrocksongbook.common.domain.models.Song
+import jatx.russianrocksongbook.common.domain.repository.ARTIST_ADD_ARTIST
+import jatx.russianrocksongbook.common.domain.repository.ARTIST_ADD_SONG
+import jatx.russianrocksongbook.common.domain.repository.ARTIST_CLOUD_SONGS
+import jatx.russianrocksongbook.common.domain.repository.ARTIST_DONATION
+import jatx.russianrocksongbook.common.domain.repository.ARTIST_FAVORITE
+import jatx.russianrocksongbook.common.domain.repository.SongRepository
 import jatx.russianrocksongbook.db.AppDatabase
 
 val predefinedList = listOf(
@@ -13,7 +20,7 @@ val predefinedList = listOf(
 )
 
 class SongRepositoryImpl(
-    val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase
 ): SongRepository {
     override fun getArtists(): List<String> =
         predefinedList.plus(
@@ -45,13 +52,13 @@ class SongRepositoryImpl(
                 .songEntityQueries
                 .getSongsFavorite()
                 .executeAsList()
-                .map { Song(it) }
+                .map { it.toSong() }
         else
             appDatabase
                 .songEntityQueries
                 .getSongsByArtist(artist)
                 .executeAsList()
-                .map { Song(it) }
+                .map { it.toSong() }
 
 
     override fun getSongsByVoiceSearch(voiceSearch: String): List<Song> {
@@ -69,7 +76,7 @@ class SongRepositoryImpl(
                 .songEntityQueries
                 .getSongByPositionAndArtist(artist, position.toLong())
                 .executeAsOneOrNull()
-        return songEntity?.let { Song(it) }
+        return songEntity?.toSong()
     }
 
     override fun getSongByArtistAndTitle(artist: String, title: String): Song? {
@@ -81,14 +88,16 @@ class SongRepositoryImpl(
     }
 
     override fun updateSong(song: Song) =
-        appDatabase
-            .songEntityQueries
-            .updateSong(
-                song.text,
-                if (song.favorite) 1 else 0,
-                if (song.deleted) 1 else 0,
-                song.id ?: 0
-            )
+        song.toSongEntity().let {
+            appDatabase
+                .songEntityQueries
+                .updateSong(
+                    it.text,
+                    it.favorite,
+                    it.deleted,
+                    it.id
+                )
+        }
 
     override fun deleteSongToTrash(song: Song) {
         TODO("Not yet implemented")
@@ -101,15 +110,15 @@ class SongRepositoryImpl(
     override fun insertIgnoreSongs(songs: List<Song>) {
         val songEntityQueries = appDatabase.songEntityQueries
         songEntityQueries.transaction {
-            songs.forEach {
+            songs.map { it.toSongEntity() }.forEach {
                 songEntityQueries
                     .insertIgnoreSong(
                         it.artist,
                         it.title,
                         it.text,
-                        if (it.favorite) 1 else 0,
-                        if (it.deleted) 1 else 0,
-                        if (it.outOfTheBox) 1 else 0,
+                        it.favorite,
+                        it.deleted,
+                        it.outOfTheBox,
                         it.origTextMD5
                     )
             }

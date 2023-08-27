@@ -1,8 +1,8 @@
 package jatx.russianrocksongbook.common.dbinit
 
-import jatx.russianrocksongbook.common.data.SongRepository
+import jatx.russianrocksongbook.common.domain.repository.SongRepository
 import jatx.russianrocksongbook.common.di.Injector
-import jatx.russianrocksongbook.common.domain.Song
+import jatx.russianrocksongbook.common.domain.models.Song
 import jatx.russianrocksongbook.common.res.Raw
 import jatx.russianrocksongbook.common.res.Resource
 import kotlinx.serialization.json.Json
@@ -41,7 +41,7 @@ class JsonLoader() {
 
                 val songbook = Json.decodeFromString<SongBookGson>(jsonStr)
 
-                return songbook.songbook.map { Song(artist, it) }
+                return songbook.songbook.map { it asSongWithArtist artist }
             }
         } catch (e: Throwable) {
             e.printStackTrace()

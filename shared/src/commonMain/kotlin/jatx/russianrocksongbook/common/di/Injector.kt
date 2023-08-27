@@ -1,10 +1,9 @@
 package jatx.russianrocksongbook.common.di
 
-import jatx.russianrocksongbook.common.data.SongRepository
-import jatx.russianrocksongbook.common.data.impl.SongRepositoryImpl
+import jatx.russianrocksongbook.common.domain.repository.SongRepository
+import jatx.russianrocksongbook.common.data.repository.impl.SongRepositoryImpl
 import jatx.russianrocksongbook.common.db.DatabaseDriverFactory
 import jatx.russianrocksongbook.db.AppDatabase
-import kotlin.concurrent.Volatile
 import kotlin.experimental.ExperimentalObjCName
 import kotlin.native.ObjCName
 import kotlin.native.concurrent.ThreadLocal

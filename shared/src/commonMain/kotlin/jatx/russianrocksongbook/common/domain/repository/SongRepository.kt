@@ -1,6 +1,6 @@
-package jatx.russianrocksongbook.common.data
+package jatx.russianrocksongbook.common.domain.repository
 
-import jatx.russianrocksongbook.common.domain.Song
+import jatx.russianrocksongbook.common.domain.models.Song
 
 const val ARTIST_FAVORITE = "Избранное"
 const val ARTIST_ADD_ARTIST = "Добавить исполнителя"

@@ -24,7 +24,6 @@ struct ContentView: View {
     }()
 	@State var currentSongIndex: Int = 0
     @State var currentSong: Song? = nil
-    @State var isCurrentFavorite: Bool = false
 
 	var body: some View {
 	    ZStack {
@@ -32,76 +31,11 @@ struct ContentView: View {
             if !self.isDrawerOpen {
                 NavigationView {
                     if (self.currentScreenVariant == ScreenVariant.songList) {
-                        SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong)
-                            .toolbar(content: {
-                                ToolbarItemGroup(placement: .navigationBarLeading) {
-                                    Button(action: {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            self.isDrawerOpen.toggle()
-                                        }
-                                    }) {
-                                        Image("ic_drawer")
-                                            .resizable()
-                                            .frame(width: 32.0, height: 32.0)
-                                    }
-                                    Text(self.currentArtist)
-                                        .bold()
-                                }
-                            })
-                            .navigationBarTitleDisplayMode(.inline)
-                            .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+                        SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong, onDrawerClick: toggleDrawer)
+                            
                     } else if (self.currentScreenVariant == ScreenVariant.songText) {
-                        SongTextView(song: self.currentSong!)
-                            .toolbar(content: {
-                                ToolbarItem(placement: .navigationBarLeading) {
-                                    Button(action: {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            back()
-                                        }
-                                    }) {
-                                        Image("ic_back")
-                                            .resizable()
-                                            .frame(width: 32.0, height: 32.0)
-                                    }
-                                }
-                                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                                    Button(action: {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            prevSong()
-                                        }
-                                    }) {
-                                        Image("ic_left")
-                                            .resizable()
-                                            .frame(width: 32.0, height: 32.0)
-                                    }
-                                    Button(action: {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            toggleFavorite()
-                                        }
-                                    }) {
-                                        if (self.isCurrentFavorite) {
-                                            Image("ic_delete")
-                                                .resizable()
-                                                .frame(width: 32.0, height: 32.0)
-                                        } else {
-                                            Image("ic_star")
-                                                .resizable()
-                                                .frame(width: 32.0, height: 32.0)
-                                        }
-                                    }
-                                    Button(action: {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            nextSong()
-                                        }
-                                    }) {
-                                        Image("ic_right")
-                                            .resizable()
-                                            .frame(width: 32.0, height: 32.0)
-                                    }
-                                }
-                            })
-                            .navigationBarTitleDisplayMode(.inline)
-                            .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+                        SongTextView(song: self.currentSong!, onBackClick: back, onPrevClick: prevSong, onNextClick: nextSong, onFavoriteToggle: toggleFavorite)
+                            
                     }
                 }
             }
@@ -127,6 +61,10 @@ struct ContentView: View {
         self.currentArtist = artist
         let count = ContentView.songRepo.getCountByArtist(artist: artist)
         self.currentCount = Int(count)
+        self.isDrawerOpen.toggle()
+    }
+    
+    func toggleDrawer() {
         self.isDrawerOpen.toggle()
     }
 
@@ -182,7 +120,6 @@ struct ContentView: View {
         self.currentSong = ContentView
             .songRepo
             .getSongByArtistAndPosition(artist: self.currentArtist, position: Int32(self.currentSongIndex))
-        self.isCurrentFavorite = self.currentSong!.favorite
     }
 
     func back() {
@@ -203,151 +140,3 @@ struct ContentView_Previews: PreviewProvider {
 	}
 }
 
-struct SongListView: View {
-    let artist: String
-    let songIndex: Int
-    let onSongClick: (Int) -> ()
-
-    var body: some View {
-        GeometryReader { geometry in
-            ScrollViewReader { sp in
-                ScrollView(.vertical) {
-                    let columns = [
-                        GridItem(.flexible())
-                    ]
-                    let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.artist)
-                    LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(0..<currentSongList.count, id: \.self) { index in
-                            let song = currentSongList[index]
-                            let title = song.title
-                            Text(title)
-                                .id(song)
-                                .foregroundColor(Theme.colorMain)
-                                .padding(16)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Theme.colorBg)
-                                .highPriorityGesture(
-                                     TapGesture()
-                                         .onEnded { _ in
-                                             onSongClick(index)
-                                         }
-                                 )
-                            Rectangle()
-                                .fill(Theme.colorCommon)
-                                .frame(height: 3)
-                                .edgesIgnoringSafeArea(.horizontal)
-                        }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
-                    }
-                    .onAppear(perform: {
-                        sp.scrollTo(currentSongList[songIndex], anchor: .top)
-                    })
-                    Spacer()
-                }
-                .background(Theme.colorBg)
-            }
-        }
-    }
-}
-
-struct SongTextView: View {
-    let song: Song
-
-    var body: some View {
-        GeometryReader { geometry in
-            let title = song.title
-            
-            VStack {
-                Text(title)
-                    .bold()
-                    .padding(24)
-                    .frame(maxWidth: geometry.size.width, alignment: .leading)
-                
-                ScrollView(.vertical) {
-                    let text = song.text
-                    Text(text)
-                        .padding(8)
-                        .frame(maxWidth: geometry.size.width, alignment: .leading)
-                }
-            }
-        }
-    }
-}
-
-struct NavigationDrawer: View {
-    private let width = UIScreen.main.bounds.width - 100
-    private let height = UIScreen.main.bounds.height
-    let isOpen: Bool
-    let onArtistClick: (String) -> ()
-    let onDismiss: () -> ()
-
-    var body: some View {
-        HStack {
-            DrawerContent(onArtistClick: onArtistClick, onDismiss: onDismiss)
-                .frame(width: self.width)
-                .background(Theme.colorMain)
-                .offset(x: self.isOpen ? 0 : -self.width)
-                .animation(.default)
-            Spacer()
-        }
-        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
-    }
-}
-
-struct DrawerContent: View {
-    let onArtistClick: (String) -> ()
-    let onDismiss: () -> ()
-
-    var body: some View {
-        VStack {
-            GeometryReader { geometry in
-                ScrollView(.vertical) {
-                    let columns = [
-                        GridItem(.flexible())
-                    ]
-                    let artists = ContentView.songRepo.getArtists()
-                    HStack {
-                        Button(action: {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                onDismiss()
-                            }
-                        }) {
-                            Image("ic_drawer")
-                                .resizable()
-                                .frame(width: 32.0, height: 32.0)
-                        }
-                        Text("Меню")
-                            .bold()
-                            .foregroundColor(Theme.colorBg)
-                    }
-                        .padding(16)
-                        .frame(maxWidth: geometry.size.width, alignment: .leading)
-                        .background(Theme.colorCommon)
-                    LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(0..<artists.count, id: \.self) { index in
-                            let artist = artists[index]
-                            let isBold = ContentView.predefinedList.contains(artist)
-                            Text(artist)
-                                .font(Font.headline.weight(isBold ? .bold : .regular))
-                                .foregroundColor(Theme.colorBg)
-                                .padding(16)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Theme.colorMain)
-                                .highPriorityGesture(
-                                    TapGesture()
-                                        .onEnded { _ in
-                                            onArtistClick(artist)
-                                        }
-                                )
-                            Rectangle()
-                                .fill(Theme.colorCommon)
-                                .frame(height: 3)
-                                .edgesIgnoringSafeArea(.horizontal)
-                        }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
-                    }
-                    Spacer()
-                }
-                .background(Theme.colorMain)
-            }
-        }
-    }
-}

@@ -58,9 +58,13 @@ struct ContentView: View {
         if (ContentView.predefinedList.contains(artist) && artist != ContentView.ARTIST_FAVORITE) {
             return
         }
-        self.currentArtist = artist
-        let count = ContentView.songRepo.getCountByArtist(artist: artist)
-        self.currentCount = Int(count)
+        if (self.currentArtist != artist) {
+            NSLog("artist changed")
+            self.currentArtist = artist
+            let count = ContentView.songRepo.getCountByArtist(artist: artist)
+            self.currentCount = Int(count)
+            self.currentSongIndex = 0
+        }
         self.isDrawerOpen.toggle()
     }
     

@@ -16,12 +16,13 @@ struct SongTextView: View {
     let onNextClick: () -> ()
     let onFavoriteToggle: () -> ()
     
-    static let dY: CGFloat = 20.0
+    static let dY: CGFloat = 8.0
     
     @State var textHeight: CGFloat = 0.0
+    @State var scrollViewHeight: CGFloat = 0.0
     @State var scrollY: CGFloat = 0.0
-    @State var isAutoScroll = true
-    @State var isScreenActive = true
+    @State var isAutoScroll = false
+    @State var isScreenActive = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -34,41 +35,51 @@ struct SongTextView: View {
                     .padding(24)
                     .frame(maxWidth: geometry.size.width, alignment: .leading)
                 
-                ScrollViewReader { sp in
-                    ScrollView(.vertical) {
-                        let text = song.text
-                        Text(text)
-                            .id("text")
-                            .foregroundColor(Theme.colorMain)
-                            .padding(8)
-                            .frame(maxWidth: geometry.size.width, alignment: .leading)
-                            .background(
-                                GeometryReader { textGeometry in
-                                    Color.clear
-                                        .onAppear(perform: {
-                                            self.textHeight = textGeometry.size.height
-                                        })
-                                        .onChange(of: self.song, perform: { song in
-                                            self.textHeight = textGeometry.size.height
-                                        })
-                                }
-                            )
-                            .onAppear(perform: {
-                                self.scrollY = 0.0
-                                self.isAutoScroll = true
-                                self.isScreenActive = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                    autoScroll(sp: sp)
+                GeometryReader { scrollViewGeometry in
+                    ScrollViewReader { sp in
+                        ScrollView(.vertical) {
+                            let text = song.text
+                            Text(text)
+                                .id("text")
+                                .foregroundColor(Theme.colorMain)
+                                .padding(8)
+                                .frame(maxWidth: geometry.size.width, alignment: .leading)
+                                .background(
+                                    GeometryReader { textGeometry in
+                                        Color.clear
+                                            .onAppear(perform: {
+                                                self.textHeight = textGeometry.size.height
+                                                print(self.textHeight)
+                                            })
+                                            .onChange(of: self.song, perform: { song in
+                                                self.textHeight = textGeometry.size.height
+                                                print(self.textHeight)
+                                            })
+                                    }
+                                )
+                                .onAppear(perform: {
+                                    self.scrollY = 0.0
+                                    self.isScreenActive = true
+                                    sp.scrollTo("text", anchor: .topLeading)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                        autoScroll(sp: sp)
+                                    })
                                 })
-                            })
-                            .onDisappear(perform: {
-                                self.isAutoScroll = false
-                                self.isScreenActive = false
-                            })
-                            .onChange(of: self.song, perform: { song in
-                                self.scrollY = 0.0
-                            })
+                                .onDisappear(perform: {
+                                    self.isAutoScroll = false
+                                    self.isScreenActive = false
+                                })
+                                .onChange(of: self.song, perform: { song in
+                                    self.isAutoScroll = false
+                                    self.scrollY = 0.0
+                                    sp.scrollTo("text", anchor: .topLeading)
+                                })
+                        }
                     }
+                    .onAppear(perform: {
+                        self.scrollViewHeight = scrollViewGeometry.size.height
+                        print(self.scrollViewHeight)
+                    })
                 }
             }
         }
@@ -86,6 +97,19 @@ struct SongTextView: View {
                 }
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button(action: {
+                    self.isAutoScroll.toggle()
+                }) {
+                    if (self.isAutoScroll) {
+                        Image("ic_pause")
+                            .resizable()
+                            .frame(width: 32.0, height: 32.0)
+                    } else {
+                        Image("ic_play")
+                            .resizable()
+                            .frame(width: 32.0, height: 32.0)
+                    }
+                }
                 Button(action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         onPrevClick()
@@ -127,8 +151,11 @@ struct SongTextView: View {
     
     func autoScroll(sp: ScrollViewProxy) {
         if (self.isAutoScroll) {
-            self.scrollY += Self.dY
-            sp.scrollTo("text", anchor: UnitPoint(x: 0.0, y: self.scrollY / self.textHeight))
+            let deltaHeight = self.textHeight - self.scrollViewHeight
+            if (deltaHeight > 0 && self.scrollY < deltaHeight) {
+                self.scrollY += Self.dY
+                sp.scrollTo("text", anchor: UnitPoint(x: 0.0, y: self.scrollY / deltaHeight))
+            }
         }
         if (self.isScreenActive) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {

@@ -13,6 +13,8 @@ struct SongListView: View {
     let songIndex: Int
     let onSongClick: (Int) -> ()
     let onDrawerClick: () -> ()
+    
+    @State var scrollPosition: Int = 0
 
     var body: some View {
         GeometryReader { geometry in
@@ -37,7 +39,19 @@ struct SongListView: View {
                                          .onEnded { _ in
                                              onSongClick(index)
                                          }
-                                 )
+                                )
+                                .onAppear(perform: {
+                                    if (index < self.scrollPosition) {
+                                        self.scrollPosition = index
+                                    }
+                                    print("appear: \(self.scrollPosition)")
+                                })
+                                .onDisappear(perform: {
+                                    if (index >= self.scrollPosition) {
+                                        self.scrollPosition = index + 1
+                                    }
+                                    print("disappear: \(self.scrollPosition)")
+                                })
                             Rectangle()
                                 .fill(Theme.colorCommon)
                                 .frame(height: 3)

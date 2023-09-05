@@ -12,9 +12,23 @@ struct SongListView: View {
     let artist: String
     let songIndex: Int
     let onSongClick: (Int) -> ()
+    let onScroll: (Int) -> ()
     let onDrawerClick: () -> ()
     
-    @State var scrollPosition: Int = 0
+    @State var scrollPosition: Int
+    @State var initialScrollDone: Bool
+    @State var scrollViewFrame: CGRect
+    
+    init(artist: String, songIndex: Int, onSongClick: @escaping (Int) -> Void, onScroll: @escaping (Int) -> Void, onDrawerClick: @escaping () -> Void) {
+        self.artist = artist
+        self.songIndex = songIndex
+        self.onSongClick = onSongClick
+        self.onScroll = onScroll
+        self.onDrawerClick = onDrawerClick
+        self.scrollPosition = songIndex
+        self.initialScrollDone = false
+        self.scrollViewFrame = CGRect()
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -33,6 +47,27 @@ struct SongListView: View {
                                 .foregroundColor(Theme.colorMain)
                                 .padding(16)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(GeometryReader { itemGeom in
+                                    Theme.colorBg
+                                        .preference(
+                                            key: VisibleKey.self,
+                                            // See discussion!
+                                            value: self.scrollViewFrame.intersects(itemGeom.frame(in: .global))
+                                        )
+                                        .onPreferenceChange(VisibleKey.self) { isVisible in
+                                            if (self.initialScrollDone) {
+                                                if (isVisible) {
+                                                    if (index < self.scrollPosition) {
+                                                        self.scrollPosition = index
+                                                    }
+                                                } else {
+                                                    if (index >= self.scrollPosition && index < self.scrollPosition + 6) {
+                                                        self.scrollPosition = index + 1
+                                                    }
+                                                }
+                                            }
+                                        }
+                                })
                                 .background(Theme.colorBg)
                                 .highPriorityGesture(
                                      TapGesture()
@@ -40,18 +75,6 @@ struct SongListView: View {
                                              onSongClick(index)
                                          }
                                 )
-                                .onAppear(perform: {
-                                    if (index < self.scrollPosition) {
-                                        self.scrollPosition = index
-                                    }
-                                    print("appear: \(self.scrollPosition)")
-                                })
-                                .onDisappear(perform: {
-                                    if (index >= self.scrollPosition) {
-                                        self.scrollPosition = index + 1
-                                    }
-                                    print("disappear: \(self.scrollPosition)")
-                                })
                             Rectangle()
                                 .fill(Theme.colorCommon)
                                 .frame(height: 3)
@@ -60,10 +83,27 @@ struct SongListView: View {
                     }
                     .onAppear(perform: {
                         sp.scrollTo(currentSongList[songIndex], anchor: .top)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                            self.initialScrollDone = true
+                        })
                     })
                     Spacer()
                 }
-                .background(Theme.colorBg)
+                .background(GeometryReader { scrollViewGeom in
+                    Theme.colorBg
+                        .preference(
+                            key: FrameKey.self,
+                            // See discussion!
+                            value: scrollViewGeom.frame(in: .global)
+                        )
+                        .onPreferenceChange(FrameKey.self) { frame in
+                            self.scrollViewFrame = frame
+                        }
+                })
+                .onChange(of: self.scrollPosition, perform: { position in
+                    print("\(self.scrollPosition), \(position)")
+                    onScroll(position)
+                })
                 .toolbar(content: {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button(action: {
@@ -84,4 +124,17 @@ struct SongListView: View {
             }
         }
     }
+}
+
+struct VisibleKey: PreferenceKey {
+     static var defaultValue: Bool = false
+     static func reduce(value: inout Bool, nextValue: () -> Bool) { }
+}
+
+struct FrameKey: PreferenceKey {
+  static var defaultValue: CGRect = .zero
+
+  static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+    value = nextValue()
+  }
 }

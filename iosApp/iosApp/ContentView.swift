@@ -31,7 +31,7 @@ struct ContentView: View {
             if !self.isDrawerOpen {
                 NavigationView {
                     if (self.currentScreenVariant == ScreenVariant.songList) {
-                        SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong, onDrawerClick: toggleDrawer)
+                        SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong, onScroll: updateSongIndexByScroll, onDrawerClick: toggleDrawer)
                             
                     } else if (self.currentScreenVariant == ScreenVariant.songText) {
                         SongTextView(song: self.currentSong!, onBackClick: back, onPrevClick: prevSong, onNextClick: nextSong, onFavoriteToggle: toggleFavorite)
@@ -77,6 +77,11 @@ struct ContentView: View {
         self.currentSongIndex = songIndex
         refreshCurrentSong()
         self.currentScreenVariant = ScreenVariant.songText
+    }
+    
+    func updateSongIndexByScroll(_ songIndex: Int) {
+        print("scroll: \(songIndex)")
+        self.currentSongIndex = songIndex
     }
     
     func prevSong() {

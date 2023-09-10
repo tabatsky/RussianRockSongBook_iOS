@@ -13,6 +13,7 @@ struct ContentView: View {
 
     static let predefinedList = SongRepositoryImplKt.predefinedList
     static let ARTIST_FAVORITE = SongRepositoryKt.ARTIST_FAVORITE
+    static let ARTIST_CLOUD_SONGS = SongRepositoryKt.ARTIST_CLOUD_SONGS
     static let defaultArtist = "Кино"
 
 	@State var isDrawerOpen: Bool = false
@@ -56,6 +57,9 @@ struct ContentView: View {
     func selectArtist(_ artist: String) {
         NSLog("select artist: \(artist)")
         if (ContentView.predefinedList.contains(artist) && artist != ContentView.ARTIST_FAVORITE) {
+            if (artist == ContentView.ARTIST_CLOUD_SONGS) {
+                Repository.shared.test()
+            }
             return
         }
         if (self.currentArtist != artist) {

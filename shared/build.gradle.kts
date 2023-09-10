@@ -40,6 +40,11 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0-RC")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
+                implementation(platform("io.ktor:ktor-bom:2.3.4"))
+                implementation("io.ktor:ktor-client-core")
+                implementation("io.ktor:ktor-client-json")
+                implementation("io.ktor:ktor-client-content-negotiation")
+                implementation("io.ktor:ktor-serialization-kotlinx-json")
             }
         }
         val commonTest by getting {
@@ -55,6 +60,8 @@ kotlin {
         val iosMain by getting {
             dependencies {
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
+                implementation(platform("io.ktor:ktor-bom:2.3.4"))
+                implementation("io.ktor:ktor-client-ios")
             }
         }
     }

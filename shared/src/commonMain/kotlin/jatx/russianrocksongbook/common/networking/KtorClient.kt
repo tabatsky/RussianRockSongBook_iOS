@@ -6,17 +6,17 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object KtorClient {
-    private val json = Json {
-        encodeDefaults = true
-        ignoreUnknownKeys = true
-    }
 
     val httpClient = HttpClient {
         install(ContentNegotiation) {
-            json
+            json(Json {
+                encodeDefaults = true
+                ignoreUnknownKeys = true
+            })
         }
         defaultRequest {
             contentType(ContentType.Application.Json)

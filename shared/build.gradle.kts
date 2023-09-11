@@ -44,6 +44,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-core")
                 implementation("io.ktor:ktor-client-json")
                 implementation("io.ktor:ktor-client-content-negotiation")
+                implementation("io.ktor:ktor-client-serialization")
                 implementation("io.ktor:ktor-serialization-kotlinx-json")
             }
         }

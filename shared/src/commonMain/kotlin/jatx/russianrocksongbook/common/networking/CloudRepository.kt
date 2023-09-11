@@ -6,8 +6,8 @@ import io.ktor.utils.io.core.use
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-const val BASE_URL = "http://tabatsky.ru/SongBook/api/"
-object Repository {
+const val BASE_URL = "http://tabatsky.ru/SongBook2/api"
+object CloudRepository {
     suspend fun searchSongs(
         searchFor: String,
         orderBy: OrderBy
@@ -17,11 +17,21 @@ object Repository {
         }
     }
 
-    fun test() = GlobalScope.launch {
-        val result = searchSongs("", OrderBy.BY_ID_DESC)
-        val data = result.data
-        data?.forEach {
-            with(it) { println("$artist - $title") }
+    fun test(
+        onSuccess: (List<CloudSong>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = GlobalScope.launch {
+        try {
+            val result = searchSongs("", OrderBy.BY_ID_DESC)
+            val data = result.data
+            data?.forEach {
+                with(it) { println("$artist - $title") }
+            }
+            data?.let {
+                onSuccess(it)
+            }
+        } catch (t: Throwable) {
+            onError(t)
         }
     }
 }

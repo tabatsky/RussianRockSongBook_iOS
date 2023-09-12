@@ -9,7 +9,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-object KtorClient {
+class KtorClient {
 
     val httpClient = HttpClient {
         install(ContentNegotiation) {

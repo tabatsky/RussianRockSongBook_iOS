@@ -37,6 +37,8 @@ struct ContentView: View {
                     } else if (self.currentScreenVariant == ScreenVariant.songText) {
                         SongTextView(song: self.currentSong!, onBackClick: back, onPrevClick: prevSong, onNextClick: nextSong, onFavoriteToggle: toggleFavorite)
                             
+                    } else if (self.currentScreenVariant == ScreenVariant.cloudSearch) {
+                        CloudSeaachView(onBackClick: back)
                     }
                 }
             }
@@ -58,15 +60,9 @@ struct ContentView: View {
         NSLog("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
-                CloudRepository.shared.test(onSuccess: { data in
-                        print(data.count)
-                },onError: { t in
-                    t.printStackTrace()
-                })
+                self.currentScreenVariant = ScreenVariant.cloudSearch
             }
-            return
-        }
-        if (self.currentArtist != artist) {
+        } else if (self.currentArtist != artist) {
             NSLog("artist changed")
             self.currentArtist = artist
             let count = Self.songRepo.getCountByArtist(artist: artist)
@@ -142,6 +138,8 @@ struct ContentView: View {
     func back() {
         if (self.currentScreenVariant == ScreenVariant.songText) {
             self.currentScreenVariant = ScreenVariant.songList
+        } else if (self.currentScreenVariant == ScreenVariant.cloudSearch) {
+            self.currentScreenVariant = ScreenVariant.songList
         }
     }
 }
@@ -149,6 +147,7 @@ struct ContentView: View {
 enum ScreenVariant {
     case songList
     case songText
+    case cloudSearch
 }
 
 struct ContentView_Previews: PreviewProvider {

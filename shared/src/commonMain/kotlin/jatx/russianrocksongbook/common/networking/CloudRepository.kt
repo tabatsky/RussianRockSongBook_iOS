@@ -12,7 +12,7 @@ object CloudRepository {
         searchFor: String,
         orderBy: OrderBy
     ): ResultWithCloudSongListData {
-        return KtorClient.httpClient.use {
+        return KtorClient().httpClient.use {
             it.get("$BASE_URL/songs/search/$searchFor/${orderBy.orderBy}").body()
         }
     }

@@ -15,6 +15,8 @@ struct CloudSeaachView: View {
     @State var currentSearchState = SearchState.loading
     @State var currentCloudSongList: [CloudSong]? = nil
     
+    @State var searchFor: String = ""
+    
     @State var scrollPosition: Int = 0
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
@@ -22,6 +24,26 @@ struct CloudSeaachView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
+                HStack {
+                    TextField("", text: $searchFor)
+                        .foregroundColor(Theme.colorMain)
+                        .frame(height: 56.0)
+                        .background(Color.black)
+                        .padding(8)
+                        .background(Theme.colorCommon)
+                    Button(action: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            searchSongs(searchFor: searchFor, orderBy: OrderBy.byIdDesc)
+                        }
+                    }) {
+                        Image("ic_cloud_search_white")
+                            .resizable()
+                            .colorMultiply(Theme.colorMain)
+                            .padding(8)
+                            .background(Theme.colorCommon)
+                            .frame(width: 72.0, height: 72.0)
+                    }
+                }
                 if (self.currentSearchState == SearchState.loading) {
                     Spacer()
                     HStack {
@@ -46,9 +68,11 @@ struct CloudSeaachView: View {
                                     let artist = cloudSong.artist
                                     VStack {
                                         Text(title)
+                                            .foregroundColor(Theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Text(artist)
+                                            .foregroundColor(Theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Rectangle()
@@ -115,14 +139,7 @@ struct CloudSeaachView: View {
                 }
             }
             .onAppear(perform: {
-                CloudRepository.shared.test(onSuccess: { data in
-                    print(data.count)
-                    self.currentCloudSongList = data
-                    self.currentSearchState = SearchState.loadSuccess
-                },onError: { t in
-                    t.printStackTrace()
-                    self.currentSearchState = SearchState.loadError
-                })
+                searchSongs(searchFor: "", orderBy: OrderBy.byIdDesc)
             })
         }
         .background(Theme.colorBg)
@@ -143,6 +160,22 @@ struct CloudSeaachView: View {
         })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+    }
+    
+    func searchSongs(searchFor: String, orderBy: OrderBy) {
+        self.currentSearchState = SearchState.loading
+        CloudRepository.shared.searchSongsAsync(
+            searchFor: searchFor,
+            orderBy: orderBy,
+            onSuccess: { data in
+                print(data.count)
+                self.currentCloudSongList = data
+                self.currentSearchState = SearchState.loadSuccess
+            },onError: { t in
+                t.printStackTrace()
+                self.currentSearchState = SearchState.loadError
+            }
+        )
     }
 }
 

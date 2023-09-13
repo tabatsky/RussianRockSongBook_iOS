@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 const val BASE_URL = "http://tabatsky.ru/SongBook2/api"
 object CloudRepository {
-    suspend fun searchSongs(
+    private suspend fun searchSongs(
         searchFor: String,
         orderBy: OrderBy
     ): ResultWithCloudSongListData {
@@ -17,12 +17,14 @@ object CloudRepository {
         }
     }
 
-    fun test(
+    fun searchSongsAsync(
+        searchFor: String,
+        orderBy: OrderBy,
         onSuccess: (List<CloudSong>) -> Unit,
         onError: (Throwable) -> Unit
     ) = GlobalScope.launch {
         try {
-            val result = searchSongs("", OrderBy.BY_ID_DESC)
+            val result = searchSongs(searchFor, orderBy)
             val data = result.data
             data?.forEach {
                 with(it) { println("$artist - $title") }

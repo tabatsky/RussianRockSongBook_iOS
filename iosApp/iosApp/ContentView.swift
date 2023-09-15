@@ -25,6 +25,7 @@ struct ContentView: View {
     }()
 	@State var currentSongIndex: Int = 0
     @State var currentSong: Song? = nil
+    @State var currentCloudSongList: [CloudSong]? = nil
 
 	var body: some View {
 	    ZStack {
@@ -38,7 +39,13 @@ struct ContentView: View {
                         SongTextView(song: self.currentSong!, onBackClick: back, onPrevClick: prevSong, onNextClick: nextSong, onFavoriteToggle: toggleFavorite)
                             
                     } else if (self.currentScreenVariant == ScreenVariant.cloudSearch) {
-                        CloudSeaachView(onBackClick: back)
+                        CloudSeaachView(cloudSongList: self.currentCloudSongList,
+                                        onLoadSuccess: { cloudSongList in
+                                            print(cloudSongList.count)
+                                            self.currentCloudSongList = cloudSongList
+                                        },
+                                        onBackClick: back,
+                                        onCloudSongClick: selectCloudSong)
                     }
                 }
             }
@@ -135,10 +142,15 @@ struct ContentView: View {
             .getSongByArtistAndPosition(artist: self.currentArtist, position: Int32(self.currentSongIndex))
     }
 
+    func selectCloudSong(_ index: Int) {
+        print("cloud song click: \(index)")
+    }
+    
     func back() {
         if (self.currentScreenVariant == ScreenVariant.songText) {
             self.currentScreenVariant = ScreenVariant.songList
         } else if (self.currentScreenVariant == ScreenVariant.cloudSearch) {
+            self.currentCloudSongList = nil
             self.currentScreenVariant = ScreenVariant.songList
         }
     }

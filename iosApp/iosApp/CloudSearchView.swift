@@ -11,15 +11,25 @@ import shared
 
 struct CloudSeaachView: View {
     let onBackClick: () -> ()
+    let onLoadSuccess: ([CloudSong]) -> ()
+    let onCloudSongClick: (Int) -> ()
     
-    @State var currentSearchState = SearchState.loading
-    @State var currentCloudSongList: [CloudSong]? = nil
+    let currentCloudSongList: [CloudSong]?
+    
+    @State var currentSearchState: SearchState = .loading
     
     @State var searchFor: String = ""
     
     @State var scrollPosition: Int = 0
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
+    
+    init(cloudSongList: [CloudSong]?, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> ()) {
+        self.currentCloudSongList = cloudSongList
+        self.onLoadSuccess = onLoadSuccess
+        self.onBackClick = onBackClick
+        self.onCloudSongClick = onCloudSongClick
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -44,7 +54,7 @@ struct CloudSeaachView: View {
                             .frame(width: 72.0, height: 72.0)
                     }
                 }
-                if (self.currentSearchState == SearchState.loading) {
+                if (self.currentSearchState == .loading) {
                     Spacer()
                     HStack {
                         Spacer()
@@ -54,7 +64,7 @@ struct CloudSeaachView: View {
                         Spacer()
                     }
                     Spacer()
-                } else if (self.currentSearchState == SearchState.loadSuccess) {
+                } else if (self.currentSearchState == .loadSuccess) {
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
                             let columns = [
@@ -107,7 +117,7 @@ struct CloudSeaachView: View {
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
-                                                     //onSongClick(index)
+                                                     onCloudSongClick(index)
                                                  }
                                         )
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
@@ -139,7 +149,18 @@ struct CloudSeaachView: View {
                 }
             }
             .onAppear(perform: {
-                searchSongs(searchFor: "", orderBy: OrderBy.byIdDesc)
+                if (self.currentCloudSongList == nil) {
+                    searchSongs(searchFor: "", orderBy: OrderBy.byIdDesc)
+                } else {
+                    self.currentSearchState = .loadSuccess
+                }
+            })
+            .onChange(of: self.currentCloudSongList, perform: { cloudSongList in
+                if (cloudSongList == nil) {
+                    searchSongs(searchFor: "", orderBy: OrderBy.byIdDesc)
+                } else {
+                    self.currentSearchState = .loadSuccess
+                }
             })
         }
         .background(Theme.colorBg)
@@ -168,9 +189,7 @@ struct CloudSeaachView: View {
             searchFor: searchFor,
             orderBy: orderBy,
             onSuccess: { data in
-                print(data.count)
-                self.currentCloudSongList = data
-                self.currentSearchState = SearchState.loadSuccess
+                self.onLoadSuccess(data)
             },onError: { t in
                 t.printStackTrace()
                 self.currentSearchState = SearchState.loadError

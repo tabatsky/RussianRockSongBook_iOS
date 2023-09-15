@@ -17,6 +17,7 @@
 		CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1A5AA82AB019720044F61B /* CloudSearchView.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
 		CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */; };
+		CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +46,7 @@
 		CE1A5AA82AB019720044F61B /* CloudSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSearchView.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSongTextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */,
 				CE11410F2A9ADCDA00DE09BE /* Drawer.swift */,
 				CE1A5AA82AB019720044F61B /* CloudSearchView.swift */,
+				CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */,
 				CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */,
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,

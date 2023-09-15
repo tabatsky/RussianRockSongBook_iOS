@@ -6,7 +6,7 @@ struct ContentView: View {
         let factory = DatabaseDriverFactory()
         Injector.companion.initiate(databaseDriverFactory: factory)
 
-        JsonLoaderKt.fillDBFromJSON()
+        //JsonLoaderKt.fillDBFromJSON()
 
         return Injector.Companion.shared.songRepo
     }()
@@ -25,27 +25,35 @@ struct ContentView: View {
     }()
 	@State var currentSongIndex: Int = 0
     @State var currentSong: Song? = nil
+    
     @State var currentCloudSongList: [CloudSong]? = nil
+    @State var currentCloudSongCount: Int = 0
+    @State var currentCloudSongIndex: Int = 0
+    @State var currentCloudSong: CloudSong? = nil
 
 	var body: some View {
 	    ZStack {
             /// Navigation Bar Title part
             if !self.isDrawerOpen {
                 NavigationView {
-                    if (self.currentScreenVariant == ScreenVariant.songList) {
+                    if (self.currentScreenVariant == .songList) {
                         SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong, onScroll: updateSongIndexByScroll, onDrawerClick: toggleDrawer)
                             
-                    } else if (self.currentScreenVariant == ScreenVariant.songText) {
+                    } else if (self.currentScreenVariant == .songText) {
                         SongTextView(song: self.currentSong!, onBackClick: back, onPrevClick: prevSong, onNextClick: nextSong, onFavoriteToggle: toggleFavorite)
                             
-                    } else if (self.currentScreenVariant == ScreenVariant.cloudSearch) {
+                    } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSeaachView(cloudSongList: self.currentCloudSongList,
-                                        onLoadSuccess: { cloudSongList in
-                                            print(cloudSongList.count)
-                                            self.currentCloudSongList = cloudSongList
-                                        },
+                                        onLoadSuccess: refreshCloudSongList,
                                         onBackClick: back,
                                         onCloudSongClick: selectCloudSong)
+                    } else if (self.currentScreenVariant == .cloudSongText) {
+                        CloudSongTextView(cloudSong: self.currentCloudSong!,
+                                          index: self.currentCloudSongIndex,
+                                          count: self.currentCloudSongCount,
+                                          onBackClick: back,
+                                          onPrevClick: prevCloudSong,
+                                          onNextClick: nextCloudSong)
                     }
                 }
             }
@@ -141,17 +149,40 @@ struct ContentView: View {
             .songRepo
             .getSongByArtistAndPosition(artist: self.currentArtist, position: Int32(self.currentSongIndex))
     }
+    
+    func refreshCloudSongList(_ cloudSongList: [CloudSong]) {
+        print(cloudSongList.count)
+        self.currentCloudSongList = cloudSongList
+        self.currentCloudSongCount = cloudSongList.count
+    }
 
     func selectCloudSong(_ index: Int) {
         print("cloud song click: \(index)")
+        self.currentCloudSongIndex = index
+        self.currentCloudSong = self.currentCloudSongList![index]
+        self.currentScreenVariant = .cloudSongText
+    }
+    
+    func prevCloudSong() {
+        if (self.currentCloudSongIndex - 1 >= 0) {
+            selectCloudSong(self.currentCloudSongIndex - 1)
+        }
+    }
+    
+    func nextCloudSong() {
+        if (self.currentCloudSongIndex + 1 < self.currentCloudSongCount) {
+            selectCloudSong(self.currentCloudSongIndex + 1)
+        }
     }
     
     func back() {
-        if (self.currentScreenVariant == ScreenVariant.songText) {
-            self.currentScreenVariant = ScreenVariant.songList
-        } else if (self.currentScreenVariant == ScreenVariant.cloudSearch) {
+        if (self.currentScreenVariant == .songText) {
+            self.currentScreenVariant = .songList
+        } else if (self.currentScreenVariant == .cloudSearch) {
             self.currentCloudSongList = nil
-            self.currentScreenVariant = ScreenVariant.songList
+            self.currentScreenVariant = .songList
+        } else if (self.currentScreenVariant == .cloudSongText) {
+            self.currentScreenVariant = .cloudSearch
         }
     }
 }
@@ -160,6 +191,7 @@ enum ScreenVariant {
     case songList
     case songText
     case cloudSearch
+    case cloudSongText
 }
 
 struct ContentView_Previews: PreviewProvider {

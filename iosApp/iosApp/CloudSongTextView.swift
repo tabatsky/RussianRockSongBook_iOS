@@ -1,0 +1,88 @@
+//
+//  CloudSongTextView.swift
+//  iosApp
+//
+//  Created by Evgeny Tabatsky on 15.09.2023.
+//  Copyright © 2023 orgName. All rights reserved.
+//
+
+import SwiftUI
+import shared
+
+struct CloudSongTextView: View {
+    let cloudSong: CloudSong
+    let index: Int
+    let count: Int
+    let onBackClick: () -> ()
+    let onPrevClick: () -> ()
+    let onNextClick: () -> ()
+    
+    var body: some View {
+        GeometryReader { geometry in
+            let artist = cloudSong.artist
+            let title = cloudSong.title
+            
+            let visibleTitleWithArtist = "\(title) (\(artist))"
+            
+            VStack {
+                Text(visibleTitleWithArtist)
+                    .bold()
+                    .foregroundColor(Theme.colorMain)
+                    .padding(24)
+                    .frame(maxWidth: geometry.size.width, alignment: .leading)
+                
+                GeometryReader { scrollViewGeometry in
+                    ScrollViewReader { sp in
+                        ScrollView(.vertical) {
+                            let text = cloudSong.text
+                            Text(text)
+                                .id("text")
+                                .foregroundColor(Theme.colorMain)
+                                .padding(8)
+                                .frame(maxWidth: geometry.size.width, alignment: .leading)
+                        }
+                    }
+                }
+            }
+        }
+        .background(Theme.colorBg)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onBackClick()
+                    }
+                }) {
+                    Image("ic_back")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                }
+            }
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onPrevClick()
+                    }
+                }) {
+                    Image("ic_left")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                }
+                let indexAndCount = "\(index + 1) / \(count)"
+                Text(indexAndCount)
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onNextClick()
+                    }
+                }) {
+                    Image("ic_right")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                }
+            }
+        })
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+    }
+}
+

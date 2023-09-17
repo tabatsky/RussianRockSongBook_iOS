@@ -44,13 +44,14 @@ struct ContentView: View {
                             
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSeaachView(cloudSongList: self.currentCloudSongList,
+                                        cloudSongIndex: self.currentCloudSongIndex,
                                         onLoadSuccess: refreshCloudSongList,
                                         onBackClick: back,
                                         onCloudSongClick: selectCloudSong)
                     } else if (self.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(cloudSong: self.currentCloudSong!,
-                                          index: self.currentCloudSongIndex,
-                                          count: self.currentCloudSongCount,
+                                          cloudSongIndex: self.currentCloudSongIndex,
+                                          cloudSongCount: self.currentCloudSongCount,
                                           onBackClick: back,
                                           onPrevClick: prevCloudSong,
                                           onNextClick: nextCloudSong)
@@ -75,6 +76,7 @@ struct ContentView: View {
         NSLog("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
+                self.currentCloudSongIndex = 0
                 self.currentScreenVariant = ScreenVariant.cloudSearch
             }
         } else if (self.currentArtist != artist) {
@@ -99,7 +101,7 @@ struct ContentView: View {
     }
     
     func updateSongIndexByScroll(_ songIndex: Int) {
-        print("scroll: \(songIndex)")
+        //print("scroll: \(songIndex)")
         self.currentSongIndex = songIndex
     }
     
@@ -157,7 +159,7 @@ struct ContentView: View {
     }
 
     func selectCloudSong(_ index: Int) {
-        print("cloud song click: \(index)")
+        print("select cloud song: \(index)")
         self.currentCloudSongIndex = index
         self.currentCloudSong = self.currentCloudSongList![index]
         self.currentScreenVariant = .cloudSongText

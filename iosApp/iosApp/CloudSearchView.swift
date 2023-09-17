@@ -15,6 +15,7 @@ struct CloudSeaachView: View {
     let onCloudSongClick: (Int) -> ()
     
     let currentCloudSongList: [CloudSong]?
+    let currentCloudSongIndex: Int
     
     @State var currentSearchState: SearchState = .loading
     
@@ -24,8 +25,9 @@ struct CloudSeaachView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(cloudSongList: [CloudSong]?, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> ()) {
+    init(cloudSongList: [CloudSong]?, cloudSongIndex: Int, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> ()) {
         self.currentCloudSongList = cloudSongList
+        self.currentCloudSongIndex = cloudSongIndex
         self.onLoadSuccess = onLoadSuccess
         self.onBackClick = onBackClick
         self.onCloudSongClick = onCloudSongClick
@@ -123,7 +125,9 @@ struct CloudSeaachView: View {
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                             }
                             .onAppear(perform: {
-                                //sp.scrollTo(currentSongList[songIndex], anchor: .top)
+                                if (self.currentCloudSongList != nil) {
+                                    sp.scrollTo(self.currentCloudSongList![self.currentCloudSongIndex], anchor: .top)
+                                }
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                                     self.initialScrollDone = true
                                 })
@@ -142,7 +146,7 @@ struct CloudSeaachView: View {
                                 }
                         })
                         .onChange(of: self.scrollPosition, perform: { position in
-                            print("\(self.scrollPosition), \(position)")
+                            //print("\(self.scrollPosition), \(position)")
                             //onScroll(position)
                         })
                     }

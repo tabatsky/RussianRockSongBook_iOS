@@ -30,6 +30,7 @@ struct SongTextView: View {
             
             VStack {
                 Text(title)
+                    .font(.system(size: 32))
                     .bold()
                     .foregroundColor(Theme.colorMain)
                     .padding(24)
@@ -49,11 +50,11 @@ struct SongTextView: View {
                                         Color.clear
                                             .onAppear(perform: {
                                                 self.textHeight = textGeometry.size.height
-                                                print(self.textHeight)
+                                                //print(self.textHeight)
                                             })
                                             .onChange(of: self.song, perform: { song in
                                                 self.textHeight = textGeometry.size.height
-                                                print(self.textHeight)
+                                                //print(self.textHeight)
                                             })
                                     }
                                 )
@@ -78,7 +79,7 @@ struct SongTextView: View {
                     }
                     .onAppear(perform: {
                         self.scrollViewHeight = scrollViewGeometry.size.height
-                        print(self.scrollViewHeight)
+                        //print(self.scrollViewHeight)
                     })
                 }
             }

@@ -101,7 +101,7 @@ struct SongListView: View {
                         }
                 })
                 .onChange(of: self.scrollPosition, perform: { position in
-                    print("\(self.scrollPosition), \(position)")
+                    //print("\(self.scrollPosition), \(position)")
                     onScroll(position)
                 })
                 .toolbar(content: {

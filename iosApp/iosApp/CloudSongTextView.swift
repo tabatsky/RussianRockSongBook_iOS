@@ -11,8 +11,8 @@ import shared
 
 struct CloudSongTextView: View {
     let cloudSong: CloudSong
-    let index: Int
-    let count: Int
+    let cloudSongIndex: Int
+    let cloudSongCount: Int
     let onBackClick: () -> ()
     let onPrevClick: () -> ()
     let onNextClick: () -> ()
@@ -26,6 +26,7 @@ struct CloudSongTextView: View {
             
             VStack {
                 Text(visibleTitleWithArtist)
+                    .font(.system(size: 32))
                     .bold()
                     .foregroundColor(Theme.colorMain)
                     .padding(24)
@@ -68,7 +69,7 @@ struct CloudSongTextView: View {
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 }
-                let indexAndCount = "\(index + 1) / \(count)"
+                let indexAndCount = "\(self.cloudSongIndex + 1) / \(self.cloudSongCount)"
                 Text(indexAndCount)
                 Button(action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

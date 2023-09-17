@@ -12,7 +12,7 @@ object CloudRepository {
         searchFor: String,
         orderBy: OrderBy
     ): ResultWithCloudSongListData {
-        return KtorClient().httpClient.use {
+        return KtorClient.newHttpClient().use {
             it.get("$BASE_URL/songs/search/$searchFor/${orderBy.orderBy}").body()
         }
     }
@@ -26,9 +26,6 @@ object CloudRepository {
         try {
             val result = searchSongs(searchFor, orderBy)
             val data = result.data
-            data?.forEach {
-                with(it) { println("$artist - $title") }
-            }
             data?.let {
                 onSuccess(it)
             }

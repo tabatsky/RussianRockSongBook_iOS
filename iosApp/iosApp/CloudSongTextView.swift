@@ -26,7 +26,7 @@ struct CloudSongTextView: View {
             
             VStack {
                 Text(visibleTitleWithArtist)
-                    .font(.system(size: 32))
+                    .font(Theme.fontTitle)
                     .bold()
                     .foregroundColor(Theme.colorMain)
                     .padding(24)
@@ -38,6 +38,7 @@ struct CloudSongTextView: View {
                             let text = cloudSong.text
                             Text(text)
                                 .id("text")
+                                .font(Theme.fontText)
                                 .foregroundColor(Theme.colorMain)
                                 .padding(8)
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)

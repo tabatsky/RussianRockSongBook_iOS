@@ -30,7 +30,7 @@ struct SongTextView: View {
             
             VStack {
                 Text(title)
-                    .font(.system(size: 32))
+                    .font(Theme.fontTitle)
                     .bold()
                     .foregroundColor(Theme.colorMain)
                     .padding(24)
@@ -42,6 +42,7 @@ struct SongTextView: View {
                             let text = song.text
                             Text(text)
                                 .id("text")
+                                .font(Theme.fontText)
                                 .foregroundColor(Theme.colorMain)
                                 .padding(8)
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)

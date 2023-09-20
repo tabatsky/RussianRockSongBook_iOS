@@ -13,9 +13,12 @@ struct CloudSeaachView: View {
     let onBackClick: () -> ()
     let onLoadSuccess: ([CloudSong]) -> ()
     let onCloudSongClick: (Int) -> ()
+    let onOrderBySelected: (OrderBy) -> ()
     
     let currentCloudSongList: [CloudSong]?
     let currentCloudSongIndex: Int
+    
+    let orderBy: OrderBy
     
     @State var currentSearchState: SearchState = .loading
     
@@ -25,24 +28,45 @@ struct CloudSeaachView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(cloudSongList: [CloudSong]?, cloudSongIndex: Int, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> ()) {
+    init(cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> ()) {
         self.currentCloudSongList = cloudSongList
         self.currentCloudSongIndex = cloudSongIndex
+        self.orderBy = orderBy
         self.onLoadSuccess = onLoadSuccess
         self.onBackClick = onBackClick
         self.onCloudSongClick = onCloudSongClick
+        self.onOrderBySelected = onOrderBySelected
     }
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
                 HStack {
-                    TextField("", text: $searchFor)
-                        .foregroundColor(Theme.colorMain)
-                        .frame(height: 56.0)
-                        .background(Color.black)
-                        .padding(8)
-                        .background(Theme.colorCommon)
+                    VStack {
+                        TextField("", text: $searchFor)
+                            .foregroundColor(Theme.colorMain)
+                            .frame(height: 56.0)
+                            .background(Color.black)
+                            .padding(8)
+                            .background(Theme.colorCommon)
+                        Menu {
+                            Button(OrderBy.byIdDesc.orderByRus) {
+                                selectOrderBy(orderBy: OrderBy.byIdDesc)
+                            }
+                            Button(OrderBy.byTitle.orderByRus) {
+                                selectOrderBy(orderBy: OrderBy.byTitle)
+                            }
+                            Button(OrderBy.byArtist.orderByRus) {
+                                selectOrderBy(orderBy: OrderBy.byArtist)
+                            }
+                        } label: {
+                            Text(orderBy.orderByRus)
+                        }
+                            .foregroundColor(Theme.colorMain)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 36.0)
+                            .background(Theme.colorCommon)
+                    }
                     Button(action: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             searchSongs(searchFor: searchFor, orderBy: OrderBy.byIdDesc)
@@ -53,7 +77,7 @@ struct CloudSeaachView: View {
                             .colorMultiply(Theme.colorMain)
                             .padding(8)
                             .background(Theme.colorCommon)
-                            .frame(width: 72.0, height: 72.0)
+                            .frame(width: 120.0, height: 120.0)
                     }
                 }
                 if (self.currentSearchState == .loading) {
@@ -154,17 +178,20 @@ struct CloudSeaachView: View {
             }
             .onAppear(perform: {
                 if (self.currentCloudSongList == nil) {
-                    searchSongs(searchFor: "", orderBy: OrderBy.byIdDesc)
+                    searchSongs(searchFor: "", orderBy: self.orderBy)
                 } else {
                     self.currentSearchState = .loadSuccess
                 }
             })
             .onChange(of: self.currentCloudSongList, perform: { cloudSongList in
                 if (cloudSongList == nil) {
-                    searchSongs(searchFor: "", orderBy: OrderBy.byIdDesc)
+                    searchSongs(searchFor: "", orderBy: self.orderBy)
                 } else {
                     self.currentSearchState = .loadSuccess
                 }
+            })
+            .onChange(of: self.orderBy, perform: { orderBy in
+                searchSongs(searchFor: self.searchFor, orderBy: orderBy)
             })
         }
         .background(Theme.colorBg)
@@ -199,6 +226,10 @@ struct CloudSeaachView: View {
                 self.currentSearchState = SearchState.loadError
             }
         )
+    }
+    
+    func selectOrderBy(orderBy: OrderBy) {
+        onOrderBySelected(orderBy)
     }
 }
 

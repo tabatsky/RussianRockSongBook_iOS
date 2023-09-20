@@ -30,6 +30,7 @@ struct ContentView: View {
     @State var currentCloudSongCount: Int = 0
     @State var currentCloudSongIndex: Int = 0
     @State var currentCloudSong: CloudSong? = nil
+    @State var currentCloudOrderBy: OrderBy = OrderBy.byIdDesc
 
 	var body: some View {
 	    ZStack {
@@ -45,9 +46,11 @@ struct ContentView: View {
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSeaachView(cloudSongList: self.currentCloudSongList,
                                         cloudSongIndex: self.currentCloudSongIndex,
+                                        orderBy: self.currentCloudOrderBy,
                                         onLoadSuccess: refreshCloudSongList,
                                         onBackClick: back,
-                                        onCloudSongClick: selectCloudSong)
+                                        onCloudSongClick: selectCloudSong,
+                                        onOrderBySelected: selectOrderBy)
                     } else if (self.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(cloudSong: self.currentCloudSong!,
                                           cloudSongIndex: self.currentCloudSongIndex,
@@ -77,6 +80,7 @@ struct ContentView: View {
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
                 self.currentCloudSongIndex = 0
+                self.currentCloudOrderBy = OrderBy.byIdDesc
                 self.currentScreenVariant = ScreenVariant.cloudSearch
             }
         } else if (self.currentArtist != artist) {
@@ -158,6 +162,12 @@ struct ContentView: View {
         self.currentCloudSongCount = cloudSongList.count
     }
 
+    func selectOrderBy(_ orderBy: OrderBy) {
+        self.currentCloudSongIndex = 0
+        self.currentCloudSong = nil
+        self.currentCloudOrderBy = orderBy
+    }
+    
     func selectCloudSong(_ index: Int) {
         print("select cloud song: \(index)")
         self.currentCloudSongIndex = index

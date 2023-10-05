@@ -53,10 +53,12 @@ class JsonLoader() {
 
 val artistMap = mapOf(
     "Агата Кристи" to Raw.agata,
+    "Алиса" to Raw.alisa,
     "Би-2" to Raw.bi2,
     "ДДТ" to Raw.ddt,
     "Кино" to Raw.kino,
-    "Наутилус Помпилиус" to Raw.nautilus
+    "Наутилус Помпилиус" to Raw.nautilus,
+    "Немного Нервно" to Raw.nervno
 )
 
 val artists = artistMap.keys.toTypedArray()

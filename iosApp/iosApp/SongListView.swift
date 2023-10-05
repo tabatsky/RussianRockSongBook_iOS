@@ -15,20 +15,11 @@ struct SongListView: View {
     let onScroll: (Int) -> ()
     let onDrawerClick: () -> ()
     
-    @State var scrollPosition: Int
-    @State var initialScrollDone: Bool
-    @State var scrollViewFrame: CGRect
+    @State var scrollPosition: Int = -1
+    @State var initialScrollDone: Bool = false
+    @State var scrollViewFrame: CGRect = CGRect()
     
-    init(artist: String, songIndex: Int, onSongClick: @escaping (Int) -> Void, onScroll: @escaping (Int) -> Void, onDrawerClick: @escaping () -> Void) {
-        self.artist = artist
-        self.songIndex = songIndex
-        self.onSongClick = onSongClick
-        self.onScroll = onScroll
-        self.onDrawerClick = onDrawerClick
-        self.scrollPosition = songIndex
-        self.initialScrollDone = false
-        self.scrollViewFrame = CGRect()
-    }
+
 
     var body: some View {
         GeometryReader { geometry in
@@ -82,6 +73,7 @@ struct SongListView: View {
                         }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                     }
                     .onAppear(perform: {
+                        self.scrollPosition = songIndex
                         sp.scrollTo(currentSongList[songIndex], anchor: .top)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                             self.initialScrollDone = true
@@ -100,9 +92,11 @@ struct SongListView: View {
                             self.scrollViewFrame = frame
                         }
                 })
-                .onChange(of: self.scrollPosition, perform: { position in
+                .onChange(of: self.scrollPosition, perform: { [scrollPosition] position in
                     //print("\(self.scrollPosition), \(position)")
-                    onScroll(position)
+                    if (scrollPosition >= 0) {
+                        onScroll(position)
+                    }
                 })
                 .toolbar(content: {
                     ToolbarItemGroup(placement: .navigationBarLeading) {

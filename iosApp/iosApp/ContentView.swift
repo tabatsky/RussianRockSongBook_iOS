@@ -76,7 +76,7 @@ struct ContentView: View {
     }
 
     func selectArtist(_ artist: String) {
-        NSLog("select artist: \(artist)")
+        print("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
                 self.currentCloudSongIndex = 0
@@ -84,7 +84,7 @@ struct ContentView: View {
                 self.currentScreenVariant = ScreenVariant.cloudSearch
             }
         } else if (self.currentArtist != artist) {
-            NSLog("artist changed")
+            print("artist changed")
             self.currentArtist = artist
             let count = Self.songRepo.getCountByArtist(artist: artist)
             self.currentCount = Int(count)
@@ -98,7 +98,7 @@ struct ContentView: View {
     }
 
     func selectSong(_ songIndex: Int) {
-        NSLog("select song with index: \(songIndex)")
+        print("select song with index: \(songIndex)")
         self.currentSongIndex = songIndex
         refreshCurrentSong()
         self.currentScreenVariant = ScreenVariant.songText

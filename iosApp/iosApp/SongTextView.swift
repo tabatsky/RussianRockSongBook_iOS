@@ -39,83 +39,51 @@ struct SongTextView: View {
                 GeometryReader { scrollViewGeometry in
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
-                            if #available(iOS 15, *) {
-                                let text = SongText(text: song.text).attributedText
-                                Text(text)
-                                    .id("text")
-                                    .font(Theme.fontText)
-                                    .foregroundColor(Theme.colorMain)
-                                    .padding(8)
-                                    .frame(maxWidth: geometry.size.width, alignment: .leading)
-                                    .background(
-                                        GeometryReader { textGeometry in
-                                            Color.clear
-                                                .onAppear(perform: {
-                                                    self.textHeight = textGeometry.size.height
-                                                    //print(self.textHeight)
-                                                })
-                                                .onChange(of: self.song, perform: { song in
-                                                    self.textHeight = textGeometry.size.height
-                                                    //print(self.textHeight)
-                                                })
-                                        }
-                                    )
-                                    .onAppear(perform: {
-                                        self.scrollY = 0.0
-                                        self.isScreenActive = true
-                                        sp.scrollTo("text", anchor: .topLeading)
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                            autoScroll(sp: sp)
-                                        })
-                                    })
-                                    .onDisappear(perform: {
-                                        self.isAutoScroll = false
-                                        self.isScreenActive = false
-                                    })
-                                    .onChange(of: self.song, perform: { song in
-                                        self.isAutoScroll = false
-                                        self.scrollY = 0.0
-                                        sp.scrollTo("text", anchor: .topLeading)
-                                    })
-                            } else {
-                                let text = song.text
-                                Text(text)
-                                    .id("text")
-                                    .font(Theme.fontText)
-                                    .foregroundColor(Theme.colorMain)
-                                    .padding(8)
-                                    .frame(maxWidth: geometry.size.width, alignment: .leading)
-                                    .background(
-                                        GeometryReader { textGeometry in
-                                            Color.clear
-                                                .onAppear(perform: {
-                                                    self.textHeight = textGeometry.size.height
-                                                    //print(self.textHeight)
-                                                })
-                                                .onChange(of: self.song, perform: { song in
-                                                    self.textHeight = textGeometry.size.height
-                                                    //print(self.textHeight)
-                                                })
-                                        }
-                                    )
-                                    .onAppear(perform: {
-                                        self.scrollY = 0.0
-                                        self.isScreenActive = true
-                                        sp.scrollTo("text", anchor: .topLeading)
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                            autoScroll(sp: sp)
-                                        })
-                                    })
-                                    .onDisappear(perform: {
-                                        self.isAutoScroll = false
-                                        self.isScreenActive = false
-                                    })
-                                    .onChange(of: self.song, perform: { song in
-                                        self.isAutoScroll = false
-                                        self.scrollY = 0.0
-                                        sp.scrollTo("text", anchor: .topLeading)
-                                    })
+                            
+                            ContainerView {
+                                if #available(iOS 15, *) {
+                                    let text = SongText(text: song.text).attributedText
+                                    Text(text)
+                                } else {
+                                    let text = song.text
+                                    Text(text)
+                                }
                             }
+                                .id("text")
+                                .font(Theme.fontText)
+                                .foregroundColor(Theme.colorMain)
+                                .padding(8)
+                                .frame(maxWidth: geometry.size.width, alignment: .leading)
+                                .background(
+                                    GeometryReader { textGeometry in
+                                        Color.clear
+                                            .onAppear(perform: {
+                                                self.textHeight = textGeometry.size.height
+                                                //print(self.textHeight)
+                                            })
+                                            .onChange(of: self.song, perform: { song in
+                                                self.textHeight = textGeometry.size.height
+                                                //print(self.textHeight)
+                                            })
+                                    }
+                                )
+                                .onAppear(perform: {
+                                    self.scrollY = 0.0
+                                    self.isScreenActive = true
+                                    sp.scrollTo("text", anchor: .topLeading)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                        autoScroll(sp: sp)
+                                    })
+                                })
+                                .onDisappear(perform: {
+                                    self.isAutoScroll = false
+                                    self.isScreenActive = false
+                                })
+                                .onChange(of: self.song, perform: { song in
+                                    self.isAutoScroll = false
+                                    self.scrollY = 0.0
+                                    sp.scrollTo("text", anchor: .topLeading)
+                                })
                         }
                     }
                     .onAppear(perform: {

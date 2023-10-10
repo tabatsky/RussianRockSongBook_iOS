@@ -11,6 +11,7 @@
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		CE0F15642AD60F8100F27CED /* ContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F15632AD60F8100F27CED /* ContainerView.swift */; };
 		CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410B2A9ADBED00DE09BE /* SongListView.swift */; };
 		CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */; };
 		CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410F2A9ADCDA00DE09BE /* Drawer.swift */; };
@@ -41,6 +42,7 @@
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CE0F15632AD60F8100F27CED /* ContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerView.swift; sourceTree = "<group>"; };
 		CE11410B2A9ADBED00DE09BE /* SongListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListView.swift; sourceTree = "<group>"; };
 		CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTextView.swift; sourceTree = "<group>"; };
 		CE11410F2A9ADCDA00DE09BE /* Drawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawer.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				CE1A5AA82AB019720044F61B /* CloudSearchView.swift */,
 				CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */,
 				CE1AF2182AD55E6E001ED685 /* SongText.swift */,
+				CE0F15632AD60F8100F27CED /* ContainerView.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 				CE1AF2192AD55E6E001ED685 /* SongText.swift in Sources */,
 				CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */,
 				CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */,
+				CE0F15642AD60F8100F27CED /* ContainerView.swift in Sources */,
 				CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

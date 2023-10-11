@@ -34,6 +34,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
                 api("dev.icerock.moko:resources:0.23.0")
                 implementation(platform("org.kotlincrypto.hash:bom:0.2.3"))
                 implementation("org.kotlincrypto.hash:md5")

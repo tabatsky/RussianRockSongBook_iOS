@@ -39,10 +39,9 @@ struct SongTextView: View {
                 GeometryReader { scrollViewGeometry in
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
-                            
                             ContainerView {
                                 if #available(iOS 15, *) {
-                                    let text = SongText(text: song.text).attributedText
+                                    let text = AttributedSongText(text: song.text).attributedText
                                     Text(text)
                                 } else {
                                     let text = song.text

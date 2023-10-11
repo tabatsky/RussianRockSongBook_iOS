@@ -1,5 +1,6 @@
 package jatx.russianrocksongbook.common.chords
 
+
 class WordScanner(private val text: String) {
     private var currentIndex: Int = 0
 

@@ -35,8 +35,15 @@ struct CloudSongTextView: View {
                 GeometryReader { scrollViewGeometry in
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
-                            let text = cloudSong.text
-                            Text(text)
+                            ContainerView {
+                                if #available(iOS 15, *) {
+                                    let text = AttributedSongText(text: cloudSong.text).attributedText
+                                    Text(text)
+                                } else {
+                                    let text = cloudSong.text
+                                    Text(text)
+                                }
+                            }
                                 .id("text")
                                 .font(Theme.fontText)
                                 .foregroundColor(Theme.colorMain)

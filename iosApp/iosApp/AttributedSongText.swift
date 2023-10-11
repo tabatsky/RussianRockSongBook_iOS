@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 
 @available(iOS 15, *)
-struct SongText {
+struct AttributedSongText {
     var attributedText: AttributedString
     
     init(text: String) {
@@ -22,8 +22,8 @@ struct SongText {
                 actualWord = actualWord.replacingOccurrences(of: key as! String, with: value as! String)
             }
             if ChordsKt.baseChords.contains(actualWord) {
-                let start = attributedText.characters.index(attributedText.startIndex, offsetBy: Int(word.startIndex))
-                let end = attributedText.characters.index(attributedText.startIndex, offsetBy: Int(word.endIndex))
+                let start = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.startIndex))
+                let end = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.endIndex))
                 self.attributedText[start..<end].foregroundColor = Theme.colorBg
                 self.attributedText[start..<end].backgroundColor = Theme.colorMain
             }

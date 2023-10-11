@@ -26,6 +26,7 @@ struct AttributedSongText {
                 let end = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.endIndex))
                 self.attributedText[start..<end].foregroundColor = Theme.colorBg
                 self.attributedText[start..<end].backgroundColor = Theme.colorMain
+                self.attributedText[start..<end].link = URL(string: "jatx://\(actualWord)")
             }
         }
     }

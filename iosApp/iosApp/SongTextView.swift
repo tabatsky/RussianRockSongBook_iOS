@@ -83,6 +83,10 @@ struct SongTextView: View {
                                     self.scrollY = 0.0
                                     sp.scrollTo("text", anchor: .topLeading)
                                 })
+                                .onOpenURL(perform: {
+                                    let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
+                                    print("chord: \(chord)")
+                                })
                         }
                     }
                     .onAppear(perform: {

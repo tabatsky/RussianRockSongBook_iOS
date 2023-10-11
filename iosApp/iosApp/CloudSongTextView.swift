@@ -49,6 +49,10 @@ struct CloudSongTextView: View {
                                 .foregroundColor(Theme.colorMain)
                                 .padding(8)
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)
+                                .onOpenURL(perform: {
+                                    let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
+                                    print("chord: \(chord)")
+                                })
                         }
                     }
                 }

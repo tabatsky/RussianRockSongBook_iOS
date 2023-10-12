@@ -17,6 +17,7 @@
 		CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410F2A9ADCDA00DE09BE /* Drawer.swift */; };
 		CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1A5AA82AB019720044F61B /* CloudSearchView.swift */; };
 		CE1AF2192AD55E6E001ED685 /* AttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AF2182AD55E6E001ED685 /* AttributedSongText.swift */; };
+		CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
 		CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */; };
 		CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */; };
@@ -48,6 +49,7 @@
 		CE11410F2A9ADCDA00DE09BE /* Drawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawer.swift; sourceTree = "<group>"; };
 		CE1A5AA82AB019720044F61B /* CloudSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSearchView.swift; sourceTree = "<group>"; };
 		CE1AF2182AD55E6E001ED685 /* AttributedSongText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedSongText.swift; sourceTree = "<group>"; };
+		CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldAttributedSongText.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSongTextView.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */,
 				CE1AF2182AD55E6E001ED685 /* AttributedSongText.swift */,
 				CE0F15632AD60F8100F27CED /* ContainerView.swift */,
+				CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */,
 				CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */,
 				CE1AF2192AD55E6E001ED685 /* AttributedSongText.swift in Sources */,
 				CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */,

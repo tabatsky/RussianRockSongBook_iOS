@@ -63,39 +63,35 @@ struct CloudSongTextView: View {
             }
         }
         .background(Theme.colorBg)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onBackClick()
-                    }
-                }) {
-                    Image("ic_back")
-                        .resizable()
-                        .frame(width: 32.0, height: 32.0)
+        .navigationBarItems(leading:
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onBackClick()
                 }
+            }) {
+                Image("ic_back")
+                    .resizable()
+                    .frame(width: 32.0, height: 32.0)
+        }, trailing: HStack {
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onPrevClick()
+                }
+            }) {
+                Image("ic_left")
+                    .resizable()
+                    .frame(width: 32.0, height: 32.0)
             }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onPrevClick()
-                    }
-                }) {
-                    Image("ic_left")
-                        .resizable()
-                        .frame(width: 32.0, height: 32.0)
+            let indexAndCount = "\(self.cloudSongIndex + 1) / \(self.cloudSongCount)"
+            Text(indexAndCount)
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onNextClick()
                 }
-                let indexAndCount = "\(self.cloudSongIndex + 1) / \(self.cloudSongCount)"
-                Text(indexAndCount)
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onNextClick()
-                    }
-                }) {
-                    Image("ic_right")
-                        .resizable()
-                        .frame(width: 32.0, height: 32.0)
-                }
+            }) {
+                Image("ic_right")
+                    .resizable()
+                    .frame(width: 32.0, height: 32.0)
             }
         })
         .navigationBarTitleDisplayMode(.inline)

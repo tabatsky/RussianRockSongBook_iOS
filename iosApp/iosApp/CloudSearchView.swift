@@ -195,8 +195,8 @@ struct CloudSeaachView: View {
             })
         }
         .background(Theme.colorBg)
-        .toolbar(content: {
-            ToolbarItemGroup(placement: .navigationBarLeading) {
+        
+        .navigationBarItems(leading:
                 Button(action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         onBackClick()
@@ -205,11 +205,8 @@ struct CloudSeaachView: View {
                     Image("ic_back")
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
-                }
-                Text(ContentView.ARTIST_CLOUD_SONGS)
-                    .bold()
-            }
-        })
+                }, trailing: Spacer())
+        .navigationTitle(ContentView.ARTIST_CLOUD_SONGS)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
     }

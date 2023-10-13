@@ -101,7 +101,6 @@ struct SongTextView: View {
             }
         }
         .background(Theme.colorBg)
-        
         .navigationBarItems(leading:
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -111,7 +110,7 @@ struct SongTextView: View {
                 Image("ic_back")
                     .resizable()
                     .frame(width: 32.0, height: 32.0)
-            }, trailing: HStack {
+        }, trailing: HStack {
             Button(action: {
                 self.isAutoScroll.toggle()
             }) {
@@ -158,9 +157,7 @@ struct SongTextView: View {
                     .resizable()
                     .frame(width: 32.0, height: 32.0)
             }
-        }
-        )
-
+        })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
     }

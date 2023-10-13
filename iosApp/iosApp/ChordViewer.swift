@@ -31,7 +31,7 @@ struct ChordViewer: View {
                     self.actualSuffix = "major"
                 } else if suffix == "m" {
                     self.actualSuffix = "minor"
-                } else {
+                } else if guitar.suffixes.contains(suffix) {
                     self.actualSuffix = suffix
                 }
             }
@@ -40,8 +40,12 @@ struct ChordViewer: View {
     
     var body: some View {
         VStack {
-            if !actualKey.isEmpty && !actualSuffix.isEmpty {
-                let position = guitar.findChordPositions(key: actualKey, suffix: actualSuffix)[0]
+            Text(self.chord)
+                .foregroundColor(Theme.colorBg)
+                .frame(width: 320, height: 80)
+                .background(Theme.colorCommon)
+            if !self.actualKey.isEmpty && !self.actualSuffix.isEmpty {
+                let position = guitar.findChordPositions(key: self.actualKey, suffix: self.actualSuffix)[0]
                 FretboardView(position: position)
                     .frame(width: 320, height: 320)
             } else {
@@ -50,13 +54,13 @@ struct ChordViewer: View {
             Button(action: {
                 onDismiss()
             }, label: {
-                Text("Close")
+                Text("Закрыть")
                     .foregroundColor(Theme.colorBg)
                     .frame(width: 320, height: 80)
-                    .background(Theme.colorMain)
+                    .background(Theme.colorCommon)
             })
         }
-            .frame(width: 320, height: 400, alignment: .center)
+            .frame(width: 320, height: 480, alignment: .center)
             .background(Theme.colorMain)
     }
 }

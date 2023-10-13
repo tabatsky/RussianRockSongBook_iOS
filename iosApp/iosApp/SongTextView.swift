@@ -43,7 +43,7 @@ struct SongTextView: View {
                             ScrollView(.vertical) {
                                 ContainerView {
                                     if #available(iOS 15, *) {
-                                        let text = AttributedSongTextMaker(text: song.text).attributedText
+                                        let text = AttributedSongTextBuilder(text: song.text).attributedText
                                         Text(text)
                                             .padding(8)
                                     } else {
@@ -101,9 +101,9 @@ struct SongTextView: View {
                         })
                     }
                 }
-                if let chord = currentChord {
+                if let chord = self.currentChord {
                     ChordViewer(chord: chord, onDismiss: {
-                        currentChord = nil
+                        self.currentChord = nil
                     })
                 }
             }
@@ -187,6 +187,6 @@ struct SongTextView: View {
     
     func onChordTapped(_ chord: String) {
         print("chord: \(chord)")
-        currentChord = chord
+        self.currentChord = chord
     }
 }

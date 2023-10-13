@@ -7,6 +7,13 @@ struct ContentView: View {
         Injector.companion.initiate(databaseDriverFactory: factory)
 
         //JsonLoaderKt.fillDBFromJSON()
+        
+//        let chords = ChordsKt.baseChords.filter { chord in
+//            let str = chord as! String
+//            return str.starts(with: "C") && !str.starts(with: "C#")
+//        } as! Array<String>
+//        print(chords.sorted())
+//        print(Instrument.guitar.suffixes.sorted())
 
         return Injector.Companion.shared.songRepo
     }()

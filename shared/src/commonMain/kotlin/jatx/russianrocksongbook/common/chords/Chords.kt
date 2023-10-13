@@ -6,7 +6,7 @@ val chordMappings = hashMapOf<String, String>().apply {
     put("A#", "Bb")
 }
 
-val baseChords = hashSetOf<String>().apply {
+val baseChords = arrayListOf<String>().apply {
     add("C")
     add("Cm")
     add("C6")

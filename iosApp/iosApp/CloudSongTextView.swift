@@ -17,6 +17,8 @@ struct CloudSongTextView: View {
     let onPrevClick: () -> ()
     let onNextClick: () -> ()
     
+    @State var currentChord: String? = nil
+    
     var body: some View {
         GeometryReader { geometry in
             let artist = cloudSong.artist
@@ -24,30 +26,31 @@ struct CloudSongTextView: View {
             
             let visibleTitleWithArtist = "\(title) (\(artist))"
             
-            VStack {
-                Text(visibleTitleWithArtist)
-                    .font(Theme.fontTitle)
-                    .bold()
-                    .foregroundColor(Theme.colorMain)
-                    .padding(24)
-                    .frame(maxWidth: geometry.size.width, alignment: .leading)
-                
-                GeometryReader { scrollViewGeometry in
-                    ScrollViewReader { sp in
-                        ScrollView(.vertical) {
-                            ContainerView {
-                                if #available(iOS 15, *) {
-                                    let text = AttributedSongTextMaker(text: cloudSong.text).attributedText
-                                    Text(text)
-                                } else {
-                                    OldAttributedSongText(
-                                        text: cloudSong.text,
-                                        width: geometry.size.width,
-                                        onHeightChanged: { print($0) },
-                                        onChordTapped: onChordTapped
-                                    )
+            ZStack {
+                VStack {
+                    Text(visibleTitleWithArtist)
+                        .font(Theme.fontTitle)
+                        .bold()
+                        .foregroundColor(Theme.colorMain)
+                        .padding(24)
+                        .frame(maxWidth: geometry.size.width, alignment: .leading)
+                    
+                    GeometryReader { scrollViewGeometry in
+                        ScrollViewReader { sp in
+                            ScrollView(.vertical) {
+                                ContainerView {
+                                    if #available(iOS 15, *) {
+                                        let text = AttributedSongTextBuilder(text: cloudSong.text).attributedText
+                                        Text(text)
+                                    } else {
+                                        OldAttributedSongText(
+                                            text: cloudSong.text,
+                                            width: geometry.size.width,
+                                            onHeightChanged: { print($0) },
+                                            onChordTapped: onChordTapped
+                                        )
+                                    }
                                 }
-                            }
                                 .id("text")
                                 .font(Theme.fontText)
                                 .foregroundColor(Theme.colorMain)
@@ -57,8 +60,14 @@ struct CloudSongTextView: View {
                                     let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
                                     onChordTapped(chord)
                                 })
+                            }
                         }
                     }
+                }
+                if let chord = self.currentChord {
+                    ChordViewer(chord: chord, onDismiss: {
+                        self.currentChord = nil
+                    })
                 }
             }
         }
@@ -100,6 +109,7 @@ struct CloudSongTextView: View {
     
     func onChordTapped(_ chord: String) {
         print("chord: \(chord)")
+        self.currentChord = chord
     }
 }
 

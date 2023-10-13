@@ -44,8 +44,7 @@ struct SongTextView: View {
                                     let text = AttributedSongText(text: song.text).attributedText
                                     Text(text)
                                 } else {
-                                    let text = song.text
-                                    Text(text)
+                                    OldAttributedSongText(text: song.text, width: geometry.size.width, onHeightChanged: { print($0); self.textHeight = $0 })
                                 }
                             }
                                 .id("text")
@@ -97,67 +96,127 @@ struct SongTextView: View {
             }
         }
         .background(Theme.colorBg)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onBackClick()
-                    }
-                }) {
-                    Image("ic_back")
+        
+        .navigationBarItems(leading:
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onBackClick()
+                }
+            }) {
+                Image("ic_back")
+                    .resizable()
+                    .frame(width: 32.0, height: 32.0)
+            }, trailing: HStack {
+            Button(action: {
+                self.isAutoScroll.toggle()
+            }) {
+                if (self.isAutoScroll) {
+                    Image("ic_pause")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                } else {
+                    Image("ic_play")
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 }
             }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: {
-                    self.isAutoScroll.toggle()
-                }) {
-                    if (self.isAutoScroll) {
-                        Image("ic_pause")
-                            .resizable()
-                            .frame(width: 32.0, height: 32.0)
-                    } else {
-                        Image("ic_play")
-                            .resizable()
-                            .frame(width: 32.0, height: 32.0)
-                    }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onPrevClick()
                 }
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onPrevClick()
-                    }
-                }) {
-                    Image("ic_left")
+            }) {
+                Image("ic_left")
+                    .resizable()
+                    .frame(width: 32.0, height: 32.0)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onFavoriteToggle()
+                }
+            }) {
+                if (song.favorite) {
+                    Image("ic_delete")
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
-                }
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onFavoriteToggle()
-                    }
-                }) {
-                    if (song.favorite) {
-                        Image("ic_delete")
-                            .resizable()
-                            .frame(width: 32.0, height: 32.0)
-                    } else {
-                        Image("ic_star")
-                            .resizable()
-                            .frame(width: 32.0, height: 32.0)
-                    }
-                }
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onNextClick()
-                    }
-                }) {
-                    Image("ic_right")
+                } else {
+                    Image("ic_star")
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 }
             }
-        })
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onNextClick()
+                }
+            }) {
+                Image("ic_right")
+                    .resizable()
+                    .frame(width: 32.0, height: 32.0)
+            }
+        }
+        )
+//        .toolbar(content: {
+//            ToolbarItem(placement: .navigationBarLeading) {
+//                Button(action: {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                        onBackClick()
+//                    }
+//                }) {
+//                    Image("ic_back")
+//                        .resizable()
+//                        .frame(width: 32.0, height: 32.0)
+//                }
+//            }
+//            ToolbarItemGroup(placement: .navigationBarTrailing) {
+//                Button(action: {
+//                    self.isAutoScroll.toggle()
+//                }) {
+//                    if (self.isAutoScroll) {
+//                        Image("ic_pause")
+//                            .resizable()
+//                            .frame(width: 32.0, height: 32.0)
+//                    } else {
+//                        Image("ic_play")
+//                            .resizable()
+//                            .frame(width: 32.0, height: 32.0)
+//                    }
+//                }
+//                Button(action: {
+//                    print("prev click")
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                        onPrevClick()
+//                    }
+//                }) {
+//                    Image("ic_left")
+//                        .resizable()
+//                        .frame(width: 32.0, height: 32.0)
+//                }
+//                Button(action: {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                        onFavoriteToggle()
+//                    }
+//                }) {
+//                    if (song.favorite) {
+//                        Image("ic_delete")
+//                            .resizable()
+//                            .frame(width: 32.0, height: 32.0)
+//                    } else {
+//                        Image("ic_star")
+//                            .resizable()
+//                            .frame(width: 32.0, height: 32.0)
+//                    }
+//                }
+//                Button(action: {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                        onNextClick()
+//                    }
+//                }) {
+//                    Image("ic_right")
+//                        .resizable()
+//                        .frame(width: 32.0, height: 32.0)
+//                }
+//            }
+//        })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
     }

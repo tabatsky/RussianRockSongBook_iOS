@@ -37,12 +37,10 @@ struct CloudSongTextView: View {
                         ScrollView(.vertical) {
                             ContainerView {
                                 if #available(iOS 15, *) {
-                                    //let text = AttributedSongText(text: cloudSong.text).attributedText
-                                    //Text(text)
-                                    OldAttributedSongText(text: cloudSong.text)
-                                } else {
-                                    let text = cloudSong.text
+                                    let text = AttributedSongText(text: cloudSong.text).attributedText
                                     Text(text)
+                                } else {
+                                    OldAttributedSongText(text: cloudSong.text, width: geometry.size.width, onHeightChanged: { print($0) })
                                 }
                             }
                                 .id("text")

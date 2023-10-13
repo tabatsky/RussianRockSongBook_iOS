@@ -98,8 +98,7 @@ struct SongListView: View {
                         onScroll(position)
                     }
                 })
-                .toolbar(content: {
-                    ToolbarItemGroup(placement: .navigationBarLeading) {
+                .navigationBarItems(leading:
                         Button(action: {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 onDrawerClick()
@@ -108,11 +107,8 @@ struct SongListView: View {
                             Image("ic_drawer")
                                 .resizable()
                                 .frame(width: 32.0, height: 32.0)
-                        }
-                        Text(self.artist)
-                            .bold()
-                    }
-                })
+                        }, trailing: Spacer())
+                .navigationTitle(self.artist)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
             }

@@ -14,13 +14,15 @@ struct OldAttributedSongText: View {
     let attributedText = NSMutableAttributedString(string: "")
     let width: CGFloat
     let onHeightChanged: (CGFloat) -> ()
+    let onChordTapped: (String) -> ()
     @State var textState: NSAttributedString = NSAttributedString(string: "")
     @State var textWidth = CGFloat(0.0)
     @State var textHeight = CGFloat(0.0)
     
-    init(text: String, width: CGFloat, onHeightChanged: @escaping (CGFloat) -> ()) {
+    init(text: String, width: CGFloat, onHeightChanged: @escaping (CGFloat) -> (), onChordTapped: @escaping (String) -> ()) {
         self.width = width
         self.onHeightChanged = onHeightChanged
+        self.onChordTapped = onChordTapped
         let wordList = WordScanner(text: text).getWordList()
         var position = 0
         wordList.forEach { word in
@@ -36,12 +38,12 @@ struct OldAttributedSongText: View {
             ChordsKt.chordMappings.forEach { key, value in
                 actualWord = actualWord.replacingOccurrences(of: key as! String, with: value as! String)
             }
-            let url =  ChordsKt.baseChords.contains(actualWord) ? "https://tabatsky.ru/\(actualWord)" : nil
+            let chord =  ChordsKt.baseChords.contains(actualWord) ? actualWord : nil
             let a: [NSAttributedString.Key: Any]
-            if (url == nil) {
+            if (chord == nil) {
                 a = [.foregroundColor: UIColor(Theme.colorMain), .backgroundColor: UIColor(Theme.colorBg)]
             } else {
-                a = [.foregroundColor: UIColor(Theme.colorBg), .backgroundColor: UIColor(Theme.colorMain), NSAttributedString.Key(rawValue: "chord"): url!]
+                a = [.foregroundColor: UIColor(Theme.colorBg), .backgroundColor: UIColor(Theme.colorMain), NSAttributedString.Key(rawValue: "chord"): chord!]
             }
             let s = NSAttributedString(string: word.text, attributes: a)
             self.attributedText.append(s)
@@ -57,7 +59,7 @@ struct OldAttributedSongText: View {
     }
     
     var body: some View {
-        TextView(attributedText: self.$textState, desiredHeight: self.$textHeight, desiredWidth: self.$textWidth)
+        TextView(attributedText: self.$textState, desiredHeight: self.$textHeight, desiredWidth: self.$textWidth, onChordTapped: onChordTapped)
             .frame(width: max(self.textWidth, 100), height: max(self.textHeight, 100))
             .onAppear {
                 self.textState = self.attributedText
@@ -78,6 +80,7 @@ struct TextView: UIViewRepresentable {
     @Binding var attributedText: NSAttributedString
     @Binding var desiredHeight: CGFloat
     @Binding var desiredWidth: CGFloat
+    let onChordTapped: (String) -> ()
     
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -86,26 +89,27 @@ struct TextView: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextView {
         let myTextView = CustomTextView()
         
+        let tapGr = UITapGestureRecognizer(target: myTextView, action: nil)
+        tapGr.delegate = myTextView
+        myTextView.addGestureRecognizer(tapGr)
+        
+        myTextView.onChordTapped = onChordTapped
+        
         myTextView.delegate = context.coordinator
-        myTextView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        myTextView.contentInset = .zero
-        myTextView.textContainer.lineFragmentPadding = 0
-        myTextView.textContainer.lineBreakMode = .byCharWrapping
-        
-        
-        
-        //myTextView.delegate = context.coordinator
-        
+        //myTextView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        //myTextView.contentInset = .zero
+        //myTextView.textContainer.lineFragmentPadding = 0
+        //myTextView.textContainer.lineBreakMode = .byCharWrapping
         
         return myTextView
     }
     
     func updateUIView(_ uiView: UITextView, context: Context) {
-        uiView.frame = CGRect(x: 0, y: 0, width: self.desiredWidth, height: self.desiredHeight)
+        uiView.frame = CGRect(x: 8, y: 0, width: self.desiredWidth - 16, height: self.desiredHeight)
         uiView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        uiView.setContentHuggingPriority(.required, for: .vertical)
+        //uiView.setContentHuggingPriority(.required, for: .vertical)
         uiView.contentInset = .zero
-        //uiView.textContainerInset = .zero
+        uiView.textContainerInset = .zero
         uiView.textContainer.lineFragmentPadding = 0
         uiView.textContainer.lineBreakMode = .byCharWrapping
         
@@ -126,9 +130,6 @@ struct TextView: UIViewRepresentable {
             self.desiredHeight = uiView.intrinsicContentSize.height
         }
         
-        let tapGr = UITapGestureRecognizer(target: uiView, action: nil)
-        tapGr.delegate = uiView as! CustomTextView
-        uiView.addGestureRecognizer(tapGr)
     }
     
     class Coordinator : NSObject, UITextViewDelegate {
@@ -150,6 +151,10 @@ class CustomTextView: UITextView, UIGestureRecognizerDelegate {
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let gesture = gestureRecognizer as? UITapGestureRecognizer else {
+            return true
+        }
+        
+        if gesture.numberOfTapsRequired != 1 {
             return true
         }
 
@@ -185,13 +190,11 @@ class CustomTextView: UITextView, UIGestureRecognizerDelegate {
     }
     
     override var intrinsicContentSize: CGSize {
-        var newTextViewFrame = self.frame
-        newTextViewFrame.size.width = super.intrinsicContentSize.width// + self.textContainerInset.right + self.textContainerInset.left
-        newTextViewFrame.size.height = super.intrinsicContentSize.height + self.textContainerInset.top + self.textContainerInset.bottom + 100
-        //self.frame = newTextViewFrame
-        //print(newTextViewFrame)
+        let width = super.intrinsicContentSize.width// + self.textContainerInset.right + self.textContainerInset.left
+        let height = super.intrinsicContentSize.height + self.textContainerInset.top + self.textContainerInset.bottom + 100
         
-        return newTextViewFrame.size
+        
+        return CGSize(width: width, height: height)
     }
     
     

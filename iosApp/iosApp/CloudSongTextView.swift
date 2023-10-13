@@ -37,10 +37,15 @@ struct CloudSongTextView: View {
                         ScrollView(.vertical) {
                             ContainerView {
                                 if #available(iOS 15, *) {
-                                    let text = AttributedSongText(text: cloudSong.text).attributedText
+                                    let text = AttributedSongTextMaker(text: cloudSong.text).attributedText
                                     Text(text)
                                 } else {
-                                    OldAttributedSongText(text: cloudSong.text, width: geometry.size.width, onHeightChanged: { print($0) })
+                                    OldAttributedSongText(
+                                        text: cloudSong.text,
+                                        width: geometry.size.width,
+                                        onHeightChanged: { print($0) },
+                                        onChordTapped: onChordTapped
+                                    )
                                 }
                             }
                                 .id("text")
@@ -50,7 +55,7 @@ struct CloudSongTextView: View {
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)
                                 .onOpenURL(perform: {
                                     let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
-                                    print("chord: \(chord)")
+                                    onChordTapped(chord)
                                 })
                         }
                     }
@@ -95,6 +100,10 @@ struct CloudSongTextView: View {
         })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+    }
+    
+    func onChordTapped(_ chord: String) {
+        print("chord: \(chord)")
     }
 }
 

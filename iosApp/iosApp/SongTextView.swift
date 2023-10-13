@@ -41,27 +41,32 @@ struct SongTextView: View {
                         ScrollView(.vertical) {
                             ContainerView {
                                 if #available(iOS 15, *) {
-                                    let text = AttributedSongText(text: song.text).attributedText
+                                    let text = AttributedSongTextMaker(text: song.text).attributedText
                                     Text(text)
+                                        .padding(8)
                                 } else {
-                                    OldAttributedSongText(text: song.text, width: geometry.size.width, onHeightChanged: { print($0); self.textHeight = $0 })
+                                    OldAttributedSongText(
+                                        text: song.text,
+                                        width: geometry.size.width,
+                                        onHeightChanged: { print($0); self.textHeight = $0 },
+                                        onChordTapped: onChordTapped
+                                    )
                                 }
                             }
                                 .id("text")
                                 .font(Theme.fontText)
                                 .foregroundColor(Theme.colorMain)
-                                .padding(8)
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)
                                 .background(
                                     GeometryReader { textGeometry in
                                         Color.clear
                                             .onAppear(perform: {
                                                 self.textHeight = textGeometry.size.height
-                                                //print(self.textHeight)
+                                                print(self.textHeight)
                                             })
                                             .onChange(of: self.song, perform: { song in
                                                 self.textHeight = textGeometry.size.height
-                                                //print(self.textHeight)
+                                                print(self.textHeight)
                                             })
                                     }
                                 )
@@ -84,7 +89,7 @@ struct SongTextView: View {
                                 })
                                 .onOpenURL(perform: {
                                     let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
-                                    print("chord: \(chord)")
+                                    onChordTapped(chord)
                                 })
                         }
                     }
@@ -155,68 +160,7 @@ struct SongTextView: View {
             }
         }
         )
-//        .toolbar(content: {
-//            ToolbarItem(placement: .navigationBarLeading) {
-//                Button(action: {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                        onBackClick()
-//                    }
-//                }) {
-//                    Image("ic_back")
-//                        .resizable()
-//                        .frame(width: 32.0, height: 32.0)
-//                }
-//            }
-//            ToolbarItemGroup(placement: .navigationBarTrailing) {
-//                Button(action: {
-//                    self.isAutoScroll.toggle()
-//                }) {
-//                    if (self.isAutoScroll) {
-//                        Image("ic_pause")
-//                            .resizable()
-//                            .frame(width: 32.0, height: 32.0)
-//                    } else {
-//                        Image("ic_play")
-//                            .resizable()
-//                            .frame(width: 32.0, height: 32.0)
-//                    }
-//                }
-//                Button(action: {
-//                    print("prev click")
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                        onPrevClick()
-//                    }
-//                }) {
-//                    Image("ic_left")
-//                        .resizable()
-//                        .frame(width: 32.0, height: 32.0)
-//                }
-//                Button(action: {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                        onFavoriteToggle()
-//                    }
-//                }) {
-//                    if (song.favorite) {
-//                        Image("ic_delete")
-//                            .resizable()
-//                            .frame(width: 32.0, height: 32.0)
-//                    } else {
-//                        Image("ic_star")
-//                            .resizable()
-//                            .frame(width: 32.0, height: 32.0)
-//                    }
-//                }
-//                Button(action: {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                        onNextClick()
-//                    }
-//                }) {
-//                    Image("ic_right")
-//                        .resizable()
-//                        .frame(width: 32.0, height: 32.0)
-//                }
-//            }
-//        })
+
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
     }
@@ -234,5 +178,9 @@ struct SongTextView: View {
                 autoScroll(sp: sp)
             })
         }
+    }
+    
+    func onChordTapped(_ chord: String) {
+        print("chord: \(chord)")
     }
 }

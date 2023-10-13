@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 
 @available(iOS 15, *)
-struct AttributedSongText {
+struct AttributedSongTextMaker {
     var attributedText: AttributedString
     
     init(text: String) {

@@ -12,6 +12,12 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		CE0F15642AD60F8100F27CED /* ContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F15632AD60F8100F27CED /* ContainerView.swift */; };
+		CE0F57442AD9253D0080E6B1 /* ChordViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F57432AD9253D0080E6B1 /* ChordViewer.swift */; };
+		CE0F575D2AD92EFA0080E6B1 /* FretboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F575C2AD92EFA0080E6B1 /* FretboardView.swift */; };
+		CE0F57632AD930250080E6B1 /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F57622AD930250080E6B1 /* Instrument.swift */; };
+		CE0F57652AD930590080E6B1 /* Chord.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F57642AD930590080E6B1 /* Chord.swift */; };
+		CE0F57692AD930B00080E6B1 /* ukulele.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0F57682AD930B00080E6B1 /* ukulele.json */; };
+		CE0F576B2AD930D40080E6B1 /* guitar.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0F576A2AD930D40080E6B1 /* guitar.json */; };
 		CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410B2A9ADBED00DE09BE /* SongListView.swift */; };
 		CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */; };
 		CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410F2A9ADCDA00DE09BE /* Drawer.swift */; };
@@ -44,6 +50,12 @@
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE0F15632AD60F8100F27CED /* ContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerView.swift; sourceTree = "<group>"; };
+		CE0F57432AD9253D0080E6B1 /* ChordViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordViewer.swift; sourceTree = "<group>"; };
+		CE0F575C2AD92EFA0080E6B1 /* FretboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FretboardView.swift; sourceTree = "<group>"; };
+		CE0F57622AD930250080E6B1 /* Instrument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Instrument.swift; sourceTree = "<group>"; };
+		CE0F57642AD930590080E6B1 /* Chord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chord.swift; sourceTree = "<group>"; };
+		CE0F57682AD930B00080E6B1 /* ukulele.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ukulele.json; sourceTree = "<group>"; };
+		CE0F576A2AD930D40080E6B1 /* guitar.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = guitar.json; sourceTree = "<group>"; };
 		CE11410B2A9ADBED00DE09BE /* SongListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListView.swift; sourceTree = "<group>"; };
 		CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTextView.swift; sourceTree = "<group>"; };
 		CE11410F2A9ADCDA00DE09BE /* Drawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawer.swift; sourceTree = "<group>"; };
@@ -94,6 +106,11 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				CE0F576A2AD930D40080E6B1 /* guitar.json */,
+				CE0F57682AD930B00080E6B1 /* ukulele.json */,
+				CE0F57642AD930590080E6B1 /* Chord.swift */,
+				CE0F57622AD930250080E6B1 /* Instrument.swift */,
+				CE0F575C2AD92EFA0080E6B1 /* FretboardView.swift */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -109,6 +126,7 @@
 				CE1AF2182AD55E6E001ED685 /* AttributedSongTextMaker.swift */,
 				CE0F15632AD60F8100F27CED /* ContainerView.swift */,
 				CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */,
+				CE0F57432AD9253D0080E6B1 /* ChordViewer.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -182,6 +200,8 @@
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
+				CE0F57692AD930B00080E6B1 /* ukulele.json in Resources */,
+				CE0F576B2AD930D40080E6B1 /* guitar.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,16 +233,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */,
+				CE0F57442AD9253D0080E6B1 /* ChordViewer.swift in Sources */,
 				CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */,
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				CE0F57652AD930590080E6B1 /* Chord.swift in Sources */,
 				CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */,
 				CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */,
 				CE1AF2192AD55E6E001ED685 /* AttributedSongTextMaker.swift in Sources */,
 				CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */,
+				CE0F57632AD930250080E6B1 /* Instrument.swift in Sources */,
 				CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */,
 				CE0F15642AD60F8100F27CED /* ContainerView.swift in Sources */,
+				CE0F575D2AD92EFA0080E6B1 /* FretboardView.swift in Sources */,
 				CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

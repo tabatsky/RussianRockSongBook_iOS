@@ -23,36 +23,38 @@ struct SongTextView: View {
     @State var scrollY: CGFloat = 0.0
     @State var isAutoScroll = false
     @State var isScreenActive = false
+    @State var currentChord: String? = nil
 
     var body: some View {
         GeometryReader { geometry in
             let title = song.title
             
-            VStack {
-                Text(title)
-                    .font(Theme.fontTitle)
-                    .bold()
-                    .foregroundColor(Theme.colorMain)
-                    .padding(24)
-                    .frame(maxWidth: geometry.size.width, alignment: .leading)
-                
-                GeometryReader { scrollViewGeometry in
-                    ScrollViewReader { sp in
-                        ScrollView(.vertical) {
-                            ContainerView {
-                                if #available(iOS 15, *) {
-                                    let text = AttributedSongTextMaker(text: song.text).attributedText
-                                    Text(text)
-                                        .padding(8)
-                                } else {
-                                    OldAttributedSongText(
-                                        text: song.text,
-                                        width: geometry.size.width,
-                                        onHeightChanged: { print($0); self.textHeight = $0 },
-                                        onChordTapped: onChordTapped
-                                    )
+            ZStack {
+                VStack {
+                    Text(title)
+                        .font(Theme.fontTitle)
+                        .bold()
+                        .foregroundColor(Theme.colorMain)
+                        .padding(24)
+                        .frame(maxWidth: geometry.size.width, alignment: .leading)
+                    
+                    GeometryReader { scrollViewGeometry in
+                        ScrollViewReader { sp in
+                            ScrollView(.vertical) {
+                                ContainerView {
+                                    if #available(iOS 15, *) {
+                                        let text = AttributedSongTextMaker(text: song.text).attributedText
+                                        Text(text)
+                                            .padding(8)
+                                    } else {
+                                        OldAttributedSongText(
+                                            text: song.text,
+                                            width: geometry.size.width,
+                                            onHeightChanged: { print($0); self.textHeight = $0 },
+                                            onChordTapped: onChordTapped
+                                        )
+                                    }
                                 }
-                            }
                                 .id("text")
                                 .font(Theme.fontText)
                                 .foregroundColor(Theme.colorMain)
@@ -91,11 +93,17 @@ struct SongTextView: View {
                                     let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
                                     onChordTapped(chord)
                                 })
+                            }
                         }
+                        .onAppear(perform: {
+                            self.scrollViewHeight = scrollViewGeometry.size.height
+                            //print(self.scrollViewHeight)
+                        })
                     }
-                    .onAppear(perform: {
-                        self.scrollViewHeight = scrollViewGeometry.size.height
-                        //print(self.scrollViewHeight)
+                }
+                if let chord = currentChord {
+                    ChordViewer(chord: chord, onDismiss: {
+                        currentChord = nil
                     })
                 }
             }
@@ -179,5 +187,6 @@ struct SongTextView: View {
     
     func onChordTapped(_ chord: String) {
         print("chord: \(chord)")
+        currentChord = chord
     }
 }

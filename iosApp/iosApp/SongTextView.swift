@@ -100,6 +100,7 @@ struct SongTextView: View {
                             //print(self.scrollViewHeight)
                         })
                     }
+                    SongTextPanel(W: geometry.size.width)
                 }
                 if let chord = self.currentChord {
                     ChordViewer(chord: chord, onDismiss: {
@@ -188,5 +189,22 @@ struct SongTextView: View {
     func onChordTapped(_ chord: String) {
         print("chord: \(chord)")
         self.currentChord = chord
+    }
+}
+
+struct SongTextPanel: View {
+    let W: CGFloat
+    
+    var body: some View {
+        let A = W / 7
+        
+        HStack(spacing: A / 5) {
+            ForEach(0..<6, id: \.self) {
+                Text("\($0)")
+                    .frame(width: A, height: A)
+                    .background(Theme.colorCommon)
+            }
+        }
+        .frame(width: W, height: A)
     }
 }

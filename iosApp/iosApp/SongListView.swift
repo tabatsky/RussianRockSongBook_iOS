@@ -74,7 +74,9 @@ struct SongListView: View {
                     }
                     .onAppear(perform: {
                         self.scrollPosition = songIndex
-                        sp.scrollTo(currentSongList[songIndex], anchor: .top)
+                        if (!currentSongList.isEmpty) {
+                            sp.scrollTo(currentSongList[songIndex], anchor: .top)
+                        }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                             self.initialScrollDone = true
                         })

@@ -24,6 +24,7 @@ struct SongTextView: View {
     @State var isAutoScroll = false
     @State var isScreenActive = false
     @State var currentChord: String? = nil
+    @State var isEditorMode = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -41,14 +42,18 @@ struct SongTextView: View {
                     GeometryReader { scrollViewGeometry in
                         ScrollViewReader { sp in
                             ScrollView(.vertical) {
-                                TheTextViewer(
-                                    text: song.text,
-                                    width: geometry.size.width,
-                                    onChordTapped: onChordTapped,
-                                    onHeightChanged: { height in
-                                        self.textHeight = height
-                                        print(self.textHeight)
-                                    })
+                                ContainerView {
+                                    if (!self.isEditorMode) {
+                                        TheTextViewer(
+                                            text: song.text,
+                                            width: geometry.size.width,
+                                            onChordTapped: onChordTapped,
+                                            onHeightChanged: { height in
+                                                self.textHeight = height
+                                                print(self.textHeight)
+                                            })
+                                    }
+                                }
                                 .onAppear(perform: {
                                     self.scrollY = 0.0
                                     self.isScreenActive = true
@@ -64,6 +69,7 @@ struct SongTextView: View {
                                 .onChange(of: self.song, perform: { song in
                                     self.isAutoScroll = false
                                     self.scrollY = 0.0
+                                    self.isEditorMode = false
                                     sp.scrollTo("text", anchor: .topLeading)
                                 })
                             }
@@ -73,7 +79,12 @@ struct SongTextView: View {
                             //print(self.scrollViewHeight)
                         })
                     }
-                    SongTextPanel(W: geometry.size.width)
+                    SongTextPanel(
+                        W: geometry.size.width,
+                        isEditorMode: self.isEditorMode,
+                        onEdit: onEdit,
+                        onSave: onSave
+                    )
                 }
                 if let chord = self.currentChord {
                     ChordViewer(chord: chord, onDismiss: {
@@ -94,7 +105,9 @@ struct SongTextView: View {
                     .frame(width: 32.0, height: 32.0)
         }, trailing: HStack {
             Button(action: {
-                self.isAutoScroll.toggle()
+                if (!self.isEditorMode) {
+                    self.isAutoScroll.toggle()
+                }
             }) {
                 if (self.isAutoScroll) {
                     Image("ic_pause")
@@ -163,10 +176,23 @@ struct SongTextView: View {
         print("chord: \(chord)")
         self.currentChord = chord
     }
+    
+    func onEdit() {
+        self.isAutoScroll = false
+        self.isEditorMode = true
+    }
+    
+    func onSave() {
+        self.isAutoScroll = false
+        self.isEditorMode = false
+    }
 }
 
 struct SongTextPanel: View {
     let W: CGFloat
+    let isEditorMode: Bool
+    let onEdit: () -> ()
+    let onSave: () -> ()
     
     var body: some View {
         let A = W / 7
@@ -177,16 +203,30 @@ struct SongTextPanel: View {
                     .frame(width: A, height: A)
                     .background(Theme.colorCommon)
             }
-            Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    
+            if (self.isEditorMode) {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onSave()
+                    }
+                }) {
+                    Image("ic_save")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(Theme.colorCommon)
+                        .frame(width: A, height: A)
                 }
-            }) {
-                Image("ic_edit")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(Theme.colorCommon)
-                    .frame(width: A, height: A)
+            } else {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onEdit()
+                    }
+                }) {
+                    Image("ic_edit")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(Theme.colorCommon)
+                        .frame(width: A, height: A)
+                }
             }
         }
         .frame(width: W, height: A)

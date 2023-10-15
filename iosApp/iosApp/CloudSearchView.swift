@@ -77,6 +77,7 @@ struct CloudSeaachView: View {
                             .colorMultiply(Theme.colorMain)
                             .padding(8)
                             .background(Theme.colorCommon)
+                            .padding([.top, .bottom, .trailing], 2)
                             .frame(width: 120.0, height: 120.0)
                     }
                 }
@@ -149,7 +150,7 @@ struct CloudSeaachView: View {
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                             }
                             .onAppear(perform: {
-                                if (self.currentCloudSongList != nil) {
+                                if (self.currentCloudSongList != nil && !self.currentCloudSongList!.isEmpty) {
                                     sp.scrollTo(self.currentCloudSongList![self.currentCloudSongIndex], anchor: .top)
                                 }
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {

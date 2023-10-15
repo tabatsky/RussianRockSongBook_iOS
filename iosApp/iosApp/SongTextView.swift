@@ -199,10 +199,21 @@ struct SongTextPanel: View {
         let A = W / 7
         
         HStack(spacing: A / 5) {
-            ForEach(0..<6, id: \.self) {
+            ForEach(0..<5, id: \.self) {
                 Text("\($0)")
                     .frame(width: A, height: A)
                     .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    
+                }
+            }) {
+                Image("ic_edit")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+                    .frame(width: A, height: A)
             }
         }
         .frame(width: W, height: A)

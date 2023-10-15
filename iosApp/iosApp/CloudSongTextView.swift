@@ -38,28 +38,11 @@ struct CloudSongTextView: View {
                     GeometryReader { scrollViewGeometry in
                         ScrollViewReader { sp in
                             ScrollView(.vertical) {
-                                ContainerView {
-                                    if #available(iOS 15, *) {
-                                        let text = AttributedSongTextBuilder(text: cloudSong.text).attributedText
-                                        Text(text)
-                                    } else {
-                                        OldAttributedSongText(
-                                            text: cloudSong.text,
-                                            width: geometry.size.width,
-                                            onHeightChanged: { print($0) },
-                                            onChordTapped: onChordTapped
-                                        )
-                                    }
-                                }
-                                .id("text")
-                                .font(Theme.fontText)
-                                .foregroundColor(Theme.colorMain)
-                                .padding(8)
-                                .frame(maxWidth: geometry.size.width, alignment: .leading)
-                                .onOpenURL(perform: {
-                                    let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
-                                    onChordTapped(chord)
-                                })
+                                TheTextViewer(
+                                    text: cloudSong.text,
+                                    width: geometry.size.width,
+                                    onChordTapped: onChordTapped,
+                                    onHeightChanged: { height in })
                             }
                         }
                     }

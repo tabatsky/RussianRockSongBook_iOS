@@ -41,37 +41,14 @@ struct SongTextView: View {
                     GeometryReader { scrollViewGeometry in
                         ScrollViewReader { sp in
                             ScrollView(.vertical) {
-                                ContainerView {
-                                    if #available(iOS 15, *) {
-                                        let text = AttributedSongTextBuilder(text: song.text).attributedText
-                                        Text(text)
-                                            .padding(8)
-                                    } else {
-                                        OldAttributedSongText(
-                                            text: song.text,
-                                            width: geometry.size.width,
-                                            onHeightChanged: { print($0); self.textHeight = $0 },
-                                            onChordTapped: onChordTapped
-                                        )
-                                    }
-                                }
-                                .id("text")
-                                .font(Theme.fontText)
-                                .foregroundColor(Theme.colorMain)
-                                .frame(maxWidth: geometry.size.width, alignment: .leading)
-                                .background(
-                                    GeometryReader { textGeometry in
-                                        Color.clear
-                                            .onAppear(perform: {
-                                                self.textHeight = textGeometry.size.height
-                                                print(self.textHeight)
-                                            })
-                                            .onChange(of: self.song, perform: { song in
-                                                self.textHeight = textGeometry.size.height
-                                                print(self.textHeight)
-                                            })
-                                    }
-                                )
+                                TheTextViewer(
+                                    text: song.text,
+                                    width: geometry.size.width,
+                                    onChordTapped: onChordTapped,
+                                    onHeightChanged: { height in
+                                        self.textHeight = height
+                                        print(self.textHeight)
+                                    })
                                 .onAppear(perform: {
                                     self.scrollY = 0.0
                                     self.isScreenActive = true
@@ -88,10 +65,6 @@ struct SongTextView: View {
                                     self.isAutoScroll = false
                                     self.scrollY = 0.0
                                     sp.scrollTo("text", anchor: .topLeading)
-                                })
-                                .onOpenURL(perform: {
-                                    let chord = $0.absoluteString.replacingOccurrences(of: "jatx://", with: "")
-                                    onChordTapped(chord)
                                 })
                             }
                         }

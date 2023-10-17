@@ -16,6 +16,7 @@ struct SongTextView: View {
     let onNextClick: () -> ()
     let onFavoriteToggle: () -> ()
     let onSaveSongText: (String) -> ()
+    let onDeleteToTrashConfirmed: () -> ()
     
     static let dY: CGFloat = 8.0
     
@@ -27,7 +28,8 @@ struct SongTextView: View {
     @State var currentChord: String? = nil
     @State var isEditorMode = false
     @State var editorText = ""
-
+    @State var isPresentingDeleteConfirm = false
+    
     var body: some View {
         GeometryReader { geometry in
             let title = song.title
@@ -89,7 +91,8 @@ struct SongTextView: View {
                         W: geometry.size.width,
                         isEditorMode: self.isEditorMode,
                         onEdit: onEdit,
-                        onSave: onSave
+                        onSave: onSave,
+                        onDeleteToTrash: onDeleteToTrash
                     )
                 }
                 if let chord = self.currentChord {
@@ -101,14 +104,14 @@ struct SongTextView: View {
         }
         .background(Theme.colorBg)
         .navigationBarItems(leading:
-            Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onBackClick()
-                }
-            }) {
-                Image("ic_back")
-                    .resizable()
-                    .frame(width: 32.0, height: 32.0)
+                                Button(action: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                onBackClick()
+            }
+        }) {
+            Image("ic_back")
+                .resizable()
+                .frame(width: 32.0, height: 32.0)
         }, trailing: HStack {
             Button(action: {
                 if (!self.isEditorMode) {
@@ -161,6 +164,22 @@ struct SongTextView: View {
         })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .actionSheet(isPresented: self.$isPresentingDeleteConfirm) {
+            ActionSheet(
+                title: Text("Вы уверены?"),
+                message: Text("Песня будет удалена из локальной базы данных"),
+                buttons: [
+                    .default(Text("Ок")) {
+                        self.isPresentingDeleteConfirm = false
+                        self.onDeleteToTrashConfirmed()
+                    },
+                    
+                    .cancel(Text("Отмена")) {
+                        self.isPresentingDeleteConfirm = false
+                    }
+                ]
+            )
+        }
     }
     
     func autoScroll(sp: ScrollViewProxy) {
@@ -193,6 +212,10 @@ struct SongTextView: View {
         self.isEditorMode = false
         onSaveSongText(self.editorText)
     }
+    
+    func onDeleteToTrash() {
+        self.isPresentingDeleteConfirm = true
+    }
 }
 
 struct SongTextPanel: View {
@@ -200,14 +223,25 @@ struct SongTextPanel: View {
     let isEditorMode: Bool
     let onEdit: () -> ()
     let onSave: () -> ()
+    let onDeleteToTrash: () -> ()
     
     var body: some View {
         let A = W / 7
         
         HStack(spacing: A / 5) {
-            ForEach(0..<5, id: \.self) {
+            ForEach(0..<4, id: \.self) {
                 Text("\($0)")
                     .frame(width: A, height: A)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onDeleteToTrash()
+                }
+            }) {
+                Image("ic_trash")
+                    .resizable()
+                    .padding(A / 6)
                     .background(Theme.colorCommon)
             }
             if (self.isEditorMode) {

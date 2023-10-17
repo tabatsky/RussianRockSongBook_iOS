@@ -12,5 +12,6 @@ enum class Raw(
     ddt(MR.files.ddt),
     kino(MR.files.kino),
     nautilus(MR.files.nautilus),
-    nervno(MR.files.nervno)
+    nervno(MR.files.nervno),
+    visokosniy(MR.files.visokosniy)
 }

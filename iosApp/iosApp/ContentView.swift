@@ -57,8 +57,8 @@ struct ContentView: View {
                                      onPrevClick: prevSong,
                                      onNextClick: nextSong,
                                      onFavoriteToggle: toggleFavorite,
-                                     onSaveSongText: saveSongText)
-                            
+                                     onSaveSongText: saveSongText,
+                                     onDeleteToTrashConfirmed: deleteCurrentToTrash)
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSeaachView(cloudSongList: self.currentCloudSongList,
                                         cloudSongIndex: self.currentCloudSongIndex,
@@ -163,6 +163,23 @@ struct ContentView: View {
             }
         } else {
             refreshCurrentSong()
+        }
+    }
+    
+    func deleteCurrentToTrash() {
+        print("deleting to trash: \(self.currentSong!.artist) - \(self.currentSong!.title)")
+        let song = self.currentSong!.copy() as! Song
+        song.deleted = true
+        Self.songRepo.updateSong(song: song)
+        let count = Self.songRepo.getCountByArtist(artist: self.currentArtist)
+        self.currentCount = Int(count)
+        if (self.currentCount > 0) {
+            if (self.currentSongIndex >= self.currentCount) {
+                self.currentSongIndex -= 1
+            }
+            refreshCurrentSong()
+        } else {
+            back()
         }
     }
     

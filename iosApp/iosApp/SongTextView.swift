@@ -15,6 +15,7 @@ struct SongTextView: View {
     let onPrevClick: () -> ()
     let onNextClick: () -> ()
     let onFavoriteToggle: () -> ()
+    let onSaveSongText: (String) -> ()
     
     static let dY: CGFloat = 8.0
     
@@ -25,6 +26,7 @@ struct SongTextView: View {
     @State var isScreenActive = false
     @State var currentChord: String? = nil
     @State var isEditorMode = false
+    @State var editorText = ""
 
     var body: some View {
         GeometryReader { geometry in
@@ -43,7 +45,9 @@ struct SongTextView: View {
                         ScrollViewReader { sp in
                             ScrollView(.vertical) {
                                 ContainerView {
-                                    if (!self.isEditorMode) {
+                                    if (self.isEditorMode) {
+                                        TheTextEditor(text: song.text, width: geometry.size.width, onTextChanged: { self.editorText = $0 })
+                                    } else {
                                         TheTextViewer(
                                             text: song.text,
                                             width: geometry.size.width,
@@ -55,6 +59,7 @@ struct SongTextView: View {
                                     }
                                 }
                                 .onAppear(perform: {
+                                    self.editorText = song.text
                                     self.scrollY = 0.0
                                     self.isScreenActive = true
                                     sp.scrollTo("text", anchor: .topLeading)
@@ -67,6 +72,7 @@ struct SongTextView: View {
                                     self.isScreenActive = false
                                 })
                                 .onChange(of: self.song, perform: { song in
+                                    self.editorText = song.text
                                     self.isAutoScroll = false
                                     self.scrollY = 0.0
                                     self.isEditorMode = false
@@ -185,6 +191,7 @@ struct SongTextView: View {
     func onSave() {
         self.isAutoScroll = false
         self.isEditorMode = false
+        onSaveSongText(self.editorText)
     }
 }
 

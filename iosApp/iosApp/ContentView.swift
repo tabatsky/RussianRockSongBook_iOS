@@ -45,10 +45,19 @@ struct ContentView: View {
             if !self.isDrawerOpen {
                 NavigationView {
                     if (self.currentScreenVariant == .songList) {
-                        SongListView(artist: currentArtist, songIndex: currentSongIndex, onSongClick: selectSong, onScroll: updateSongIndexByScroll, onDrawerClick: toggleDrawer)
+                        SongListView(artist: currentArtist,
+                                     songIndex: currentSongIndex,
+                                     onSongClick: selectSong,
+                                     onScroll: updateSongIndexByScroll,
+                                     onDrawerClick: toggleDrawer)
                             
                     } else if (self.currentScreenVariant == .songText) {
-                        SongTextView(song: self.currentSong!, onBackClick: back, onPrevClick: prevSong, onNextClick: nextSong, onFavoriteToggle: toggleFavorite)
+                        SongTextView(song: self.currentSong!,
+                                     onBackClick: back,
+                                     onPrevClick: prevSong,
+                                     onNextClick: nextSong,
+                                     onFavoriteToggle: toggleFavorite,
+                                     onSaveSongText: saveSongText)
                             
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSeaachView(cloudSongList: self.currentCloudSongList,
@@ -155,6 +164,13 @@ struct ContentView: View {
         } else {
             refreshCurrentSong()
         }
+    }
+    
+    func saveSongText(newText: String) {
+        let song = self.currentSong!.copy() as! Song
+        song.text = newText
+        Self.songRepo.updateSong(song: song)
+        refreshCurrentSong()
     }
     
     func refreshCurrentSong() {

@@ -25,6 +25,7 @@
 		CE1AF2192AD55E6E001ED685 /* AttributedSongTextBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */; };
 		CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */; };
 		CE46D4D22ADC920700582136 /* TheTextViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46D4D12ADC920600582136 /* TheTextViewer.swift */; };
+		CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
 		CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */; };
 		CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */; };
@@ -64,6 +65,7 @@
 		CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedSongTextBuilder.swift; sourceTree = "<group>"; };
 		CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldAttributedSongText.swift; sourceTree = "<group>"; };
 		CE46D4D12ADC920600582136 /* TheTextViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextViewer.swift; sourceTree = "<group>"; };
+		CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextEditor.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSongTextView.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */,
 				CE0F57432AD9253D0080E6B1 /* ChordViewer.swift */,
 				CE46D4D12ADC920600582136 /* TheTextViewer.swift */,
+				CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */,
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				CE0F57652AD930590080E6B1 /* Chord.swift in Sources */,
 				CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */,

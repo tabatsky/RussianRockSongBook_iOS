@@ -29,48 +29,56 @@ struct SongListView: View {
                         GridItem(.flexible())
                     ]
                     let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.artist)
-                    LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(0..<currentSongList.count, id: \.self) { index in
-                            let song = currentSongList[index]
-                            let title = song.title
-                            Text(title)
-                                .id(song)
-                                .foregroundColor(Theme.colorMain)
-                                .padding(16)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(GeometryReader { itemGeom in
-                                    Theme.colorBg
-                                        .preference(
-                                            key: VisibleKey.self,
-                                            // See discussion!
-                                            value: self.scrollViewFrame.intersects(itemGeom.frame(in: .global))
-                                        )
-                                        .onPreferenceChange(VisibleKey.self) { isVisible in
-                                            if (self.initialScrollDone) {
-                                                if (isVisible) {
-                                                    if (index < self.scrollPosition) {
-                                                        self.scrollPosition = index
-                                                    }
-                                                } else {
-                                                    if (index >= self.scrollPosition && index < self.scrollPosition + 6) {
-                                                        self.scrollPosition = index + 1
+                    ContainerView {
+                        if (!currentSongList.isEmpty) {
+                            LazyVGrid(columns: columns, spacing: 0) {
+                                ForEach(0..<currentSongList.count, id: \.self) { index in
+                                    let song = currentSongList[index]
+                                    let title = song.title
+                                    Text(title)
+                                        .id(song)
+                                        .foregroundColor(Theme.colorMain)
+                                        .padding(16)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(GeometryReader { itemGeom in
+                                            Theme.colorBg
+                                                .preference(
+                                                    key: VisibleKey.self,
+                                                    // See discussion!
+                                                    value: self.scrollViewFrame.intersects(itemGeom.frame(in: .global))
+                                                )
+                                                .onPreferenceChange(VisibleKey.self) { isVisible in
+                                                    if (self.initialScrollDone) {
+                                                        if (isVisible) {
+                                                            if (index < self.scrollPosition) {
+                                                                self.scrollPosition = index
+                                                            }
+                                                        } else {
+                                                            if (index >= self.scrollPosition && index < self.scrollPosition + 6) {
+                                                                self.scrollPosition = index + 1
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        }
-                                })
-                                .background(Theme.colorBg)
-                                .highPriorityGesture(
-                                     TapGesture()
-                                         .onEnded { _ in
-                                             onSongClick(index)
-                                         }
-                                )
-                            Rectangle()
-                                .fill(Theme.colorCommon)
-                                .frame(height: 3)
-                                .edgesIgnoringSafeArea(.horizontal)
-                        }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
+                                        })
+                                        .background(Theme.colorBg)
+                                        .highPriorityGesture(
+                                            TapGesture()
+                                                .onEnded { _ in
+                                                    onSongClick(index)
+                                                }
+                                        )
+                                    Rectangle()
+                                        .fill(Theme.colorCommon)
+                                        .frame(height: 3)
+                                        .edgesIgnoringSafeArea(.horizontal)
+                                }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
+                            }
+                        } else {
+                            Text("Список пуст")
+                                .foregroundColor(Theme.colorMain)
+                                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
+                        }
                     }
                     .onAppear(perform: {
                         self.scrollPosition = songIndex

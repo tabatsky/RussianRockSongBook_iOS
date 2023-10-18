@@ -91,6 +91,10 @@ struct CloudSeaachView: View {
                         Spacer()
                     }
                     Spacer()
+                } else if (self.currentSearchState == .emptyList) {
+                    Text("Список пуст")
+                        .foregroundColor(Theme.colorMain)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else if (self.currentSearchState == .loadSuccess) {
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
@@ -180,6 +184,8 @@ struct CloudSeaachView: View {
             .onAppear(perform: {
                 if (self.currentCloudSongList == nil) {
                     searchSongs(searchFor: "", orderBy: self.orderBy)
+                } else if (self.currentCloudSongList!.isEmpty) {
+                    self.currentSearchState = .emptyList
                 } else {
                     self.currentSearchState = .loadSuccess
                 }
@@ -187,6 +193,8 @@ struct CloudSeaachView: View {
             .onChange(of: self.currentCloudSongList, perform: { cloudSongList in
                 if (cloudSongList == nil) {
                     searchSongs(searchFor: "", orderBy: self.orderBy)
+                } else if (cloudSongList!.isEmpty) {
+                    self.currentSearchState = .emptyList
                 } else {
                     self.currentSearchState = .loadSuccess
                 }
@@ -196,7 +204,6 @@ struct CloudSeaachView: View {
             })
         }
         .background(Theme.colorBg)
-        
         .navigationBarItems(leading:
                 Button(action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -235,5 +242,6 @@ enum SearchState {
     case loading
     case loadSuccess
     case loadError
+    case emptyList
 }
 

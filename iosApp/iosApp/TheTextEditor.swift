@@ -19,10 +19,8 @@ struct TheTextEditor: View {
         if #available(iOS 16, *) {
             TextEditor(text: self.$editorText)
                 .scrollContentBackground(.hidden)
-                .background(Theme.colorBg)
                 .font(Theme.fontText)
                 .foregroundColor(Theme.colorMain)
-                .frame(width: self.width, alignment: .leading)
                 .onAppear(perform: {
                     self.editorText = self.text
                 })
@@ -34,10 +32,8 @@ struct TheTextEditor: View {
                 })
         } else {
             TextEditor(text: self.$editorText)
-                .background(Theme.colorBg)
                 .font(Theme.fontText)
                 .foregroundColor(Theme.colorMain)
-                .frame(width: self.width, alignment: .leading)
                 .onAppear(perform: {
                     self.editorText = self.text
                 })

@@ -23,6 +23,7 @@ struct SongTextView: View {
     @State var textHeight: CGFloat = 0.0
     @State var scrollViewHeight: CGFloat = 0.0
     @State var scrollY: CGFloat = 0.0
+    @State var minGlobalY: CGFloat = 0.0
     @State var isAutoScroll = false
     @State var isScreenActive = false
     @State var currentChord: String? = nil
@@ -49,6 +50,7 @@ struct SongTextView: View {
                                 ContainerView {
                                     if (self.isEditorMode) {
                                         TheTextEditor(text: song.text, width: geometry.size.width, onTextChanged: { self.editorText = $0 })
+                                           .frame(width: geometry.size.width, height: self.textHeight)
                                     } else {
                                         TheTextViewer(
                                             text: song.text,
@@ -60,7 +62,29 @@ struct SongTextView: View {
                                             })
                                     }
                                 }
+                                .id("text")
+                                .frame(minHeight: self.textHeight)
+                                .background(GeometryReader { scrollViewGeom in
+                                    Theme.colorBg
+                                        .preference(
+                                            key: FrameKeyEditor.self,
+                                            // See discussion!
+                                            value: scrollViewGeom.frame(in: .global)
+                                        )
+                                        .onPreferenceChange(FrameKeyEditor.self) { frame in
+                                            let globalY = -frame.origin.y
+                                            if (self.minGlobalY == 0) {
+                                                self.minGlobalY = globalY
+                                            }
+                                            let localY = globalY - self.minGlobalY
+                                            print(localY)
+                                            if (localY > 0) {
+                                                self.scrollY = localY
+                                            }
+                                        }
+                                })
                                 .onAppear(perform: {
+                                    print("appear")
                                     self.editorText = song.text
                                     self.scrollY = 0.0
                                     self.isScreenActive = true
@@ -73,18 +97,25 @@ struct SongTextView: View {
                                     self.isAutoScroll = false
                                     self.isScreenActive = false
                                 })
-                                .onChange(of: self.song, perform: { song in
+                                .onChange(of: ArtistWithTitle(artist: self.song.artist, title: self.song.title), perform: { artistWithTitle in
+                                    print("song changed")
                                     self.editorText = song.text
                                     self.isAutoScroll = false
                                     self.scrollY = 0.0
                                     self.isEditorMode = false
                                     sp.scrollTo("text", anchor: .topLeading)
                                 })
+                                .onChange(of: self.isEditorMode, perform: { isEditorMode in
+                                    print("editor mode: \(isEditorMode)")
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                        performScrollToY(sp: sp)
+                                    })
+                                })
                             }
                         }
                         .onAppear(perform: {
                             self.scrollViewHeight = scrollViewGeometry.size.height
-                            //print(self.scrollViewHeight)
+                            print(self.scrollViewHeight)
                         })
                     }
                     SongTextPanel(
@@ -184,16 +215,20 @@ struct SongTextView: View {
     
     func autoScroll(sp: ScrollViewProxy) {
         if (self.isAutoScroll) {
-            let deltaHeight = self.textHeight - self.scrollViewHeight
-            if (deltaHeight > 0 && self.scrollY < deltaHeight) {
-                self.scrollY += Self.dY
-                sp.scrollTo("text", anchor: UnitPoint(x: 0.0, y: self.scrollY / deltaHeight))
-            }
+            self.scrollY += Self.dY
+            performScrollToY(sp: sp)
         }
         if (self.isScreenActive) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                 autoScroll(sp: sp)
             })
+        }
+    }
+    
+    func performScrollToY(sp: ScrollViewProxy) {
+        let deltaHeight = self.textHeight - self.scrollViewHeight
+        if (deltaHeight > 0 && self.scrollY < deltaHeight) {
+            sp.scrollTo("text", anchor: UnitPoint(x: 0.0, y: self.scrollY / deltaHeight))
         }
     }
     
@@ -272,4 +307,25 @@ struct SongTextPanel: View {
         }
         .frame(width: W, height: A)
     }
+}
+
+struct ArtistWithTitle: Equatable {
+    let artist: String
+    let title: String
+}
+
+struct FrameKeyViewer: PreferenceKey {
+  static var defaultValue: CGRect = .zero
+
+  static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+    value = nextValue()
+  }
+}
+
+struct FrameKeyEditor: PreferenceKey {
+  static var defaultValue: CGRect = .zero
+
+  static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+    value = nextValue()
+  }
 }

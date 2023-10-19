@@ -29,7 +29,6 @@ struct TheTextViewer: View {
                 )
             }
         }
-        .id("text")
         .font(Theme.fontText)
         .foregroundColor(Theme.colorMain)
         .frame(width: self.width, alignment: .leading)

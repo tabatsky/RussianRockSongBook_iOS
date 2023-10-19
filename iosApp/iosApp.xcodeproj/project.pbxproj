@@ -21,6 +21,7 @@
 		CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410B2A9ADBED00DE09BE /* SongListView.swift */; };
 		CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */; };
 		CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11410F2A9ADCDA00DE09BE /* Drawer.swift */; };
+		CE11C7D62AE0B06D00A7716C /* AllChords.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11C7D52AE0B06D00A7716C /* AllChords.swift */; };
 		CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1A5AA82AB019720044F61B /* CloudSearchView.swift */; };
 		CE1AF2192AD55E6E001ED685 /* AttributedSongTextBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */; };
 		CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */; };
@@ -61,6 +62,7 @@
 		CE11410B2A9ADBED00DE09BE /* SongListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListView.swift; sourceTree = "<group>"; };
 		CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTextView.swift; sourceTree = "<group>"; };
 		CE11410F2A9ADCDA00DE09BE /* Drawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawer.swift; sourceTree = "<group>"; };
+		CE11C7D52AE0B06D00A7716C /* AllChords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChords.swift; sourceTree = "<group>"; };
 		CE1A5AA82AB019720044F61B /* CloudSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSearchView.swift; sourceTree = "<group>"; };
 		CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedSongTextBuilder.swift; sourceTree = "<group>"; };
 		CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldAttributedSongText.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				CE0F57432AD9253D0080E6B1 /* ChordViewer.swift */,
 				CE46D4D12ADC920600582136 /* TheTextViewer.swift */,
 				CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */,
+				CE11C7D52AE0B06D00A7716C /* AllChords.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */,
 				CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */,
 				CE1AF2192AD55E6E001ED685 /* AttributedSongTextBuilder.swift in Sources */,
+				CE11C7D62AE0B06D00A7716C /* AllChords.swift in Sources */,
 				CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */,
 				CE0F57632AD930250080E6B1 /* Instrument.swift in Sources */,
 				CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */,

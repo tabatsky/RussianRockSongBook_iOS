@@ -25,6 +25,8 @@ struct OldAttributedSongText: View {
         self.onChordTapped = onChordTapped
         let wordList = WordScanner(text: text).getWordList()
         var position = 0
+        let chordMappings = AllChords.instance.chordMappings
+        let allChords = AllChords.instance.allChords
         wordList.forEach { word in
             if (position < word.startIndex) {
                 let start = text.unicodeScalars.index(text.startIndex, offsetBy: position)
@@ -35,10 +37,10 @@ struct OldAttributedSongText: View {
                 self.attributedText.append(s)
             }
             var actualWord = word.text
-            ChordsKt.chordMappings.forEach { key, value in
-                actualWord = actualWord.replacingOccurrences(of: key as! String, with: value as! String)
+            chordMappings.forEach { key, value in
+                actualWord = actualWord.replacingOccurrences(of: key, with: value)
             }
-            let chord =  ChordsKt.baseChords.contains(actualWord) ? actualWord : nil
+            let chord =  allChords.contains(actualWord) ? actualWord : nil
             let a: [NSAttributedString.Key: Any]
             if (chord == nil) {
                 a = [.foregroundColor: UIColor(Theme.colorMain), .backgroundColor: UIColor(Theme.colorBg)]

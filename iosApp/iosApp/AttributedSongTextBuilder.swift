@@ -16,12 +16,14 @@ struct AttributedSongTextBuilder {
     init(text: String) {
         self.attributedText = AttributedString(text)
         let wordList = WordScanner(text: text).getWordList()
+        let chordMappings = AllChords.instance.chordMappings
+        let allChords = AllChords.instance.allChords
         wordList.forEach { word in
             var actualWord = word.text
-            ChordsKt.chordMappings.forEach { key, value in
-                actualWord = actualWord.replacingOccurrences(of: key as! String, with: value as! String)
+            chordMappings.forEach { key, value in
+                actualWord = actualWord.replacingOccurrences(of: key, with: value)
             }
-            if ChordsKt.baseChords.contains(actualWord) {
+            if allChords.contains(actualWord) {
                 let start = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.startIndex))
                 let end = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.endIndex))
                 self.attributedText[start..<end].foregroundColor = Theme.colorBg

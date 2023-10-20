@@ -49,16 +49,22 @@ struct SongTextView: View {
                             ScrollView(.vertical) {
                                 ContainerView {
                                     if (self.isEditorMode) {
-                                        TheTextEditor(text: song.text, width: geometry.size.width, onTextChanged: { self.editorText = $0 })
-                                           .frame(width: geometry.size.width, height: self.textHeight)
+                                        TheTextEditor(text: song.text, width: geometry.size.width, height: self.textHeight, onTextChanged: { self.editorText = $0 })
                                     } else {
                                         TheTextViewer(
                                             text: song.text,
                                             width: geometry.size.width,
                                             onChordTapped: onChordTapped,
                                             onHeightChanged: { height in
-                                                self.textHeight = height
-                                                print(self.textHeight)
+                                                if (height > 1) {
+                                                    print("updating textHeight: \(height)")
+                                                    self.textHeight = height
+                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                                        performScrollToY(sp: sp)
+                                                    })
+                                                } else {
+                                                    print("not updating textHeight: \(height)")
+                                                }
                                             })
                                     }
                                 }
@@ -67,18 +73,18 @@ struct SongTextView: View {
                                 .background(GeometryReader { scrollViewGeom in
                                     Theme.colorBg
                                         .preference(
-                                            key: FrameKeyEditor.self,
+                                            key: FrameKeySongText.self,
                                             // See discussion!
                                             value: scrollViewGeom.frame(in: .global)
                                         )
-                                        .onPreferenceChange(FrameKeyEditor.self) { frame in
+                                        .onPreferenceChange(FrameKeySongText.self) { frame in
                                             let globalY = -frame.origin.y
                                             if (self.minGlobalY == 0) {
                                                 self.minGlobalY = globalY
                                             }
                                             let localY = globalY - self.minGlobalY
-                                            print(localY)
                                             if (localY > 0) {
+                                                print("updating scrollY: \(localY)")
                                                 self.scrollY = localY
                                             }
                                         }
@@ -107,9 +113,15 @@ struct SongTextView: View {
                                 })
                                 .onChange(of: self.isEditorMode, perform: { isEditorMode in
                                     print("editor mode: \(isEditorMode)")
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                        performScrollToY(sp: sp)
-                                    })
+                                    if #available(iOS 15, *) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                            performScrollToY(sp: sp)
+                                        })
+                                    } else if isEditorMode {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                            performScrollToY(sp: sp)
+                                        })
+                                    }
                                 })
                             }
                         }
@@ -314,18 +326,12 @@ struct ArtistWithTitle: Equatable {
     let title: String
 }
 
-struct FrameKeyViewer: PreferenceKey {
-  static var defaultValue: CGRect = .zero
+struct FrameKeySongText: PreferenceKey {
+    static var defaultValue: CGRect = .zero
 
-  static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-    value = nextValue()
-  }
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+        value = nextValue()
+    }
 }
 
-struct FrameKeyEditor: PreferenceKey {
-  static var defaultValue: CGRect = .zero
 
-  static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-    value = nextValue()
-  }
-}

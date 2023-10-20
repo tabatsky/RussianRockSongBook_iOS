@@ -62,7 +62,7 @@ struct OldAttributedSongText: View {
     
     var body: some View {
         TextView(attributedText: self.$textState, desiredHeight: self.$textHeight, desiredWidth: self.$textWidth, onChordTapped: onChordTapped)
-            .frame(width: max(self.textWidth, 100), height: max(self.textHeight, 100))
+            .frame(width: max(self.textWidth, 1), height: max(self.textHeight, 1))
             .onAppear {
                 self.textState = self.attributedText
                 self.textWidth = self.width
@@ -98,10 +98,6 @@ struct TextView: UIViewRepresentable {
         myTextView.onChordTapped = onChordTapped
         
         myTextView.delegate = context.coordinator
-        //myTextView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        //myTextView.contentInset = .zero
-        //myTextView.textContainer.lineFragmentPadding = 0
-        //myTextView.textContainer.lineBreakMode = .byCharWrapping
         
         return myTextView
     }
@@ -109,7 +105,6 @@ struct TextView: UIViewRepresentable {
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.frame = CGRect(x: 8, y: 0, width: self.desiredWidth - 16, height: self.desiredHeight)
         uiView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        //uiView.setContentHuggingPriority(.required, for: .vertical)
         uiView.contentInset = .zero
         uiView.textContainerInset = .zero
         uiView.textContainer.lineFragmentPadding = 0
@@ -193,7 +188,7 @@ class CustomTextView: UITextView, UIGestureRecognizerDelegate {
     
     override var intrinsicContentSize: CGSize {
         let width = super.intrinsicContentSize.width// + self.textContainerInset.right + self.textContainerInset.left
-        let height = super.intrinsicContentSize.height + self.textContainerInset.top + self.textContainerInset.bottom + 100
+        let height = super.intrinsicContentSize.height + self.textContainerInset.top + self.textContainerInset.bottom + 1000
         
         
         return CGSize(width: width, height: height)

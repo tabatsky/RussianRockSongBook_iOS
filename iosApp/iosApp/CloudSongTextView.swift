@@ -46,6 +46,9 @@ struct CloudSongTextView: View {
                             }
                         }
                     }
+                    CloudSongTextPanel(
+                        W: geometry.size.width
+                    )
                 }
                 if let chord = self.currentChord {
                     ChordViewer(chord: chord, onDismiss: {
@@ -96,3 +99,54 @@ struct CloudSongTextView: View {
     }
 }
 
+struct CloudSongTextPanel: View {
+    let W: CGFloat
+    
+    var body: some View {
+        let A = W / 7
+        
+        HStack(spacing: A / 5) {
+            ForEach(0..<2, id: \.self) {
+                Text("\($0)")
+                    .frame(width: A, height: A)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    
+                }
+            }) {
+                Image("ic_download")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+            ForEach(3..<4, id: \.self) {
+                Text("\($0)")
+                    .frame(width: A, height: A)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    
+                }
+            }) {
+                Image("ic_like")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    
+                }
+            }) {
+                Image("ic_dislike")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+        }
+        .frame(width: W, height: A)
+    }
+}

@@ -6,7 +6,7 @@ struct ContentView: View {
         let factory = DatabaseDriverFactory()
         Injector.companion.initiate(databaseDriverFactory: factory)
 
-        //JsonLoaderKt.fillDBFromJSON()
+//        JsonLoaderKt.fillDBFromJSON()
         
 //        let chords = ChordsKt.baseChords.filter { chord in
 //            let str = chord as! String

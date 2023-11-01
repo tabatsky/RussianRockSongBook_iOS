@@ -30,6 +30,7 @@ struct StartScreenView: View {
                     JsonLoaderKt.fillDbFromJSON(songRepo: songRepo, onProgressChanged: { done, total in
                         DispatchQueue.main.async {
                             self.progress = Double(truncating: done) / Double(truncating: total)
+                            print("\(done) of \(total)")
                         }
                     })
                     Version.confirmAppUpdate()

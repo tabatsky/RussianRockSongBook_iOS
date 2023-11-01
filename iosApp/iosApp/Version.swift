@@ -9,7 +9,7 @@
 import Foundation
 
 struct Version {
-    static let appVersion = 19
+    static let appVersion = 21
     
     static func appWasUpdated() -> Bool {
         let preferences = UserDefaults.standard

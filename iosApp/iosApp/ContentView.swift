@@ -5,16 +5,6 @@ struct ContentView: View {
     static let songRepo: SongRepository = {
         let factory = DatabaseDriverFactory()
         Injector.companion.initiate(databaseDriverFactory: factory)
-
-//        JsonLoaderKt.fillDBFromJSON()
-        
-//        let chords = ChordsKt.baseChords.filter { chord in
-//            let str = chord as! String
-//            return str.starts(with: "C") && !str.starts(with: "C#")
-//        } as! Array<String>
-//        print(chords.sorted())
-//        print(Instrument.guitar.suffixes.sorted())
-
         return Injector.Companion.shared.songRepo
     }()
 
@@ -24,7 +14,7 @@ struct ContentView: View {
     static let defaultArtist = "Кино"
 
 	@State var isDrawerOpen: Bool = false
-	@State var currentScreenVariant: ScreenVariant = ScreenVariant.songList
+	@State var currentScreenVariant: ScreenVariant = ScreenVariant.start
     @State var currentArtist: String = Self.defaultArtist
     @State var currentCount: Int = {
         let count = Self.songRepo.getCountByArtist(artist: Self.defaultArtist)
@@ -44,7 +34,11 @@ struct ContentView: View {
             /// Navigation Bar Title part
             if !self.isDrawerOpen {
                 NavigationView {
-                    if (self.currentScreenVariant == .songList) {
+                    if (self.currentScreenVariant == .start) {
+                        StartScreenView(onUpdateDone: {
+                            self.currentScreenVariant = .songList
+                        })
+                    } else if (self.currentScreenVariant == .songList) {
                         SongListView(artist: currentArtist,
                                      songIndex: currentSongIndex,
                                      onSongClick: selectSong,
@@ -240,6 +234,7 @@ struct ContentView: View {
 }
 
 enum ScreenVariant {
+    case start
     case songList
     case songText
     case cloudSearch

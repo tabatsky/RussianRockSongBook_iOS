@@ -7,12 +7,6 @@ import jatx.russianrocksongbook.common.res.Resource
 import jatx.russianrocksongbook.MR
 import kotlinx.serialization.json.Json
 
-fun fillDBFromJSON() {
-    fillDbFromJSON(Injector.songRepo) { progress, total ->
-        println("$progress : $total")
-    }
-}
-
 fun fillDbFromJSON(songRepo: SongRepository, onProgressChanged: (Int, Int) -> Unit) {
     val jsonLoader = JsonLoader()
     while (jsonLoader.hasNext()) {

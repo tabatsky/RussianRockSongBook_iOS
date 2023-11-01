@@ -135,7 +135,11 @@ struct SongTextView: View {
                         isEditorMode: self.isEditorMode,
                         onEdit: onEdit,
                         onSave: onSave,
-                        onDeleteToTrash: onDeleteToTrash
+                        onDeleteToTrash: onDeleteToTrash,
+                        onShowWarning: onShowWarning,
+                        onUploadToCloud: onUploadToCloud,
+                        onOpenYandexMusic: onOpenYandexMusic,
+                        onOpenYoutubeMusic: onOpenYoutubeMusuc
                     )
                 }
                 if let chord = self.currentChord {
@@ -263,6 +267,22 @@ struct SongTextView: View {
     func onDeleteToTrash() {
         self.isPresentingDeleteConfirm = true
     }
+    
+    func onShowWarning() {
+        print("show warning")
+    }
+    
+    func onUploadToCloud() {
+        print("upload to cloud")
+    }
+    
+    func onOpenYandexMusic() {
+        print("open yandex music")
+    }
+    
+    func onOpenYoutubeMusuc() {
+        print("open youtube music")
+    }
 }
 
 struct SongTextPanel: View {
@@ -271,14 +291,53 @@ struct SongTextPanel: View {
     let onEdit: () -> ()
     let onSave: () -> ()
     let onDeleteToTrash: () -> ()
+    let onShowWarning: () -> ()
+    let onUploadToCloud: () -> ()
+    let onOpenYandexMusic: () -> ()
+    let onOpenYoutubeMusic: () -> ()
     
     var body: some View {
         let A = W / 7
         
         HStack(spacing: A / 5) {
-            ForEach(0..<4, id: \.self) {
-                Text("\($0)")
-                    .frame(width: A, height: A)
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onOpenYandexMusic()
+                }
+            }) {
+                Image("ic_yandex")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onOpenYoutubeMusic()
+                }
+            }) {
+                Image("ic_youtube")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onUploadToCloud()
+                }
+            }) {
+                Image("ic_upload")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onShowWarning()
+                }
+            }) {
+                Image("ic_warning")
+                    .resizable()
+                    .padding(A / 6)
                     .background(Theme.colorCommon)
             }
             Button(action: {

@@ -47,7 +47,13 @@ struct CloudSongTextView: View {
                         }
                     }
                     CloudSongTextPanel(
-                        W: geometry.size.width
+                        W: geometry.size.width,
+                        onOpenYandexMusic: onOpenYandexMusic,
+                        onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                        onDownloadFromCloud: onDownloadFromCloud,
+                        onShowWarning: onShowWarning,
+                        onLike: onLike,
+                        onDislike: onDislike
                     )
                 }
                 if let chord = self.currentChord {
@@ -97,23 +103,68 @@ struct CloudSongTextView: View {
         print("chord: \(chord)")
         self.currentChord = chord
     }
+    
+    func onOpenYandexMusic() {
+        print("open yandex music")
+    }
+    
+    func onOpenYoutubeMusuc() {
+        print("open youtube music")
+    }
+    
+    func onDownloadFromCloud() {
+        print("download from cloud")
+    }
+    
+    func onShowWarning() {
+        print("show warning")
+    }
+    
+    func onLike() {
+        print("like")
+    }
+    
+    func onDislike() {
+        print("dislike")
+    }
 }
 
 struct CloudSongTextPanel: View {
     let W: CGFloat
+    let onOpenYandexMusic: () -> ()
+    let onOpenYoutubeMusic: () -> ()
+    let onDownloadFromCloud: () -> ()
+    let onShowWarning: () -> ()
+    let onLike: () -> ()
+    let onDislike: () -> ()
     
     var body: some View {
         let A = W / 7
         
         HStack(spacing: A / 5) {
-            ForEach(0..<2, id: \.self) {
-                Text("\($0)")
-                    .frame(width: A, height: A)
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onOpenYandexMusic()
+                }
+            }) {
+                Image("ic_yandex")
+                    .resizable()
+                    .padding(A / 6)
                     .background(Theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    
+                    onOpenYoutubeMusic()
+                }
+            }) {
+                Image("ic_youtube")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(Theme.colorCommon)
+            }
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onDownloadFromCloud()
                 }
             }) {
                 Image("ic_download")
@@ -121,14 +172,19 @@ struct CloudSongTextPanel: View {
                     .padding(A / 6)
                     .background(Theme.colorCommon)
             }
-            ForEach(3..<4, id: \.self) {
-                Text("\($0)")
-                    .frame(width: A, height: A)
+            Button(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onShowWarning()
+                }
+            }) {
+                Image("ic_warning")
+                    .resizable()
+                    .padding(A / 6)
                     .background(Theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    
+                    onLike()
                 }
             }) {
                 Image("ic_like")
@@ -138,7 +194,7 @@ struct CloudSongTextPanel: View {
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    
+                    onDislike()
                 }
             }) {
                 Image("ic_dislike")

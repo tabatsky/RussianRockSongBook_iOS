@@ -3,8 +3,8 @@ package jatx.russianrocksongbook.common.dbinit
 import jatx.russianrocksongbook.common.domain.repository.SongRepository
 import jatx.russianrocksongbook.common.di.Injector
 import jatx.russianrocksongbook.common.domain.models.Song
-import jatx.russianrocksongbook.common.res.Raw
 import jatx.russianrocksongbook.common.res.Resource
+import jatx.russianrocksongbook.MR
 import kotlinx.serialization.json.Json
 
 fun fillDBFromJSON() {
@@ -52,14 +52,14 @@ class JsonLoader() {
 }
 
 val artistMap = mapOf(
-    "Агата Кристи" to Raw.agata,
-    "Алиса" to Raw.alisa,
-    "Би-2" to Raw.bi2,
-    "Високосный год" to Raw.visokosniy,
-    "ДДТ" to Raw.ddt,
-    "Кино" to Raw.kino,
-    "Наутилус Помпилиус" to Raw.nautilus,
-    "Немного Нервно" to Raw.nervno
+    "Агата Кристи" to MR.files.agata,
+    "Алиса" to MR.files.alisa,
+    "Би-2" to MR.files.bi2,
+    "Високосный год" to MR.files.visokosniy,
+    "ДДТ" to MR.files.ddt,
+    "Кино" to MR.files.kino,
+    "Наутилус Помпилиус" to MR.files.nautilus,
+    "Немного Нервно" to MR.files.nervno
 )
 
 val artists = artistMap.keys.toTypedArray()

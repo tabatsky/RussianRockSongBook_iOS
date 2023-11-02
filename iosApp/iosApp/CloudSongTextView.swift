@@ -13,9 +13,13 @@ struct CloudSongTextView: View {
     let cloudSong: CloudSong
     let cloudSongIndex: Int
     let cloudSongCount: Int
+    let allLikes: Dictionary<CloudSong, Int>
+    let allDislikes: Dictionary<CloudSong, Int>
     let onBackClick: () -> ()
     let onPrevClick: () -> ()
     let onNextClick: () -> ()
+    let onPerformLike: (CloudSong) -> ()
+    let onPerformDislike: (CloudSong) -> ()
     
     @State var currentChord: String? = nil
     
@@ -24,11 +28,14 @@ struct CloudSongTextView: View {
             let artist = cloudSong.artist
             let title = cloudSong.title
             
-            let visibleTitleWithArtist = "\(title) (\(artist))"
+            let likeCount = Int(cloudSong.likeCount) + (self.allLikes[cloudSong] ?? 0)
+            let dislikeCount = Int(cloudSong.dislikeCount) + (self.allDislikes[cloudSong] ?? 0)
+            
+            let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
             
             ZStack {
                 VStack {
-                    Text(visibleTitleWithArtist)
+                    Text(visibleTitleWithArtistAndRaiting)
                         .font(Theme.fontTitle)
                         .bold()
                         .foregroundColor(Theme.colorMain)
@@ -122,10 +129,12 @@ struct CloudSongTextView: View {
     
     func onLike() {
         print("like")
+        onPerformLike(self.cloudSong)
     }
     
     func onDislike() {
         print("dislike")
+        onPerformDislike(self.cloudSong)
     }
 }
 

@@ -9,7 +9,7 @@
 import SwiftUI
 import shared
 
-struct CloudSeaachView: View {
+struct CloudSearchView: View {
     let onBackClick: () -> ()
     let onLoadSuccess: ([CloudSong]) -> ()
     let onCloudSongClick: (Int) -> ()
@@ -20,6 +20,9 @@ struct CloudSeaachView: View {
     
     let orderBy: OrderBy
     
+    let allLikes: Dictionary<CloudSong, Int>
+    let allDislikes: Dictionary<CloudSong, Int>
+    
     @State var currentSearchState: SearchState = .loading
     
     @State var searchFor: String = ""
@@ -28,10 +31,12 @@ struct CloudSeaachView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> ()) {
+    init(cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, allLikes: Dictionary<CloudSong, Int>, allDislikes: Dictionary<CloudSong, Int>, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> ()) {
         self.currentCloudSongList = cloudSongList
         self.currentCloudSongIndex = cloudSongIndex
         self.orderBy = orderBy
+        self.allLikes = allLikes
+        self.allDislikes = allDislikes
         self.onLoadSuccess = onLoadSuccess
         self.onBackClick = onBackClick
         self.onCloudSongClick = onCloudSongClick
@@ -107,8 +112,11 @@ struct CloudSeaachView: View {
                                     let cloudSong = currentList[index]
                                     let title = cloudSong.title
                                     let artist = cloudSong.artist
+                                    let likeCount = Int(cloudSong.likeCount) + (self.allLikes[cloudSong] ?? 0)
+                                    let dislikeCount = Int(cloudSong.dislikeCount) + (self.allDislikes[cloudSong] ?? 0)
+                                    let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
                                     VStack {
-                                        Text(title)
+                                        Text(visibleTitleWithRaiting)
                                             .foregroundColor(Theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -190,15 +198,6 @@ struct CloudSeaachView: View {
                     self.currentSearchState = .loadSuccess
                 }
             })
-            .onChange(of: self.currentCloudSongList, perform: { cloudSongList in
-                if (cloudSongList == nil) {
-                    searchSongs(searchFor: "", orderBy: self.orderBy)
-                } else if (cloudSongList!.isEmpty) {
-                    self.currentSearchState = .emptyList
-                } else {
-                    self.currentSearchState = .loadSuccess
-                }
-            })
             .onChange(of: self.orderBy, perform: { orderBy in
                 searchSongs(searchFor: self.searchFor, orderBy: orderBy)
             })
@@ -226,6 +225,11 @@ struct CloudSeaachView: View {
             orderBy: orderBy,
             onSuccess: { data in
                 self.onLoadSuccess(data)
+                if (data.isEmpty) {
+                   self.currentSearchState = .emptyList
+               } else {
+                   self.currentSearchState = .loadSuccess
+               }
             },onError: { t in
                 t.printStackTrace()
                 self.currentSearchState = SearchState.loadError

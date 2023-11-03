@@ -62,6 +62,7 @@ object CloudRepository {
         cloudSong: CloudSong,
         voteValue: Int,
         onSuccess: (Int) -> Unit,
+        onServerMessage: (String) -> Unit,
         onError: (Throwable) -> Unit
     ) = GlobalScope.launch {
         try {
@@ -70,7 +71,7 @@ object CloudRepository {
             data?.let {
                 onSuccess(it.toInt())
             } ?: run {
-                println(result.message)
+                onServerMessage(result.message ?: "null")
             }
         } catch (t: Throwable) {
             onError(t)

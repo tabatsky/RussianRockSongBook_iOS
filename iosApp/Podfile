@@ -1,0 +1,12 @@
+platform :ios, '14.1'
+workspace 'iosApp.xcworkspace'
+
+def shared_pods
+	pod 'SwiftUI-SimpleToast', :git => 'https://github.com/sanzaru/SimpleToast.git'
+end	 
+
+target 'iosApp' do
+	use_frameworks!
+
+	shared_pods
+end

@@ -1,5 +1,6 @@
 import SwiftUI
 import shared
+import SwiftUI_SimpleToast
 
 struct ContentView: View {
     static let songRepo: SongRepository = {
@@ -12,6 +13,10 @@ struct ContentView: View {
     static let ARTIST_FAVORITE = SongRepositoryKt.ARTIST_FAVORITE
     static let ARTIST_CLOUD_SONGS = SongRepositoryKt.ARTIST_CLOUD_SONGS
     static let defaultArtist = "Кино"
+    
+    private let toastOptions = SimpleToastOptions(
+        hideAfter: 5
+    )
 
 	@State var isDrawerOpen: Bool = false
 	@State var currentScreenVariant: ScreenVariant = ScreenVariant.start
@@ -31,6 +36,9 @@ struct ContentView: View {
     
     @State var allLikes: Dictionary<CloudSong, Int> = [:]
     @State var allDislikes: Dictionary<CloudSong, Int> = [:]
+    
+    @State var needShowToast = false
+    @State var toastText = ""
 
 	var body: some View {
 	    ZStack {
@@ -92,6 +100,21 @@ struct ContentView: View {
             if self.isDrawerOpen {
                 self.isDrawerOpen.toggle()
             }
+        }
+        .simpleToast(isPresented: $needShowToast, options: toastOptions) {
+            Label(self.toastText, systemImage: "exclamationmark.triangle")
+               .padding()
+               .background(Theme.colorMain.opacity(0.8))
+               .foregroundColor(Theme.colorBg)
+               .cornerRadius(10)
+               .padding(.top)
+        }
+    }
+    
+    func showToast(_ text: String) {
+        self.toastText = text
+        withAnimation {
+            self.needShowToast.toggle()
         }
     }
 
@@ -252,6 +275,9 @@ struct ContentView: View {
                 print($0)
                 let oldCount = self.allLikes[cloudSong] ?? 0
                 self.allLikes[cloudSong] = oldCount + 1
+                showToast("Ваш голос засчитан")
+            }, onServerMessage: {
+                showToast($0)
             }, onError: {
                 $0.printStackTrace()
             })
@@ -264,6 +290,9 @@ struct ContentView: View {
                 print($0)
                 let oldCount = self.allDislikes[cloudSong] ?? 0
                 self.allDislikes[cloudSong] = oldCount + 1
+                showToast("Ваш голос засчитан")
+            }, onServerMessage: {
+                showToast($0)
             }, onError: {
                 $0.printStackTrace()
             })

@@ -1,0 +1,21 @@
+PODS:
+  - SwiftUI-SimpleToast (0.6.2)
+
+DEPENDENCIES:
+  - SwiftUI-SimpleToast (from `https://github.com/sanzaru/SimpleToast.git`)
+
+EXTERNAL SOURCES:
+  SwiftUI-SimpleToast:
+    :git: https://github.com/sanzaru/SimpleToast.git
+
+CHECKOUT OPTIONS:
+  SwiftUI-SimpleToast:
+    :commit: 8dbc2e7c33cda25c0b2efafd59716cb9820c83eb
+    :git: https://github.com/sanzaru/SimpleToast.git
+
+SPEC CHECKSUMS:
+  SwiftUI-SimpleToast: 34a7ede33ac00e1ab21cc114c041d68da5fbc6b3
+
+PODFILE CHECKSUM: 6f6000ea500bf8a094f4a2a5211d066b83eca4c1
+
+COCOAPODS: 1.12.1

@@ -246,13 +246,27 @@ struct ContentView: View {
     }
     
     func performLike(_ cloudSong: CloudSong) {
-        let oldCount = self.allLikes[cloudSong] ?? 0
-        self.allLikes[cloudSong] = oldCount + 1
+        CloudRepository.shared.voteAsync(
+            cloudSong: cloudSong, voteValue: 1,
+            onSuccess: {
+                print($0)
+                let oldCount = self.allLikes[cloudSong] ?? 0
+                self.allLikes[cloudSong] = oldCount + 1
+            }, onError: {
+                $0.printStackTrace()
+            })
     }
     
     func performDislike(_ cloudSong: CloudSong) {
-        let oldCount = self.allDislikes[cloudSong] ?? 0
-        self.allDislikes[cloudSong] = oldCount + 1
+        CloudRepository.shared.voteAsync(
+            cloudSong: cloudSong, voteValue: -1,
+            onSuccess: {
+                print($0)
+                let oldCount = self.allDislikes[cloudSong] ?? 0
+                self.allDislikes[cloudSong] = oldCount + 1
+            }, onError: {
+                $0.printStackTrace()
+            })
     }
 }
 

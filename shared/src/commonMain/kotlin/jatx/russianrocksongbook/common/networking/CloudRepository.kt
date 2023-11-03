@@ -2,6 +2,7 @@ package jatx.russianrocksongbook.common.networking
 
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.encodeURLPath
 import io.ktor.utils.io.core.use
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,7 +14,10 @@ object CloudRepository {
         orderBy: OrderBy
     ): ResultWithCloudSongListData {
         return KtorClient.newHttpClient().use {
-            it.get("$BASE_URL/songs/search/$searchFor/${orderBy.orderBy}").body()
+            it.get(
+                "$BASE_URL/songs/search/$searchFor/${orderBy.orderBy}"
+                    .encodeURLPath()
+            ).body()
         }
     }
 
@@ -28,6 +32,45 @@ object CloudRepository {
             val data = result.data
             data?.let {
                 onSuccess(it)
+            } ?: run {
+                println(result.message)
+            }
+        } catch (t: Throwable) {
+            onError(t)
+        }
+    }
+
+    private suspend fun vote(
+        cloudSong: CloudSong,
+        voteValue: Int
+    ): ResultWithNumber {
+        val googleAccount = "iOS_debug"
+        val deviceIdHash = "iOS_debug"
+        val artist = cloudSong.artist
+        val title = cloudSong.title
+        val variant = cloudSong.variant
+
+        return KtorClient.newHttpClient().use {
+            it.get(
+                "$BASE_URL/songs/vote/$googleAccount/$deviceIdHash/$artist/$title/$variant/$voteValue"
+                    .encodeURLPath()
+            ).body()
+        }
+    }
+
+    fun voteAsync(
+        cloudSong: CloudSong,
+        voteValue: Int,
+        onSuccess: (Int) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = GlobalScope.launch {
+        try {
+            val result = vote(cloudSong, voteValue)
+            val data = result.data
+            data?.let {
+                onSuccess(it.toInt())
+            } ?: run {
+                println(result.message)
             }
         } catch (t: Throwable) {
             onError(t)

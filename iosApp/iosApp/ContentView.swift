@@ -46,9 +46,7 @@ struct ContentView: View {
             if !self.isDrawerOpen {
                 NavigationView {
                     if (self.currentScreenVariant == .start) {
-                        StartScreenView(onUpdateDone: {
-                            self.currentScreenVariant = .songList
-                        })
+                        StartScreenView(onUpdateDone: onUpdateDone)
                     } else if (self.currentScreenVariant == .songList) {
                         SongListView(artist: currentArtist,
                                      songIndex: currentSongIndex,
@@ -117,6 +115,11 @@ struct ContentView: View {
             self.needShowToast.toggle()
         }
     }
+    
+    func onUpdateDone() {
+        selectArtist(Self.defaultArtist)
+        self.currentScreenVariant = .songList
+    }
 
     func selectArtist(_ artist: String) {
         print("select artist: \(artist)")
@@ -126,14 +129,14 @@ struct ContentView: View {
                 self.currentCloudOrderBy = OrderBy.byIdDesc
                 self.currentScreenVariant = ScreenVariant.cloudSearch
             }
-        } else if (self.currentArtist != artist) {
+        } else if (self.currentArtist != artist || self.currentCount == 0) {
             print("artist changed")
             self.currentArtist = artist
             let count = Self.songRepo.getCountByArtist(artist: artist)
             self.currentCount = Int(count)
             self.currentSongIndex = 0
         }
-        self.isDrawerOpen.toggle()
+        self.isDrawerOpen = false
     }
     
     func toggleDrawer() {

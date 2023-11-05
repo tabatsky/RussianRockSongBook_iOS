@@ -27,7 +27,7 @@ struct CloudSongTextView: View {
     var body: some View {
         GeometryReader { geometry in
             let artist = cloudSong.artist
-            let title = cloudSong.title
+            let title = cloudSong.visibleTitle
             
             let likeCount = Int(cloudSong.likeCount) + (self.allLikes[cloudSong] ?? 0)
             let dislikeCount = Int(cloudSong.dislikeCount) + (self.allDislikes[cloudSong] ?? 0)

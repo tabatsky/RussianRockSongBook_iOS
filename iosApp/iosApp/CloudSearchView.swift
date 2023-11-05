@@ -110,7 +110,7 @@ struct CloudSearchView: View {
                             LazyVGrid(columns: columns, spacing: 0) {
                                 ForEach(0..<currentList.count, id: \.self) { index in
                                     let cloudSong = currentList[index]
-                                    let title = cloudSong.title
+                                    let title = cloudSong.visibleTitle
                                     let artist = cloudSong.artist
                                     let likeCount = Int(cloudSong.likeCount) + (self.allLikes[cloudSong] ?? 0)
                                     let dislikeCount = Int(cloudSong.dislikeCount) + (self.allDislikes[cloudSong] ?? 0)

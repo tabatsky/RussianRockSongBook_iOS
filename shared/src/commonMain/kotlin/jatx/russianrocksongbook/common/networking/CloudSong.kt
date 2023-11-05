@@ -1,10 +1,13 @@
 package jatx.russianrocksongbook.common.networking
 
+import jatx.russianrocksongbook.common.domain.models.Song
+import jatx.russianrocksongbook.common.domain.models.USER_SONG_MD5
+import jatx.russianrocksongbook.common.domain.models.songTextHash
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class CloudSong(
-    val songId: Int,
+    val songId: Int = -1,
     val googleAccount: String,
     val deviceIdHash: String,
     val artist: String,
@@ -12,8 +15,18 @@ data class CloudSong(
     val text: String,
     val textHash: String,
     val isUserSong: Boolean,
-    val variant: Int,
-    val raiting: Double,
-    val likeCount: Int,
-    val dislikeCount: Int
+    val variant: Int = -1,
+    val raiting: Double = 0.0,
+    val likeCount: Int = 0,
+    val dislikeCount: Int = 0
+)
+
+fun Song.asCloudSong() = CloudSong(
+    googleAccount = "iOS_debug",
+    deviceIdHash = "iOS_debug",
+    artist = artist,
+    title = title,
+    text = text,
+    textHash = songTextHash(text),
+    isUserSong = origTextMD5 == USER_SONG_MD5
 )

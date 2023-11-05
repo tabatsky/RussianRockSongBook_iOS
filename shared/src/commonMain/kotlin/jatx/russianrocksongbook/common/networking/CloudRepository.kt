@@ -1,11 +1,18 @@
 package jatx.russianrocksongbook.common.networking
 
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.encodeURLPath
+import io.ktor.http.parameters
+import io.ktor.http.parametersOf
 import io.ktor.utils.io.core.use
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 
 const val BASE_URL = "http://tabatsky.ru/SongBook2/api"
 object CloudRepository {
@@ -72,6 +79,35 @@ object CloudRepository {
                 onSuccess(it.toInt())
             } ?: run {
                 onServerMessage(result.message ?: "null")
+            }
+        } catch (t: Throwable) {
+            onError(t)
+        }
+    }
+
+    private suspend fun addCloudSong(cloudSong: CloudSong): ResultWithoutData {
+        return KtorClient.newHttpClient().use {
+            it.submitForm(
+                url = "$BASE_URL/songs/add",
+                formParameters = parameters {
+                    append("cloudSongJSON", Json.encodeToString(cloudSong))
+                }
+            ).body()
+        }
+    }
+
+    fun addCloudSongAsync(
+        cloudSong: CloudSong,
+        onSuccess: () -> Unit,
+        onServerMessage: (String) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = GlobalScope.launch {
+        try {
+            val result = addCloudSong(cloudSong)
+            result.message?.let {
+                onServerMessage(it)
+            } ?: run {
+                onSuccess()
             }
         } catch (t: Throwable) {
             onError(t)

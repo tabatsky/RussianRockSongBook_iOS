@@ -22,10 +22,22 @@ data class Song(
     override fun hashCode(): Int {
         return super.hashCode() + (if (favorite) 1 else 0)
     }
+
+    val actualHash: String
+        get() = songTextHash(text)
+
+    val textWasChanged: Boolean
+        get() = actualHash != origTextMD5
 }
 
 fun songTextHash(text: String): String {
     val preparedText =
         text.trim { it <= ' ' }.lowercase().replace("\\s+".toRegex(), " ")
-    return MD5().apply { update(preparedText.encodeToByteArray()) }.digest().decodeToString()
+    //println(preparedText)
+    val md5 = MD5().apply { update(preparedText.encodeToByteArray()) }.digest().toHex()
+    //println(md5)
+    return md5
 }
+
+@OptIn(ExperimentalStdlibApi::class)
+fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> eachByte.toHexString() }

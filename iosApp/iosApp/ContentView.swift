@@ -61,7 +61,9 @@ struct ContentView: View {
                                      onNextClick: nextSong,
                                      onFavoriteToggle: toggleFavorite,
                                      onSaveSongText: saveSongText,
-                                     onDeleteToTrashConfirmed: deleteCurrentToTrash)
+                                     onDeleteToTrashConfirmed: deleteCurrentToTrash,
+                                     onShowToast: showToast
+                        )
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(cloudSongList: self.currentCloudSongList,
                                         cloudSongIndex: self.currentCloudSongIndex,

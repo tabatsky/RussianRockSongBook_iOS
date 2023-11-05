@@ -17,6 +17,7 @@ struct SongTextView: View {
     let onFavoriteToggle: () -> ()
     let onSaveSongText: (String) -> ()
     let onDeleteToTrashConfirmed: () -> ()
+    let onShowToast: (String) -> ()
     
     static let dY: CGFloat = 8.0
     
@@ -274,6 +275,22 @@ struct SongTextView: View {
     
     func onUploadToCloud() {
         print("upload to cloud")
+        let textWasChanged = song.textWasChanged
+        if (!textWasChanged) {
+            self.onShowToast("Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака")
+        } else {
+            CloudRepository.shared.addCloudSongAsync(
+                cloudSong: song.asCloudSong(),
+                onSuccess: {
+                    self.onShowToast("Успешно добавлено в облако")
+                },
+                onServerMessage: {
+                    self.onShowToast($0)
+                }, onError: {
+                    $0.printStackTrace()
+                    self.onShowToast("Ошибка в приложении")
+                })
+        }
     }
     
     func onOpenYandexMusic() {

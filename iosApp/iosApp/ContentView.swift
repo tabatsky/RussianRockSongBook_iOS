@@ -15,7 +15,7 @@ struct ContentView: View {
     static let defaultArtist = "Кино"
     
     private let toastOptions = SimpleToastOptions(
-        hideAfter: 5
+        hideAfter: 2
     )
 
 	@State var isDrawerOpen: Bool = false
@@ -196,6 +196,11 @@ struct ContentView: View {
         } else {
             refreshCurrentSong()
         }
+        if (becomeFavorite) {
+            showToast("Добавлено в избранное")
+        } else {
+            showToast("Удалено из избранного")
+        }
     }
     
     func deleteCurrentToTrash() {
@@ -213,6 +218,7 @@ struct ContentView: View {
         } else {
             back()
         }
+        showToast("Удалено")
     }
     
     func saveSongText(newText: String) {

@@ -1,5 +1,6 @@
 package jatx.russianrocksongbook.common.data.converters
 
+import io.ktor.http.encodeURLPath
 import jatx.russianrocksongbook.common.domain.models.Song
 import jatx.russianrocksongbook.db.SongEntity
 
@@ -24,3 +25,10 @@ fun SongEntity.toSong() = Song(
     outOfTheBox = (outOfTheBox != 0L),
     origTextMD5 = origTextMD5
 )
+
+val Song.yandexMusicUrl: String
+    get() {
+        val searchForEncoded = "$artist $title"
+            .encodeURLPath()
+        return "https://music.yandex.ru/search?text=$searchForEncoded"
+    }

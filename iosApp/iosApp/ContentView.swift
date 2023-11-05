@@ -62,7 +62,8 @@ struct ContentView: View {
                                      onFavoriteToggle: toggleFavorite,
                                      onSaveSongText: saveSongText,
                                      onDeleteToTrashConfirmed: deleteCurrentToTrash,
-                                     onShowToast: showToast
+                                     onShowToast: showToast,
+                                     onOpenSongAtYandexMusic: openSongAtYandexMusic
                         )
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(cloudSongList: self.currentCloudSongList,
@@ -315,6 +316,12 @@ struct ContentView: View {
     func downloadCurrent(_ cloudSong: CloudSong) {
         Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
         showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
+    }
+    
+    func openSongAtYandexMusic(_ song: Song) {
+        if let url = URL(string: song.yandexMusicUrl) {
+            UIApplication.shared.open(url)
+        }
     }
 }
 

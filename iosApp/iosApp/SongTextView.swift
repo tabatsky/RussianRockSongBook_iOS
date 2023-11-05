@@ -18,6 +18,7 @@ struct SongTextView: View {
     let onSaveSongText: (String) -> ()
     let onDeleteToTrashConfirmed: () -> ()
     let onShowToast: (String) -> ()
+    let onOpenSongAtYandexMusic: (Song) -> ()
     
     static let dY: CGFloat = 8.0
     
@@ -295,6 +296,7 @@ struct SongTextView: View {
     
     func onOpenYandexMusic() {
         print("open yandex music")
+        self.onOpenSongAtYandexMusic(self.song)
     }
     
     func onOpenYoutubeMusuc() {

@@ -1,5 +1,6 @@
 package jatx.russianrocksongbook.common.networking
 
+import jatx.russianrocksongbook.common.domain.models.Music
 import jatx.russianrocksongbook.common.domain.models.Song
 import jatx.russianrocksongbook.common.domain.models.USER_SONG_MD5
 import jatx.russianrocksongbook.common.domain.models.songTextHash
@@ -19,7 +20,13 @@ data class CloudSong(
     val raiting: Double = 0.0,
     val likeCount: Int = 0,
     val dislikeCount: Int = 0
-)
+): Music {
+    val visibleTitle: String
+        get() = "$title${if (variant == 0) "" else " ($variant)"}"
+
+    override val searchFor: String
+        get() = "$artist $title"
+}
 
 fun Song.asCloudSong() = CloudSong(
     googleAccount = "iOS_debug",
@@ -30,9 +37,6 @@ fun Song.asCloudSong() = CloudSong(
     textHash = songTextHash(text),
     isUserSong = origTextMD5 == USER_SONG_MD5
 )
-
-val CloudSong.visibleTitle: String
-    get() = "$title${if (variant == 0) "" else " ($variant)"}"
 
 fun CloudSong.asSong() = Song(
     artist = artist,

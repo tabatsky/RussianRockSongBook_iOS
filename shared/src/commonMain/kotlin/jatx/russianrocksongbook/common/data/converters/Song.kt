@@ -25,10 +25,3 @@ fun SongEntity.toSong() = Song(
     outOfTheBox = (outOfTheBox != 0L),
     origTextMD5 = origTextMD5
 )
-
-val Song.yandexMusicUrl: String
-    get() {
-        val searchForEncoded = "$artist $title"
-            .encodeURLPath()
-        return "https://music.yandex.ru/search?text=$searchForEncoded"
-    }

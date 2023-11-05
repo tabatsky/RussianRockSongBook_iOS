@@ -13,7 +13,7 @@ data class Song(
     var deleted: Boolean = false,
     var outOfTheBox: Boolean = true,
     var origTextMD5: String = ""
-) {
+): Music {
     // for correct MutableStateFlow working
     override fun equals(other: Any?): Boolean {
         return super.equals(other) && other is Song && favorite == other.favorite
@@ -28,6 +28,9 @@ data class Song(
 
     val textWasChanged: Boolean
         get() = actualHash != origTextMD5
+
+    override val searchFor: String
+        get() = "$artist $title"
 }
 
 fun songTextHash(text: String): String {

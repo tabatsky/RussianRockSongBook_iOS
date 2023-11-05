@@ -63,7 +63,8 @@ struct ContentView: View {
                                      onSaveSongText: saveSongText,
                                      onDeleteToTrashConfirmed: deleteCurrentToTrash,
                                      onShowToast: showToast,
-                                     onOpenSongAtYandexMusic: openSongAtYandexMusic
+                                     onOpenSongAtYandexMusic: openSongAtYandexMusic,
+                                     onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic
                         )
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(cloudSongList: self.currentCloudSongList,
@@ -86,7 +87,9 @@ struct ContentView: View {
                                           onNextClick: nextCloudSong,
                                           onPerformLike: performLike,
                                           onPerformDislike: performDislike,
-                                          onDownloadCurrent: downloadCurrent
+                                          onDownloadCurrent: downloadCurrent,
+                                          onOpenSongAtYandexMusic: openSongAtYandexMusic,
+                                          onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic
                                         )
                     }
                 }
@@ -318,8 +321,14 @@ struct ContentView: View {
         showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     
-    func openSongAtYandexMusic(_ song: Song) {
-        if let url = URL(string: song.yandexMusicUrl) {
+    func openSongAtYandexMusic(_ music: Music) {
+        if let url = URL(string: music.yandexMusicUrl) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    func openSongAtYoutubeMusic(_ music: Music) {
+        if let url = URL(string: music.youtubeMusicUrl) {
             UIApplication.shared.open(url)
         }
     }

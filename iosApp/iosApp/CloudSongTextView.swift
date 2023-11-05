@@ -21,6 +21,8 @@ struct CloudSongTextView: View {
     let onPerformLike: (CloudSong) -> ()
     let onPerformDislike: (CloudSong) -> ()
     let onDownloadCurrent: (CloudSong) -> ()
+    let onOpenSongAtYandexMusic: (Music) -> ()
+    let onOpenSongAtYoutubeMusic: (Music) -> ()
     
     @State var currentChord: String? = nil
     
@@ -114,10 +116,12 @@ struct CloudSongTextView: View {
     
     func onOpenYandexMusic() {
         print("open yandex music")
+        self.onOpenSongAtYandexMusic(self.cloudSong)
     }
     
     func onOpenYoutubeMusuc() {
         print("open youtube music")
+        self.onOpenSongAtYoutubeMusic(self.cloudSong)
     }
     
     func onDownloadFromCloud() {

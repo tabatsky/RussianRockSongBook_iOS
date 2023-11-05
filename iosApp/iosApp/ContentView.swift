@@ -285,6 +285,7 @@ struct ContentView: View {
                 showToast($0)
             }, onError: {
                 $0.printStackTrace()
+                showToast("Ошибка в приложении")
             })
     }
     
@@ -300,6 +301,7 @@ struct ContentView: View {
                 showToast($0)
             }, onError: {
                 $0.printStackTrace()
+                showToast("Ошибка в приложении")
             })
     }
 }

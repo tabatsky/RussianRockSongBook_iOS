@@ -44,5 +44,15 @@ getSongByPositionFavorite:
 SELECT * FROM songEntity WHERE favorite=1 AND deleted=0
 ORDER BY artist||title LIMIT 1 OFFSET :offset;
 
+getSongByArtistAndTitle:
+SELECT * FROM songEntity WHERE artist=:artist AND title=:title;
+
 updateSong:
 UPDATE songEntity SET text=:text, favorite=:favorite, deleted=:deleted WHERE id=:id;
+
+updateSongText:
+UPDATE songEntity SET text=:text, deleted=0, outOfTheBox=:outOfTheBox
+WHERE artist=:artist AND title=:title;
+
+setFavorite:
+UPDATE songEntity SET favorite=:favorite WHERE artist=:artist AND title=:title;

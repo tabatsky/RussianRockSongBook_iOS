@@ -30,3 +30,15 @@ fun Song.asCloudSong() = CloudSong(
     textHash = songTextHash(text),
     isUserSong = origTextMD5 == USER_SONG_MD5
 )
+
+val CloudSong.visibleTitle: String
+    get() = "$title${if (variant == 0) "" else " ($variant)"}"
+
+fun CloudSong.asSong() = Song(
+    artist = artist,
+    title = visibleTitle,
+    text = text,
+    favorite = true,
+    outOfTheBox = true,
+    origTextMD5 = songTextHash(text)
+)

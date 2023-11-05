@@ -84,7 +84,13 @@ class SongRepositoryImpl(
     }
 
     override fun setFavorite(favorite: Boolean, artist: String, title: String) {
-        TODO("Not yet implemented")
+        appDatabase
+            .songEntityQueries
+            .setFavorite(
+                if (favorite) 1L else 0L,
+                artist,
+                title
+            )
     }
 
     override fun updateSong(song: Song) =
@@ -143,5 +149,44 @@ class SongRepositoryImpl(
 
     override fun patchWrongArtist(wrongArtist: String, actualArtist: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun addSongFromCloud(song: Song) {
+        val existingSong = appDatabase
+            .songEntityQueries
+            .getSongByArtistAndTitle(song.artist, song.title)
+            .executeAsOneOrNull()
+
+        if (existingSong == null) {
+            song.toSongEntity().let {
+                appDatabase
+                    .songEntityQueries
+                    .insertReplaceSong(
+                        it.artist,
+                        it.title,
+                        it.text,
+                        it.favorite,
+                        it.deleted,
+                        it.outOfTheBox,
+                        it.origTextMD5
+                    )
+            }
+        } else {
+            updateSongText(song)
+            setFavorite(true, song.artist, song.title)
+        }
+    }
+
+    override fun updateSongText(song: Song) {
+        song.toSongEntity().let {
+            appDatabase
+                .songEntityQueries
+                .updateSongText(
+                    it.text,
+                    it.outOfTheBox,
+                    it.artist,
+                    it.title
+                )
+        }
     }
 }

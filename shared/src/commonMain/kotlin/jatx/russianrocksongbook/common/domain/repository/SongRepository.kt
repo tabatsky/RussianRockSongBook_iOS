@@ -26,4 +26,6 @@ interface SongRepository {
     fun deleteWrongSong(artist: String, title: String)
     fun deleteWrongArtist(artist: String)
     fun patchWrongArtist(wrongArtist: String, actualArtist: String)
+    fun addSongFromCloud(song: Song)
+    fun updateSongText(song: Song)
 }

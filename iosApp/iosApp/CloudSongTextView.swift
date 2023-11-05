@@ -20,6 +20,7 @@ struct CloudSongTextView: View {
     let onNextClick: () -> ()
     let onPerformLike: (CloudSong) -> ()
     let onPerformDislike: (CloudSong) -> ()
+    let onDownloadCurrent: (CloudSong) -> ()
     
     @State var currentChord: String? = nil
     
@@ -121,6 +122,7 @@ struct CloudSongTextView: View {
     
     func onDownloadFromCloud() {
         print("download from cloud")
+        onDownloadCurrent(self.cloudSong)
     }
     
     func onShowWarning() {

@@ -84,7 +84,8 @@ struct ContentView: View {
                                           onPrevClick: prevCloudSong,
                                           onNextClick: nextCloudSong,
                                           onPerformLike: performLike,
-                                          onPerformDislike: performDislike
+                                          onPerformDislike: performDislike,
+                                          onDownloadCurrent: downloadCurrent
                                         )
                     }
                 }
@@ -309,6 +310,11 @@ struct ContentView: View {
                 $0.printStackTrace()
                 showToast("Ошибка в приложении")
             })
+    }
+    
+    func downloadCurrent(_ cloudSong: CloudSong) {
+        Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
+        showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
 }
 

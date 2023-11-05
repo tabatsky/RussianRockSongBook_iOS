@@ -3,18 +3,18 @@ package jatx.russianrocksongbook.common.networking
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.encodeURLPath
 import io.ktor.http.parameters
-import io.ktor.http.parametersOf
 import io.ktor.utils.io.core.use
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 
 const val BASE_URL = "http://tabatsky.ru/SongBook2/api"
+
+@OptIn(DelicateCoroutinesApi::class)
 object CloudRepository {
     private suspend fun searchSongs(
         searchFor: String,

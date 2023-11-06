@@ -2,7 +2,10 @@ package jatx.russianrocksongbook.common.networking
 
 import jatx.russianrocksongbook.common.domain.models.Music
 import jatx.russianrocksongbook.common.domain.models.Song
+import jatx.russianrocksongbook.common.domain.models.TYPE_CLOUD
 import jatx.russianrocksongbook.common.domain.models.USER_SONG_MD5
+import jatx.russianrocksongbook.common.domain.models.Warnable
+import jatx.russianrocksongbook.common.domain.models.Warning
 import jatx.russianrocksongbook.common.domain.models.songTextHash
 import kotlinx.serialization.Serializable
 
@@ -20,12 +23,20 @@ data class CloudSong(
     val raiting: Double = 0.0,
     val likeCount: Int = 0,
     val dislikeCount: Int = 0
-): Music {
+): Music, Warnable {
     val visibleTitle: String
         get() = "$title${if (variant == 0) "" else " ($variant)"}"
 
     override val searchFor: String
         get() = "$artist $title"
+
+    override fun warningWithComment(comment: String) = Warning(
+        warningType = TYPE_CLOUD,
+        artist = artist,
+        title = title,
+        variant = variant,
+        comment = comment
+    )
 }
 
 fun Song.asCloudSong() = CloudSong(

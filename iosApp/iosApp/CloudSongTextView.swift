@@ -23,9 +23,10 @@ struct CloudSongTextView: View {
     let onDownloadCurrent: (CloudSong) -> ()
     let onOpenSongAtYandexMusic: (Music) -> ()
     let onOpenSongAtYoutubeMusic: (Music) -> ()
-    let onShowWarningDialog: () -> ()
+    let onSendWarning: (Warning) -> ()
     
     @State var currentChord: String? = nil
+    @State var needShowWarningDialog = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -108,6 +109,17 @@ struct CloudSongTextView: View {
         })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
+            WarningDialog(
+                onDismiss: {
+                    self.needShowWarningDialog = false
+                }, onSend: {
+                    self.needShowWarningDialog = false
+                    let warning = self.cloudSong.warningWithComment(comment: $0)
+                    self.onSendWarning(warning)
+                }
+            )
+        })
     }
     
     func onChordTapped(_ chord: String) {
@@ -132,7 +144,7 @@ struct CloudSongTextView: View {
     
     func onShowWarning() {
         print("show warning")
-        self.onShowWarningDialog()
+        self.needShowWarningDialog = true
     }
     
     func onLike() {

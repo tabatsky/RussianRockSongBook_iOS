@@ -39,8 +39,6 @@ struct ContentView: View {
     
     @State var needShowToast = false
     @State var toastText = ""
-    
-    @State var needShowWarningDialog = false
 
 	var body: some View {
 	    ZStack {
@@ -67,7 +65,7 @@ struct ContentView: View {
                                      onShowToast: showToast,
                                      onOpenSongAtYandexMusic: openSongAtYandexMusic,
                                      onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-                                     onShowWarningDialog: showWarningDialog
+                                     onSendWarning: sendWarning
                         )
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(cloudSongList: self.currentCloudSongList,
@@ -93,7 +91,7 @@ struct ContentView: View {
                                           onDownloadCurrent: downloadCurrent,
                                           onOpenSongAtYandexMusic: openSongAtYandexMusic,
                                           onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-                                          onShowWarningDialog: showWarningDialog
+                                          onSendWarning: sendWarning
                                         )
                     }
                 }
@@ -118,13 +116,6 @@ struct ContentView: View {
                .cornerRadius(10)
                .padding(.top)
         }
-        .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
-            WarningDialog(
-                onDismiss: {
-                    self.needShowWarningDialog = false
-                }
-            )
-        })
     }
     
     func showToast(_ text: String) {
@@ -344,8 +335,17 @@ struct ContentView: View {
         }
     }
     
-    func showWarningDialog() {
-        self.needShowWarningDialog = true
+    func sendWarning(_ warning: Warning) {
+        CloudRepository.shared.addWarningAsync(
+            warning: warning,
+            onSuccess: {
+                showToast("Уведомление отправлено")
+            }, onServerMessage: {
+                showToast($0)
+            }, onError: {
+                $0.printStackTrace()
+                showToast("Ошибка в приложении")
+            })
     }
 }
 

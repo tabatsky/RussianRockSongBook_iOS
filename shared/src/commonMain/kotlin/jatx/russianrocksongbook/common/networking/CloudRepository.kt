@@ -6,6 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.http.encodeURLPath
 import io.ktor.http.parameters
 import io.ktor.utils.io.core.use
+import jatx.russianrocksongbook.common.domain.models.Warning
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -104,6 +105,35 @@ object CloudRepository {
     ) = GlobalScope.launch {
         try {
             val result = addCloudSong(cloudSong)
+            result.message?.let {
+                onServerMessage(it)
+            } ?: run {
+                onSuccess()
+            }
+        } catch (t: Throwable) {
+            onError(t)
+        }
+    }
+
+    private suspend fun addWarning(warning: Warning): ResultWithoutData {
+        return KtorClient.newHttpClient().use {
+            it.submitForm(
+                url = "$BASE_URL/warnings/add",
+                formParameters = parameters {
+                    append("warningJSON", Json.encodeToString(warning))
+                }
+            ).body()
+        }
+    }
+
+    fun addWarningAsync(
+        warning: Warning,
+        onSuccess: () -> Unit,
+        onServerMessage: (String) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = GlobalScope.launch {
+        try {
+            val result = addWarning(warning)
             result.message?.let {
                 onServerMessage(it)
             } ?: run {

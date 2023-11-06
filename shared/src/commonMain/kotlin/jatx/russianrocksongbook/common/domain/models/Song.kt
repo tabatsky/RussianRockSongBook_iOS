@@ -13,7 +13,7 @@ data class Song(
     var deleted: Boolean = false,
     var outOfTheBox: Boolean = true,
     var origTextMD5: String = ""
-): Music {
+): Music, Warnable {
     // for correct MutableStateFlow working
     override fun equals(other: Any?): Boolean {
         return super.equals(other) && other is Song && favorite == other.favorite
@@ -31,6 +31,14 @@ data class Song(
 
     override val searchFor: String
         get() = "$artist $title"
+
+    override fun warningWithComment(comment: String) = Warning(
+        warningType = TYPE_OUT_OF_THE_BOX,
+        artist = artist,
+        title = title,
+        variant = -1,
+        comment = comment
+    )
 }
 
 fun songTextHash(text: String): String {

@@ -20,7 +20,7 @@ struct SongTextView: View {
     let onShowToast: (String) -> ()
     let onOpenSongAtYandexMusic: (Music) -> ()
     let onOpenSongAtYoutubeMusic: (Music) -> ()
-    let onShowWarningDialog: () -> ()
+    let onSendWarning: (Warning) -> ()
     
     static let dY: CGFloat = 8.0
     
@@ -34,6 +34,8 @@ struct SongTextView: View {
     @State var isEditorMode = false
     @State var editorText = ""
     @State var isPresentingDeleteConfirm = false
+    
+    @State var needShowWarningDialog = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -231,6 +233,17 @@ struct SongTextView: View {
                 ]
             )
         }
+        .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
+            WarningDialog(
+                onDismiss: {
+                    self.needShowWarningDialog = false
+                }, onSend: {
+                    self.needShowWarningDialog = false
+                    let warning = self.song.warningWithComment(comment: $0)
+                    self.onSendWarning(warning)
+                }
+            )
+        })
     }
     
     func autoScroll(sp: ScrollViewProxy) {
@@ -274,7 +287,7 @@ struct SongTextView: View {
     
     func onShowWarning() {
         print("show warning")
-        self.onShowWarningDialog()
+        self.needShowWarningDialog = true
     }
     
     func onUploadToCloud() {

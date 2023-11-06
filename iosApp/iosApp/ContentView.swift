@@ -39,6 +39,8 @@ struct ContentView: View {
     
     @State var needShowToast = false
     @State var toastText = ""
+    
+    @State var needShowWarningDialog = false
 
 	var body: some View {
 	    ZStack {
@@ -64,7 +66,8 @@ struct ContentView: View {
                                      onDeleteToTrashConfirmed: deleteCurrentToTrash,
                                      onShowToast: showToast,
                                      onOpenSongAtYandexMusic: openSongAtYandexMusic,
-                                     onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic
+                                     onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
+                                     onShowWarningDialog: showWarningDialog
                         )
                     } else if (self.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(cloudSongList: self.currentCloudSongList,
@@ -89,7 +92,8 @@ struct ContentView: View {
                                           onPerformDislike: performDislike,
                                           onDownloadCurrent: downloadCurrent,
                                           onOpenSongAtYandexMusic: openSongAtYandexMusic,
-                                          onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic
+                                          onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
+                                          onShowWarningDialog: showWarningDialog
                                         )
                     }
                 }
@@ -114,6 +118,13 @@ struct ContentView: View {
                .cornerRadius(10)
                .padding(.top)
         }
+        .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
+            WarningDialog(
+                onDismiss: {
+                    self.needShowWarningDialog = false
+                }
+            )
+        })
     }
     
     func showToast(_ text: String) {
@@ -331,6 +342,10 @@ struct ContentView: View {
         if let url = URL(string: music.youtubeMusicUrl) {
             UIApplication.shared.open(url)
         }
+    }
+    
+    func showWarningDialog() {
+        self.needShowWarningDialog = true
     }
 }
 

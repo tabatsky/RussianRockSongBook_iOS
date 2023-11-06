@@ -26,6 +26,8 @@
 		CE1AF2192AD55E6E001ED685 /* AttributedSongTextBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */; };
 		CE2BAC2A2AF59774003D3E05 /* SwiftUI_SimpleToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BAC292AF59774003D3E05 /* SwiftUI_SimpleToast.framework */; };
 		CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */; };
+		CE3CC61C2AF87D3B00B5A0D7 /* CustomDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */; };
+		CE3CC61E2AF87E6000B5A0D7 /* WarningDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */; };
 		CE46D4D22ADC920700582136 /* TheTextViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46D4D12ADC920600582136 /* TheTextViewer.swift */; };
 		CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */; };
 		CE5A9C392AF2FABB006580F4 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C382AF2FABB006580F4 /* Version.swift */; };
@@ -60,6 +62,8 @@
 		CE2BAC262AF595E7003D3E05 /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2BAC292AF59774003D3E05 /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldAttributedSongText.swift; sourceTree = "<group>"; };
+		CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDialog.swift; sourceTree = "<group>"; };
+		CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningDialog.swift; sourceTree = "<group>"; };
 		CE46D4D12ADC920600582136 /* TheTextViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextViewer.swift; sourceTree = "<group>"; };
 		CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextEditor.swift; sourceTree = "<group>"; };
 		CE5A9C382AF2FABB006580F4 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
@@ -149,6 +153,8 @@
 				CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */,
 				CE11C7D52AE0B06D00A7716C /* AllChords.swift */,
 				CE5A9C382AF2FABB006580F4 /* Version.swift */,
+				CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */,
+				CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -301,6 +307,7 @@
 				CE0F57442AD9253D0080E6B1 /* ChordViewer.swift in Sources */,
 				CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */,
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,
+				CE3CC61E2AF87E6000B5A0D7 /* WarningDialog.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */,
 				CE5A9C392AF2FABB006580F4 /* Version.swift in Sources */,
@@ -311,6 +318,7 @@
 				CE1AF2192AD55E6E001ED685 /* AttributedSongTextBuilder.swift in Sources */,
 				CE11C7D62AE0B06D00A7716C /* AllChords.swift in Sources */,
 				CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */,
+				CE3CC61C2AF87D3B00B5A0D7 /* CustomDialog.swift in Sources */,
 				CE0F57632AD930250080E6B1 /* Instrument.swift in Sources */,
 				CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */,
 				CE0F15642AD60F8100F27CED /* ContainerView.swift in Sources */,

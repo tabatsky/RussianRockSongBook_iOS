@@ -23,6 +23,7 @@ struct CloudSongTextView: View {
     let onDownloadCurrent: (CloudSong) -> ()
     let onOpenSongAtYandexMusic: (Music) -> ()
     let onOpenSongAtYoutubeMusic: (Music) -> ()
+    let onShowWarningDialog: () -> ()
     
     @State var currentChord: String? = nil
     
@@ -126,21 +127,22 @@ struct CloudSongTextView: View {
     
     func onDownloadFromCloud() {
         print("download from cloud")
-        onDownloadCurrent(self.cloudSong)
+        self.onDownloadCurrent(self.cloudSong)
     }
     
     func onShowWarning() {
         print("show warning")
+        self.onShowWarningDialog()
     }
     
     func onLike() {
         print("like")
-        onPerformLike(self.cloudSong)
+        self.onPerformLike(self.cloudSong)
     }
     
     func onDislike() {
         print("dislike")
-        onPerformDislike(self.cloudSong)
+        self.onPerformDislike(self.cloudSong)
     }
 }
 

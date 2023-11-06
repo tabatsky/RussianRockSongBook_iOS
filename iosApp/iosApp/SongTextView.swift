@@ -20,6 +20,7 @@ struct SongTextView: View {
     let onShowToast: (String) -> ()
     let onOpenSongAtYandexMusic: (Music) -> ()
     let onOpenSongAtYoutubeMusic: (Music) -> ()
+    let onShowWarningDialog: () -> ()
     
     static let dY: CGFloat = 8.0
     
@@ -264,7 +265,7 @@ struct SongTextView: View {
     func onSave() {
         self.isAutoScroll = false
         self.isEditorMode = false
-        onSaveSongText(self.editorText)
+        self.onSaveSongText(self.editorText)
     }
     
     func onDeleteToTrash() {
@@ -273,6 +274,7 @@ struct SongTextView: View {
     
     func onShowWarning() {
         print("show warning")
+        self.onShowWarningDialog()
     }
     
     func onUploadToCloud() {

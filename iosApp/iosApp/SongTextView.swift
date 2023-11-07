@@ -156,8 +156,7 @@ struct SongTextView: View {
             }
         }
         .background(Theme.colorBg)
-        .navigationBarItems(leading:
-                                Button(action: {
+        .navigationBarItems(leading: Button(action: {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 onBackClick()
             }

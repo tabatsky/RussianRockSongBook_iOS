@@ -14,6 +14,7 @@ struct SongListView: View {
     let onSongClick: (Int) -> ()
     let onScroll: (Int) -> ()
     let onDrawerClick: () -> ()
+    let onOpenSettings: () -> ()
     
     @State var scrollPosition: Int = -1
     @State var initialScrollDone: Bool = false
@@ -120,9 +121,22 @@ struct SongListView: View {
                         }, trailing: Spacer())
                 .navigationTitle(self.artist)
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        openSettings()
+                    }
+                }) {
+                    Image("ic_settings")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                })
                 .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
             }
         }
+    }
+    
+    func openSettings() {
+        self.onOpenSettings()
     }
 }
 

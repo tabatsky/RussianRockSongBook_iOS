@@ -52,8 +52,9 @@ struct ContentView: View {
                                      songIndex: currentSongIndex,
                                      onSongClick: selectSong,
                                      onScroll: updateSongIndexByScroll,
-                                     onDrawerClick: toggleDrawer)
-                            
+                                     onDrawerClick: toggleDrawer,
+                                     onOpenSettings: openSettings
+                        )
                     } else if (self.currentScreenVariant == .songText) {
                         SongTextView(song: self.currentSong!,
                                      onBackClick: back,
@@ -76,7 +77,8 @@ struct ContentView: View {
                                         onLoadSuccess: refreshCloudSongList,
                                         onBackClick: back,
                                         onCloudSongClick: selectCloudSong,
-                                        onOrderBySelected: selectOrderBy)
+                                        onOrderBySelected: selectOrderBy
+                        )
                     } else if (self.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(cloudSong: self.currentCloudSong!,
                                           cloudSongIndex: self.currentCloudSongIndex,
@@ -93,7 +95,9 @@ struct ContentView: View {
                                           onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
                                           onSendWarning: sendWarning,
                                           onShowToast: showToast
-                                        )
+                        )
+                    } else if (self.currentScreenVariant == .settings) {
+                        SettingsView(onBackClick: back)
                     }
                 }
             }
@@ -284,6 +288,8 @@ struct ContentView: View {
             self.currentScreenVariant = .songList
         } else if (self.currentScreenVariant == .cloudSongText) {
             self.currentScreenVariant = .cloudSearch
+        } else if (self.currentScreenVariant == .settings) {
+            self.currentScreenVariant = .songList
         }
     }
     
@@ -348,6 +354,11 @@ struct ContentView: View {
                 showToast("Ошибка в приложении")
             })
     }
+    
+    func openSettings() {
+        print("opening settings")
+        self.currentScreenVariant = .settings
+    }
 }
 
 enum ScreenVariant {
@@ -356,6 +367,7 @@ enum ScreenVariant {
     case songText
     case cloudSearch
     case cloudSongText
+    case settings
 }
 
 struct ContentView_Previews: PreviewProvider {

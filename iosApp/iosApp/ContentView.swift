@@ -91,7 +91,8 @@ struct ContentView: View {
                                           onDownloadCurrent: downloadCurrent,
                                           onOpenSongAtYandexMusic: openSongAtYandexMusic,
                                           onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-                                          onSendWarning: sendWarning
+                                          onSendWarning: sendWarning,
+                                          onShowToast: showToast
                                         )
                     }
                 }

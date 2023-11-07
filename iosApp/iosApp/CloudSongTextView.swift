@@ -24,6 +24,7 @@ struct CloudSongTextView: View {
     let onOpenSongAtYandexMusic: (Music) -> ()
     let onOpenSongAtYoutubeMusic: (Music) -> ()
     let onSendWarning: (Warning) -> ()
+    let onShowToast: (String) -> ()
     
     @State var currentChord: String? = nil
     @State var needShowWarningDialog = false
@@ -114,9 +115,13 @@ struct CloudSongTextView: View {
                 onDismiss: {
                     self.needShowWarningDialog = false
                 }, onSend: {
-                    self.needShowWarningDialog = false
-                    let warning = self.cloudSong.warningWithComment(comment: $0)
-                    self.onSendWarning(warning)
+                    if ($0.isEmpty) {
+                        self.onShowToast("Комментарий не должен быть пустым")
+                    } else {
+                        self.needShowWarningDialog = false
+                        let warning = self.cloudSong.warningWithComment(comment: $0)
+                        self.onSendWarning(warning)
+                    }
                 }
             )
         })

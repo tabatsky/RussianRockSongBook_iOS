@@ -34,7 +34,7 @@ struct WarningDialog: View {
             }, label: {
                 Text("Отправить")
                     .foregroundColor(Theme.colorBg)
-                    .frame(minHeight: 45.0, maxHeight: 45.0)
+                    .frame(height: 45.0)
             })
             Divider()
                 .frame(height: 5.0)
@@ -44,7 +44,7 @@ struct WarningDialog: View {
             }, label: {
                 Text("Отмена")
                     .foregroundColor(Theme.colorBg)
-                    .frame(minHeight: 45.0, maxHeight: 45.0)
+                    .frame(height: 45.0)
             })
         }
         .frame(width: 200.0, height: 300.0)

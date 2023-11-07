@@ -258,9 +258,13 @@ struct SongTextView: View {
                 onDismiss: {
                     self.needShowWarningDialog = false
                 }, onSend: {
-                    self.needShowWarningDialog = false
-                    let warning = self.song.warningWithComment(comment: $0)
-                    self.onSendWarning(warning)
+                    if ($0.isEmpty) {
+                        self.onShowToast("Комментарий не должен быть пустым")
+                    } else {
+                        self.needShowWarningDialog = false
+                        let warning = self.song.warningWithComment(comment: $0)
+                        self.onSendWarning(warning)
+                    }
                 }
             )
         })

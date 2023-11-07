@@ -29,10 +29,7 @@ struct CustomDialog<DialogContent: View>: ViewModifier {
                 // of the screen
                 ZStack {
                     dialogContent
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .foregroundColor(.white))
-                }.padding(40)
+                }
             }
         }
     }

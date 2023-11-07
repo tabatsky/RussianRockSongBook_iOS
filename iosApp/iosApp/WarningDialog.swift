@@ -15,33 +15,39 @@ struct WarningDialog: View {
     @State var comment = ""
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0.0) {
             TheTextEditor(
                 text: self.comment,
                 width: 190.0,
-                height: 180.0,
+                height: 190.0,
                 onTextChanged: {
                     self.comment = $0
                 })
             .background(Theme.colorBg)
             .padding(5.0)
-            Spacer()
+            .background(Theme.colorCommon)
+            Divider()
+                .frame(height: 5.0)
+                .background(Theme.colorBg)
             Button(action: {
                 self.onSend(comment)
             }, label: {
                 Text("Отправить")
                     .foregroundColor(Theme.colorBg)
+                    .frame(minHeight: 45.0, maxHeight: 45.0)
             })
-            .padding(10.0)
+            Divider()
+                .frame(height: 5.0)
+                .background(Theme.colorBg)
             Button(action: {
                 self.onDismiss()
             }, label: {
                 Text("Отмена")
                     .foregroundColor(Theme.colorBg)
+                    .frame(minHeight: 45.0, maxHeight: 45.0)
             })
-            .padding(10.0)
         }
-        .frame(width: 200.0, height: 290.0)
+        .frame(width: 200.0, height: 300.0)
         .background(Theme.colorCommon)
     }
 }

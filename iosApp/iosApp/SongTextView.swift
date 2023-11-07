@@ -217,22 +217,42 @@ struct SongTextView: View {
         })
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
-        .actionSheet(isPresented: self.$isPresentingDeleteConfirm) {
-            ActionSheet(
-                title: Text("Вы уверены?"),
-                message: Text("Песня будет удалена из локальной базы данных"),
-                buttons: [
-                    .default(Text("Ок")) {
-                        self.isPresentingDeleteConfirm = false
-                        self.onDeleteToTrashConfirmed()
-                    },
-                    
-                    .cancel(Text("Отмена")) {
-                        self.isPresentingDeleteConfirm = false
-                    }
-                ]
-            )
-        }
+        .customDialog(isShowing: self.$isPresentingDeleteConfirm, dialogContent: {
+            VStack {
+                Text("Вы уверены?")
+                    .font(Theme.fontTitle)
+                    .foregroundColor(Theme.colorBg)
+                Spacer()
+                    .frame(height: 20.0)
+                Text("Песня будет удалена из локальной базы данных")
+                    .font(Theme.fontCommon)
+                    .foregroundColor(Theme.colorBg)
+                Spacer()
+                Divider()
+                    .frame(height: 5.0)
+                    .background(Theme.colorBg)
+                Button(action: {
+                    self.isPresentingDeleteConfirm = false
+                    self.onDeleteToTrashConfirmed()
+                }, label: {
+                    Text("Ок")
+                        .foregroundColor(Theme.colorBg)
+                })
+                .padding(10.0)
+                Divider()
+                    .frame(height: 5.0)
+                    .background(Theme.colorBg)
+                Button(action: {
+                    self.isPresentingDeleteConfirm = false
+                }, label: {
+                    Text("Отмена")
+                        .foregroundColor(Theme.colorBg)
+                })
+                .padding(10.0)
+            }
+            .frame(width: 200.0, height: 270.0)
+            .background(Theme.colorCommon)
+        })
         .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
             WarningDialog(
                 onDismiss: {

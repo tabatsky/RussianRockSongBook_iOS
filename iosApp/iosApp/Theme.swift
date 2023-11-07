@@ -18,6 +18,7 @@ struct Theme {
     static let colorCommon = colorDarkYellow
     static let fontTitle = Font.system(size: 32)
     static let fontText = Font.system(size: 16, design: .monospaced)
+    static let fontCommon = Font.system(size: 16)
 }
 
 extension Color {

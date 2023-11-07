@@ -218,7 +218,7 @@ struct SongTextView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
         .customDialog(isShowing: self.$isPresentingDeleteConfirm, dialogContent: {
-            VStack {
+            VStack(spacing: 0.0) {
                 Text("Вы уверены?")
                     .font(Theme.fontTitle)
                     .foregroundColor(Theme.colorBg)
@@ -237,8 +237,8 @@ struct SongTextView: View {
                 }, label: {
                     Text("Ок")
                         .foregroundColor(Theme.colorBg)
+                        .frame(height: 45.0)
                 })
-                .padding(10.0)
                 Divider()
                     .frame(height: 5.0)
                     .background(Theme.colorBg)
@@ -247,8 +247,8 @@ struct SongTextView: View {
                 }, label: {
                     Text("Отмена")
                         .foregroundColor(Theme.colorBg)
+                        .frame(height: 45.0)
                 })
-                .padding(10.0)
             }
             .frame(width: 200.0, height: 270.0)
             .background(Theme.colorCommon)

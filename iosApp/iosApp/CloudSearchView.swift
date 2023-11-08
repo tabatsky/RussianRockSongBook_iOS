@@ -18,6 +18,8 @@ struct CloudSearchView: View {
     let currentCloudSongList: [CloudSong]?
     let currentCloudSongIndex: Int
     
+    let theme: Theme
+    
     let orderBy: OrderBy
     
     let allLikes: Dictionary<CloudSong, Int>
@@ -31,7 +33,8 @@ struct CloudSearchView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, allLikes: Dictionary<CloudSong, Int>, allDislikes: Dictionary<CloudSong, Int>, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> ()) {
+    init(theme: Theme, cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, allLikes: Dictionary<CloudSong, Int>, allDislikes: Dictionary<CloudSong, Int>, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> ()) {
+        self.theme = theme
         self.currentCloudSongList = cloudSongList
         self.currentCloudSongIndex = cloudSongIndex
         self.orderBy = orderBy
@@ -49,11 +52,11 @@ struct CloudSearchView: View {
                 HStack {
                     VStack {
                         TextField("", text: $searchFor)
-                            .foregroundColor(Theme.colorMain)
+                            .foregroundColor(self.theme.colorMain)
                             .frame(height: 56.0)
                             .background(Color.black)
                             .padding(8)
-                            .background(Theme.colorCommon)
+                            .background(self.theme.colorCommon)
                         Menu {
                             Button(OrderBy.byIdDesc.orderByRus) {
                                 selectOrderBy(orderBy: OrderBy.byIdDesc)
@@ -67,10 +70,10 @@ struct CloudSearchView: View {
                         } label: {
                             Text(orderBy.orderByRus)
                         }
-                            .foregroundColor(Theme.colorMain)
+                            .foregroundColor(self.theme.colorMain)
                             .frame(maxWidth: .infinity)
                             .frame(height: 36.0)
-                            .background(Theme.colorCommon)
+                            .background(self.theme.colorCommon)
                     }
                     Button(action: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -79,9 +82,9 @@ struct CloudSearchView: View {
                     }) {
                         Image("ic_cloud_search_white")
                             .resizable()
-                            .colorMultiply(Theme.colorMain)
+                            .colorMultiply(self.theme.colorMain)
                             .padding(8)
-                            .background(Theme.colorCommon)
+                            .background(self.theme.colorCommon)
                             .padding([.top, .bottom, .trailing], 2)
                             .frame(width: 120.0, height: 120.0)
                     }
@@ -91,14 +94,14 @@ struct CloudSearchView: View {
                     HStack {
                         Spacer()
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: Theme.colorMain))
+                            .progressViewStyle(CircularProgressViewStyle(tint: self.theme.colorMain))
                             .scaleEffect(5.0)
                         Spacer()
                     }
                     Spacer()
                 } else if (self.currentSearchState == .emptyList) {
                     Text("Список пуст")
-                        .foregroundColor(Theme.colorMain)
+                        .foregroundColor(self.theme.colorMain)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else if (self.currentSearchState == .loadSuccess) {
                     ScrollViewReader { sp in
@@ -117,22 +120,22 @@ struct CloudSearchView: View {
                                     let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
                                     VStack {
                                         Text(visibleTitleWithRaiting)
-                                            .foregroundColor(Theme.colorMain)
+                                            .foregroundColor(self.theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Text(artist)
-                                            .foregroundColor(Theme.colorMain)
+                                            .foregroundColor(self.theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Rectangle()
-                                            .fill(Theme.colorCommon)
+                                            .fill(self.theme.colorCommon)
                                             .frame(height: 3)
                                             .edgesIgnoringSafeArea(.horizontal)
                                     }
                                         .id(cloudSong)
-                                        .foregroundColor(Theme.colorMain)
+                                        .foregroundColor(self.theme.colorMain)
                                         .background(GeometryReader { itemGeom in
-                                            Theme.colorBg
+                                            self.theme.colorBg
                                                 .preference(
                                                     key: VisibleKey.self,
                                                     // See discussion!
@@ -152,7 +155,7 @@ struct CloudSearchView: View {
                                                     }
                                                 }
                                         })
-                                        .background(Theme.colorBg)
+                                        .background(self.theme.colorBg)
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
@@ -172,7 +175,7 @@ struct CloudSearchView: View {
                             Spacer()
                         }
                         .background(GeometryReader { scrollViewGeom in
-                            Theme.colorBg
+                            self.theme.colorBg
                                 .preference(
                                     key: FrameKey.self,
                                     // See discussion!
@@ -202,7 +205,7 @@ struct CloudSearchView: View {
                 searchSongs(searchFor: self.searchFor, orderBy: orderBy)
             })
         }
-        .background(Theme.colorBg)
+        .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -215,7 +218,7 @@ struct CloudSearchView: View {
                 }, trailing: Spacer())
         .navigationTitle(ContentView.ARTIST_CLOUD_SONGS)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
     }
     
     func searchSongs(searchFor: String, orderBy: OrderBy) {

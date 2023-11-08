@@ -11,24 +11,26 @@ import SwiftUI
 struct NavigationDrawer: View {
     private let width = UIScreen.main.bounds.width - 100
     private let height = UIScreen.main.bounds.height
+    let theme: Theme
     let isOpen: Bool
     let onArtistClick: (String) -> ()
     let onDismiss: () -> ()
 
     var body: some View {
         HStack {
-            DrawerContent(onArtistClick: onArtistClick, onDismiss: onDismiss)
+            DrawerContent(theme: self.theme, onArtistClick: onArtistClick, onDismiss: onDismiss)
                 .frame(width: self.width)
-                .background(Theme.colorMain)
+                .background(self.theme.colorMain)
                 .offset(x: self.isOpen ? 0 : -self.width)
                 .animation(.default)
             Spacer()
         }
-        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
     }
 }
 
 struct DrawerContent: View {
+    let theme: Theme
     let onArtistClick: (String) -> ()
     let onDismiss: () -> ()
 
@@ -52,21 +54,21 @@ struct DrawerContent: View {
                         }
                         Text("Меню")
                             .bold()
-                            .foregroundColor(Theme.colorBg)
+                            .foregroundColor(self.theme.colorBg)
                     }
                         .padding(16)
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
-                        .background(Theme.colorCommon)
+                        .background(self.theme.colorCommon)
                     LazyVGrid(columns: columns, spacing: 0) {
                         ForEach(0..<artists.count, id: \.self) { index in
                             let artist = artists[index]
                             let isBold = ContentView.predefinedList.contains(artist)
                             Text(artist)
                                 .font(Font.headline.weight(isBold ? .bold : .regular))
-                                .foregroundColor(Theme.colorBg)
+                                .foregroundColor(self.theme.colorBg)
                                 .padding(16)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Theme.colorMain)
+                                .background(self.theme.colorMain)
                                 .highPriorityGesture(
                                     TapGesture()
                                         .onEnded { _ in
@@ -74,14 +76,14 @@ struct DrawerContent: View {
                                         }
                                 )
                             Rectangle()
-                                .fill(Theme.colorCommon)
+                                .fill(self.theme.colorCommon)
                                 .frame(height: 3)
                                 .edgesIgnoringSafeArea(.horizontal)
                         }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                     }
                     Spacer()
                 }
-                .background(Theme.colorMain)
+                .background(self.theme.colorMain)
             }
         }
     }

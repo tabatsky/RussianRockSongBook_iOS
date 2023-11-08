@@ -9,15 +9,40 @@
 import SwiftUI
 
 struct SettingsView: View {
+    let theme: Theme
     let onBackClick: () -> ()
+    
+    @State var themeVariant = ThemeVariant.dark
     
     var body: some View {
         VStack {
-            Text("some settings here")
-                .foregroundColor(Theme.colorMain)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            Menu {
+                Button(ThemeVariant.dark.themeName()) {
+                    self.themeVariant = ThemeVariant.dark
+                }
+                Button(ThemeVariant.light.themeName()) {
+                    self.themeVariant = ThemeVariant.light
+                }
+            } label: {
+                Text(self.themeVariant.themeName())
+            }
+                .foregroundColor(self.theme.colorMain)
+                .frame(maxWidth: .infinity)
+                .frame(height: 36.0)
+                .background(self.theme.colorCommon)
+            Spacer()
+            Button(action: {
+                
+            }, label: {
+                Text("Сохранить")
+                    .foregroundColor(self.theme.colorBg)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 45.0)
+            })
+            .background(self.theme.colorCommon)
         }
-        .background(Theme.colorBg)
+        .padding(10.0)
+        .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -28,8 +53,8 @@ struct SettingsView: View {
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 }, trailing: Spacer())
-        .navigationTitle("Settings")
+        .navigationTitle("Настройки")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
     }
 }

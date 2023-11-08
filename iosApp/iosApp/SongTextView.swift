@@ -10,6 +10,7 @@ import SwiftUI
 import shared
 
 struct SongTextView: View {
+    let theme: Theme
     let song: Song
     let onBackClick: () -> ()
     let onPrevClick: () -> ()
@@ -44,9 +45,9 @@ struct SongTextView: View {
             ZStack {
                 VStack {
                     Text(title)
-                        .font(Theme.fontTitle)
+                        .font(self.theme.fontTitle)
                         .bold()
-                        .foregroundColor(Theme.colorMain)
+                        .foregroundColor(self.theme.colorMain)
                         .padding(24)
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
                     
@@ -55,9 +56,10 @@ struct SongTextView: View {
                             ScrollView(.vertical) {
                                 ContainerView {
                                     if (self.isEditorMode) {
-                                        TheTextEditor(text: song.text, width: geometry.size.width, height: self.textHeight, onTextChanged: { self.editorText = $0 })
+                                        TheTextEditor(theme: self.theme, text: song.text, width: geometry.size.width, height: self.textHeight, onTextChanged: { self.editorText = $0 })
                                     } else {
                                         TheTextViewer(
+                                            theme: self.theme,
                                             text: song.text,
                                             width: geometry.size.width,
                                             onChordTapped: onChordTapped,
@@ -77,7 +79,7 @@ struct SongTextView: View {
                                 .id("text")
                                 .frame(minHeight: self.textHeight)
                                 .background(GeometryReader { scrollViewGeom in
-                                    Theme.colorBg
+                                    self.theme.colorBg
                                         .preference(
                                             key: FrameKeySongText.self,
                                             // See discussion!
@@ -138,6 +140,7 @@ struct SongTextView: View {
                     }
                     SongTextPanel(
                         W: geometry.size.width,
+                        theme: self.theme,
                         isEditorMode: self.isEditorMode,
                         onEdit: onEdit,
                         onSave: onSave,
@@ -149,13 +152,13 @@ struct SongTextView: View {
                     )
                 }
                 if let chord = self.currentChord {
-                    ChordViewer(chord: chord, onDismiss: {
+                    ChordViewer(theme: self.theme, chord: chord, onDismiss: {
                         self.currentChord = nil
                     })
                 }
             }
         }
-        .background(Theme.colorBg)
+        .background(self.theme.colorBg)
         .navigationBarItems(leading: Button(action: {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 onBackClick()
@@ -215,45 +218,46 @@ struct SongTextView: View {
             }
         })
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
         .customDialog(isShowing: self.$isPresentingDeleteConfirm, dialogContent: {
             VStack(spacing: 0.0) {
                 Text("Вы уверены?")
-                    .font(Theme.fontTitle)
-                    .foregroundColor(Theme.colorBg)
+                    .font(self.theme.fontTitle)
+                    .foregroundColor(self.theme.colorBg)
                 Spacer()
                     .frame(height: 20.0)
                 Text("Песня будет удалена из локальной базы данных")
-                    .font(Theme.fontCommon)
-                    .foregroundColor(Theme.colorBg)
+                    .font(self.theme.fontCommon)
+                    .foregroundColor(self.theme.colorBg)
                 Spacer()
                 Divider()
                     .frame(height: 5.0)
-                    .background(Theme.colorBg)
+                    .background(self.theme.colorBg)
                 Button(action: {
                     self.isPresentingDeleteConfirm = false
                     self.onDeleteToTrashConfirmed()
                 }, label: {
                     Text("Ок")
-                        .foregroundColor(Theme.colorBg)
+                        .foregroundColor(self.theme.colorBg)
                         .frame(height: 45.0)
                 })
                 Divider()
                     .frame(height: 5.0)
-                    .background(Theme.colorBg)
+                    .background(self.theme.colorBg)
                 Button(action: {
                     self.isPresentingDeleteConfirm = false
                 }, label: {
                     Text("Отмена")
-                        .foregroundColor(Theme.colorBg)
+                        .foregroundColor(self.theme.colorBg)
                         .frame(height: 45.0)
                 })
             }
             .frame(width: 200.0, height: 270.0)
-            .background(Theme.colorCommon)
+            .background(self.theme.colorCommon)
         })
         .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
             WarningDialog(
+                theme: self.theme,
                 onDismiss: {
                     self.needShowWarningDialog = false
                 }, onSend: {
@@ -346,6 +350,7 @@ struct SongTextView: View {
 
 struct SongTextPanel: View {
     let W: CGFloat
+    let theme: Theme
     let isEditorMode: Bool
     let onEdit: () -> ()
     let onSave: () -> ()
@@ -367,7 +372,7 @@ struct SongTextPanel: View {
                 Image("ic_yandex")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -377,7 +382,7 @@ struct SongTextPanel: View {
                 Image("ic_youtube")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -387,7 +392,7 @@ struct SongTextPanel: View {
                 Image("ic_upload")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -397,7 +402,7 @@ struct SongTextPanel: View {
                 Image("ic_warning")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -407,7 +412,7 @@ struct SongTextPanel: View {
                 Image("ic_trash")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             if (self.isEditorMode) {
                 Button(action: {
@@ -418,7 +423,7 @@ struct SongTextPanel: View {
                     Image("ic_save")
                         .resizable()
                         .padding(A / 6)
-                        .background(Theme.colorCommon)
+                        .background(self.theme.colorCommon)
                         .frame(width: A, height: A)
                 }
             } else {
@@ -430,7 +435,7 @@ struct SongTextPanel: View {
                     Image("ic_edit")
                         .resizable()
                         .padding(A / 6)
-                        .background(Theme.colorCommon)
+                        .background(self.theme.colorCommon)
                         .frame(width: A, height: A)
                 }
             }

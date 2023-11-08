@@ -17,6 +17,8 @@ struct ContentView: View {
     private let toastOptions = SimpleToastOptions(
         hideAfter: 2
     )
+    
+    @State var theme = ThemeVariant.dark.theme()
 
 	@State var isDrawerOpen: Bool = false
 	@State var currentScreenVariant: ScreenVariant = ScreenVariant.start
@@ -46,9 +48,13 @@ struct ContentView: View {
             if !self.isDrawerOpen {
                 NavigationView {
                     if (self.currentScreenVariant == .start) {
-                        StartScreenView(onUpdateDone: onUpdateDone)
+                        StartScreenView(
+                            theme: self.theme,
+                            onUpdateDone: onUpdateDone
+                        )
                     } else if (self.currentScreenVariant == .songList) {
-                        SongListView(artist: currentArtist,
+                        SongListView(theme: self.theme,
+                                     artist: currentArtist,
                                      songIndex: currentSongIndex,
                                      onSongClick: selectSong,
                                      onScroll: updateSongIndexByScroll,
@@ -56,7 +62,8 @@ struct ContentView: View {
                                      onOpenSettings: openSettings
                         )
                     } else if (self.currentScreenVariant == .songText) {
-                        SongTextView(song: self.currentSong!,
+                        SongTextView(theme: self.theme,
+                                     song: self.currentSong!,
                                      onBackClick: back,
                                      onPrevClick: prevSong,
                                      onNextClick: nextSong,
@@ -69,7 +76,8 @@ struct ContentView: View {
                                      onSendWarning: sendWarning
                         )
                     } else if (self.currentScreenVariant == .cloudSearch) {
-                        CloudSearchView(cloudSongList: self.currentCloudSongList,
+                        CloudSearchView(theme: self.theme, 
+                                        cloudSongList: self.currentCloudSongList,
                                         cloudSongIndex: self.currentCloudSongIndex,
                                         orderBy: self.currentCloudOrderBy,
                                         allLikes: self.allLikes,
@@ -80,7 +88,8 @@ struct ContentView: View {
                                         onOrderBySelected: selectOrderBy
                         )
                     } else if (self.currentScreenVariant == .cloudSongText) {
-                        CloudSongTextView(cloudSong: self.currentCloudSong!,
+                        CloudSongTextView(theme: self.theme,
+                                          cloudSong: self.currentCloudSong!,
                                           cloudSongIndex: self.currentCloudSongIndex,
                                           cloudSongCount: self.currentCloudSongCount,
                                           allLikes: self.allLikes,
@@ -97,17 +106,18 @@ struct ContentView: View {
                                           onShowToast: showToast
                         )
                     } else if (self.currentScreenVariant == .settings) {
-                        SettingsView(onBackClick: back)
+                        SettingsView(theme: self.theme, onBackClick: back)
                     }
                 }
             }
             /// Navigation Drawer part
-            NavigationDrawer(isOpen: self.isDrawerOpen,
+            NavigationDrawer(theme: self.theme,
+                             isOpen: self.isDrawerOpen,
                              onArtistClick: selectArtist,
                              onDismiss: { self.isDrawerOpen.toggle() })
                  /// Other behaviors
         }
-        .background(Theme.colorCommon)
+        .background(self.theme.colorCommon)
         .onTapGesture {
             if self.isDrawerOpen {
                 self.isDrawerOpen.toggle()
@@ -116,8 +126,8 @@ struct ContentView: View {
         .simpleToast(isPresented: $needShowToast, options: toastOptions) {
             Label(self.toastText, systemImage: "exclamationmark.triangle")
                .padding()
-               .background(Theme.colorMain.opacity(0.8))
-               .foregroundColor(Theme.colorBg)
+               .background(self.theme.colorMain.opacity(0.8))
+               .foregroundColor(self.theme.colorBg)
                .cornerRadius(10)
                .padding(.top)
         }

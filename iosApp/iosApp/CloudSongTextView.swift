@@ -10,6 +10,7 @@ import SwiftUI
 import shared
 
 struct CloudSongTextView: View {
+    let theme: Theme
     let cloudSong: CloudSong
     let cloudSongIndex: Int
     let cloudSongCount: Int
@@ -42,9 +43,9 @@ struct CloudSongTextView: View {
             ZStack {
                 VStack {
                     Text(visibleTitleWithArtistAndRaiting)
-                        .font(Theme.fontTitle)
+                        .font(self.theme.fontTitle)
                         .bold()
-                        .foregroundColor(Theme.colorMain)
+                        .foregroundColor(self.theme.colorMain)
                         .padding(24)
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
                     
@@ -52,6 +53,7 @@ struct CloudSongTextView: View {
                         ScrollViewReader { sp in
                             ScrollView(.vertical) {
                                 TheTextViewer(
+                                    theme: self.theme,
                                     text: cloudSong.text,
                                     width: geometry.size.width,
                                     onChordTapped: onChordTapped,
@@ -61,6 +63,7 @@ struct CloudSongTextView: View {
                     }
                     CloudSongTextPanel(
                         W: geometry.size.width,
+                        theme: self.theme,
                         onOpenYandexMusic: onOpenYandexMusic,
                         onOpenYoutubeMusic: onOpenYoutubeMusuc,
                         onDownloadFromCloud: onDownloadFromCloud,
@@ -70,13 +73,13 @@ struct CloudSongTextView: View {
                     )
                 }
                 if let chord = self.currentChord {
-                    ChordViewer(chord: chord, onDismiss: {
+                    ChordViewer(theme: self.theme, chord: chord, onDismiss: {
                         self.currentChord = nil
                     })
                 }
             }
         }
-        .background(Theme.colorBg)
+        .background(self.theme.colorBg)
         .navigationBarItems(leading:
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -109,9 +112,10 @@ struct CloudSongTextView: View {
             }
         })
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
         .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
             WarningDialog(
+                theme: self.theme, 
                 onDismiss: {
                     self.needShowWarningDialog = false
                 }, onSend: {
@@ -165,6 +169,7 @@ struct CloudSongTextView: View {
 
 struct CloudSongTextPanel: View {
     let W: CGFloat
+    let theme: Theme
     let onOpenYandexMusic: () -> ()
     let onOpenYoutubeMusic: () -> ()
     let onDownloadFromCloud: () -> ()
@@ -184,7 +189,7 @@ struct CloudSongTextPanel: View {
                 Image("ic_yandex")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -194,7 +199,7 @@ struct CloudSongTextPanel: View {
                 Image("ic_youtube")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -204,7 +209,7 @@ struct CloudSongTextPanel: View {
                 Image("ic_download")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -214,7 +219,7 @@ struct CloudSongTextPanel: View {
                 Image("ic_warning")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -224,7 +229,7 @@ struct CloudSongTextPanel: View {
                 Image("ic_like")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -234,7 +239,7 @@ struct CloudSongTextPanel: View {
                 Image("ic_dislike")
                     .resizable()
                     .padding(A / 6)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             }
         }
         .frame(width: W, height: A)

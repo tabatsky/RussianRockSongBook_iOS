@@ -12,13 +12,22 @@ let colorLightYellow = Color(hex: 0xFFFFBB)
 let colorBlack = Color(hex: 0x000000)
 let colorDarkYellow = Color(hex: 0x777755)
 
-struct Theme {
-    static let colorMain = colorLightYellow
-    static let colorBg = colorBlack
-    static let colorCommon = colorDarkYellow
-    static let fontTitle = Font.system(size: 32)
-    static let fontText = Font.system(size: 16, design: .monospaced)
-    static let fontCommon = Font.system(size: 16)
+protocol Theme {
+    var colorMain: Color { get }
+    var colorBg: Color { get }
+    var colorCommon: Color { get }
+    var fontTitle: Font { get }
+    var fontText: Font { get }
+    var fontCommon: Font { get }
+}
+
+struct DarkTheme: Theme {
+    let colorMain = colorLightYellow
+    let colorBg = colorBlack
+    let colorCommon = colorDarkYellow
+    let fontTitle = Font.system(size: 32)
+    let fontText = Font.system(size: 16, design: .monospaced)
+    let fontCommon = Font.system(size: 16)
 }
 
 extension Color {
@@ -33,3 +42,19 @@ extension Color {
     }
 }
 
+enum ThemeVariant: Int {
+    case dark = 0
+    case light = 1
+    
+    func themeName() -> String {
+        if (self == .dark) {
+            return "Темная"
+        } else {
+            return "Светлая"
+        }
+    }
+    
+    func theme() -> Theme {
+        return DarkTheme()
+    }
+}

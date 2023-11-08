@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct TheTextViewer: View {
+    let theme: Theme
     let text: String
     let width: CGFloat
     let onChordTapped: (String) -> ()
@@ -17,11 +18,12 @@ struct TheTextViewer: View {
     var body: some View {
         ContainerView {
             if #available(iOS 15, *) {
-                let text = AttributedSongTextBuilder(text: self.text).attributedText
+                let text = AttributedSongTextBuilder( theme: self.theme, text: self.text).attributedText
                 Text(text)
                     .padding(8)
             } else {
                 OldAttributedSongText(
+                    theme: self.theme, 
                     text: self.text,
                     width: self.width,
                     onHeightChanged: { self.onHeightChanged($0) },
@@ -29,8 +31,8 @@ struct TheTextViewer: View {
                 )
             }
         }
-        .font(Theme.fontText)
-        .foregroundColor(Theme.colorMain)
+        .font(self.theme.fontText)
+        .foregroundColor(self.theme.colorMain)
         .frame(width: self.width, alignment: .leading)
         .background(
             GeometryReader { textGeometry in

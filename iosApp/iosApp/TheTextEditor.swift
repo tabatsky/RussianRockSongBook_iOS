@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct TheTextEditor: View {
+    let theme: Theme
     let text: String
     let width: CGFloat
     let height: CGFloat
@@ -18,7 +19,8 @@ struct TheTextEditor: View {
     @State var desiredHeight: CGFloat = 0.0
     @State var desiredWidth: CGFloat = 0.0
     
-    init(text: String, width: CGFloat, height: CGFloat, onTextChanged: @escaping (String) -> ()) {
+    init(theme: Theme, text: String, width: CGFloat, height: CGFloat, onTextChanged: @escaping (String) -> ()) {
+        self.theme = theme
         self.text = text
         self.width = width
         self.height = height
@@ -35,8 +37,8 @@ struct TheTextEditor: View {
                 .frame(width: self.width, height: self.height)
                 .scrollDisabled(true)
                 .scrollContentBackground(.hidden)
-                .font(Theme.fontText)
-                .foregroundColor(Theme.colorMain)
+                .font(self.theme.fontText)
+                .foregroundColor(self.theme.colorMain)
                 .onAppear(perform: {
                     self.editorText = self.text
                 })
@@ -47,8 +49,8 @@ struct TheTextEditor: View {
                     self.onTextChanged(txt)
                 })
         } else {
-            TextViewForEditor(text: self.$editorText, desiredHeight: self.$desiredHeight, desiredWidth: self.$desiredWidth, onTextChanged: onTextChanged)
-                .foregroundColor(Theme.colorMain)
+            TextViewForEditor(text: self.$editorText, desiredHeight: self.$desiredHeight, desiredWidth: self.$desiredWidth, theme: self.theme, onTextChanged: onTextChanged)
+                .foregroundColor(self.theme.colorMain)
                 .onAppear(perform: {
                     self.editorText = self.text
                     self.desiredWidth = self.width
@@ -71,6 +73,7 @@ struct TextViewForEditor: UIViewRepresentable {
     @Binding var desiredHeight: CGFloat
     @Binding var desiredWidth: CGFloat
     
+    let theme: Theme
     let onTextChanged: (String) -> ()
     
     func makeCoordinator() -> Coordinator {
@@ -103,8 +106,8 @@ struct TextViewForEditor: UIViewRepresentable {
         uiView.text = text
         
         uiView.font = UIFont.monospacedSystemFont(ofSize: 16.0, weight: .regular)
-        uiView.backgroundColor = UIColor(Theme.colorBg)
-        uiView.textColor = UIColor(Theme.colorMain)
+        uiView.backgroundColor = UIColor(self.theme.colorBg)
+        uiView.textColor = UIColor(self.theme.colorMain)
         
         uiView.invalidateIntrinsicContentSize()
     }

@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct SongListView: View {
+    let theme: Theme
     let artist: String
     let songIndex: Int
     let onSongClick: (Int) -> ()
@@ -38,11 +39,11 @@ struct SongListView: View {
                                     let title = song.title
                                     Text(title)
                                         .id(song)
-                                        .foregroundColor(Theme.colorMain)
+                                        .foregroundColor(self.theme.colorMain)
                                         .padding(16)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .background(GeometryReader { itemGeom in
-                                            Theme.colorBg
+                                            self.theme.colorBg
                                                 .preference(
                                                     key: VisibleKey.self,
                                                     // See discussion!
@@ -62,7 +63,7 @@ struct SongListView: View {
                                                     }
                                                 }
                                         })
-                                        .background(Theme.colorBg)
+                                        .background(self.theme.colorBg)
                                         .highPriorityGesture(
                                             TapGesture()
                                                 .onEnded { _ in
@@ -70,14 +71,14 @@ struct SongListView: View {
                                                 }
                                         )
                                     Rectangle()
-                                        .fill(Theme.colorCommon)
+                                        .fill(self.theme.colorCommon)
                                         .frame(height: 3)
                                         .edgesIgnoringSafeArea(.horizontal)
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                             }
                         } else {
                             Text("Список пуст")
-                                .foregroundColor(Theme.colorMain)
+                                .foregroundColor(self.theme.colorMain)
                                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
                         }
                     }
@@ -93,7 +94,7 @@ struct SongListView: View {
                     Spacer()
                 }
                 .background(GeometryReader { scrollViewGeom in
-                    Theme.colorBg
+                    self.theme.colorBg
                         .preference(
                             key: FrameKey.self,
                             // See discussion!
@@ -130,7 +131,7 @@ struct SongListView: View {
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 })
-                .navigationBarColor(backgroundColor: Theme.colorCommon, titleColor: colorBlack)
+                .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
             }
         }
     }

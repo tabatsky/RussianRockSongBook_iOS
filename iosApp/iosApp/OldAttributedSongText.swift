@@ -11,6 +11,7 @@ import Foundation
 import shared
 
 struct OldAttributedSongText: View {
+    let theme: Theme
     let attributedText = NSMutableAttributedString(string: "")
     let width: CGFloat
     let onHeightChanged: (CGFloat) -> ()
@@ -19,7 +20,8 @@ struct OldAttributedSongText: View {
     @State var textWidth = CGFloat(0.0)
     @State var textHeight = CGFloat(0.0)
     
-    init(text: String, width: CGFloat, onHeightChanged: @escaping (CGFloat) -> (), onChordTapped: @escaping (String) -> ()) {
+    init(theme: Theme, text: String, width: CGFloat, onHeightChanged: @escaping (CGFloat) -> (), onChordTapped: @escaping (String) -> ()) {
+        self.theme = theme
         self.width = width
         self.onHeightChanged = onHeightChanged
         self.onChordTapped = onChordTapped
@@ -32,7 +34,7 @@ struct OldAttributedSongText: View {
                 let start = text.unicodeScalars.index(text.startIndex, offsetBy: position)
                 let end = text.unicodeScalars.index(text.startIndex, offsetBy: Int(word.startIndex))
                 let txt = String(text[start..<end])
-                let a: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor(Theme.colorMain), .backgroundColor: UIColor(Theme.colorBg)]
+                let a: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor(theme.colorMain), .backgroundColor: UIColor(theme.colorBg)]
                 let s = NSAttributedString(string: txt, attributes: a)
                 self.attributedText.append(s)
             }
@@ -43,9 +45,9 @@ struct OldAttributedSongText: View {
             let chord =  allChords.contains(actualWord) ? actualWord : nil
             let a: [NSAttributedString.Key: Any]
             if (chord == nil) {
-                a = [.foregroundColor: UIColor(Theme.colorMain), .backgroundColor: UIColor(Theme.colorBg)]
+                a = [.foregroundColor: UIColor(theme.colorMain), .backgroundColor: UIColor(theme.colorBg)]
             } else {
-                a = [.foregroundColor: UIColor(Theme.colorBg), .backgroundColor: UIColor(Theme.colorMain), NSAttributedString.Key(rawValue: "chord"): chord!]
+                a = [.foregroundColor: UIColor(theme.colorBg), .backgroundColor: UIColor(theme.colorMain), NSAttributedString.Key(rawValue: "chord"): chord!]
             }
             let s = NSAttributedString(string: word.text, attributes: a)
             self.attributedText.append(s)
@@ -54,14 +56,14 @@ struct OldAttributedSongText: View {
         if (position < text.unicodeScalars.count) {
             let start = text.unicodeScalars.index(text.startIndex, offsetBy: position)
             let txt = String(text[start...])
-            let a: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor(Theme.colorMain), .backgroundColor: UIColor(Theme.colorBg)]
+            let a: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor(theme.colorMain), .backgroundColor: UIColor(theme.colorBg)]
             let s = NSAttributedString(string: txt, attributes: a)
             self.attributedText.append(s)
         }
     }
     
     var body: some View {
-        TextView(attributedText: self.$textState, desiredHeight: self.$textHeight, desiredWidth: self.$textWidth, onChordTapped: onChordTapped)
+        TextView(attributedText: self.$textState, desiredHeight: self.$textHeight, desiredWidth: self.$textWidth, theme: self.theme, onChordTapped: onChordTapped)
             .frame(width: max(self.textWidth, 1), height: max(self.textHeight, 1))
             .onAppear {
                 self.textState = self.attributedText
@@ -82,6 +84,7 @@ struct TextView: UIViewRepresentable {
     @Binding var attributedText: NSAttributedString
     @Binding var desiredHeight: CGFloat
     @Binding var desiredWidth: CGFloat
+    let theme: Theme
     let onChordTapped: (String) -> ()
     
     func makeCoordinator() -> Coordinator {
@@ -119,7 +122,7 @@ struct TextView: UIViewRepresentable {
         uiView.attributedText = attributedText
         
         uiView.font = UIFont.monospacedSystemFont(ofSize: 16.0, weight: .regular)
-        uiView.backgroundColor = UIColor(Theme.colorBg)
+        uiView.backgroundColor = UIColor(self.theme.colorBg)
         
         uiView.invalidateIntrinsicContentSize()
         

@@ -10,6 +10,7 @@ import SwiftUI
 import shared
 
 struct StartScreenView: View {
+    let theme: Theme
     let onUpdateDone: () -> ()
     
     @State var progress = 0.0
@@ -17,11 +18,11 @@ struct StartScreenView: View {
     var body: some View {
         ZStack {
             ProgressView(value: progress)
-                .progressViewStyle(LinearProgressViewStyle(tint: Theme.colorMain))
+                .progressViewStyle(LinearProgressViewStyle(tint: self.theme.colorMain))
                 .scaleEffect(x: 1, y: 4, anchor: .center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.colorBg)
+        .background(self.theme.colorBg)
         .onAppear(perform: {
             let songRepo = ContentView.songRepo
             let concurrentQueue = DispatchQueue(label: "fill_db_queue", attributes: .concurrent)

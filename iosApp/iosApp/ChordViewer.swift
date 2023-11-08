@@ -10,6 +10,7 @@ import SwiftUI
 
 
 struct ChordViewer: View {
+    let theme: Theme
     let chord: String
     let onDismiss: () -> ()
     
@@ -18,7 +19,8 @@ struct ChordViewer: View {
     
     let guitar = Instrument.guitar
     
-    init(chord: String, onDismiss: @escaping () -> Void) {
+    init(theme: Theme, chord: String, onDismiss: @escaping () -> Void) {
+        self.theme = theme
         self.chord = chord
         self.onDismiss = onDismiss
         
@@ -41,9 +43,9 @@ struct ChordViewer: View {
     var body: some View {
         VStack {
             Text(self.chord)
-                .foregroundColor(Theme.colorBg)
+                .foregroundColor(self.theme.colorBg)
                 .frame(width: 320, height: 80)
-                .background(Theme.colorCommon)
+                .background(self.theme.colorCommon)
             if !self.actualKey.isEmpty && !self.actualSuffix.isEmpty {
                 let position = guitar.findChordPositions(key: self.actualKey, suffix: self.actualSuffix)[0]
                 FretboardView(position: position)
@@ -55,12 +57,12 @@ struct ChordViewer: View {
                 onDismiss()
             }, label: {
                 Text("Закрыть")
-                    .foregroundColor(Theme.colorBg)
+                    .foregroundColor(self.theme.colorBg)
                     .frame(width: 320, height: 80)
-                    .background(Theme.colorCommon)
+                    .background(self.theme.colorCommon)
             })
         }
             .frame(width: 320, height: 480, alignment: .center)
-            .background(Theme.colorMain)
+            .background(self.theme.colorMain)
     }
 }

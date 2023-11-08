@@ -13,7 +13,7 @@ import shared
 struct AttributedSongTextBuilder {
     var attributedText: AttributedString
     
-    init(text: String) {
+    init(theme: Theme, text: String) {
         self.attributedText = AttributedString(text)
         let wordList = WordScanner(text: text).getWordList()
         let chordMappings = AllChords.instance.chordMappings
@@ -26,8 +26,8 @@ struct AttributedSongTextBuilder {
             if allChords.contains(actualWord) {
                 let start = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.startIndex))
                 let end = attributedText.unicodeScalars.index(attributedText.startIndex, offsetBy: Int(word.endIndex))
-                self.attributedText[start..<end].foregroundColor = Theme.colorBg
-                self.attributedText[start..<end].backgroundColor = Theme.colorMain
+                self.attributedText[start..<end].foregroundColor = theme.colorBg
+                self.attributedText[start..<end].backgroundColor = theme.colorMain
                 self.attributedText[start..<end].link = URL(string: "jatx://\(actualWord)")
             }
         }

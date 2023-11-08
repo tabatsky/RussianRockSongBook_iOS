@@ -22,21 +22,35 @@ protocol Theme {
 }
 
 struct DarkTheme: Theme {
+    let fontScale: CGFloat
     let colorMain = colorLightYellow
     let colorBg = colorBlack
     let colorCommon = colorDarkYellow
-    let fontTitle = Font.system(size: 32)
-    let fontText = Font.system(size: 16, design: .monospaced)
-    let fontCommon = Font.system(size: 16)
+    var fontTitle: Font {
+        Font.system(size: 32 * fontScale)
+    }
+    var fontText: Font {
+        Font.system(size: 16 * fontScale, design: .monospaced)
+    }
+    var fontCommon: Font {
+        Font.system(size: 16 * fontScale)
+    }
 }
 
 struct LightTheme: Theme {
+    let fontScale: CGFloat
     let colorMain = colorBlack
     let colorBg = colorLightYellow
     let colorCommon = colorDarkYellow
-    let fontTitle = Font.system(size: 32)
-    let fontText = Font.system(size: 16, design: .monospaced)
-    let fontCommon = Font.system(size: 16)
+    var fontTitle: Font {
+        Font.system(size: 32 * fontScale)
+    }
+    var fontText: Font {
+        Font.system(size: 16 * fontScale, design: .monospaced)
+    }
+    var fontCommon: Font {
+        Font.system(size: 16 * fontScale)
+    }
 }
 
 extension Color {
@@ -63,11 +77,11 @@ enum ThemeVariant: Int {
         }
     }
     
-    func theme() -> Theme {
+    func theme(fontScale: CGFloat) -> Theme {
         if (self == .dark) {
-            return DarkTheme()
+            return DarkTheme(fontScale: fontScale)
         } else {
-            return LightTheme()
+            return LightTheme(fontScale: fontScale)
         }
     }
 }
@@ -91,6 +105,21 @@ enum FontScaleVariant: Int {
             return "Крупный"
         case .xl:
             return "Очень крупный"
+        }
+    }
+    
+    func fontScale() -> CGFloat {
+        switch(self) {
+        case .xs:
+            return 0.5
+        case .s:
+            return 0.75
+        case .m:
+            return 1.0
+        case .l:
+            return 1.5
+        case .xl:
+            return 2.0
         }
     }
 }

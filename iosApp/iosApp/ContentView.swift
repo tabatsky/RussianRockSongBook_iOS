@@ -106,7 +106,11 @@ struct ContentView: View {
                                           onShowToast: showToast
                         )
                     } else if (self.currentScreenVariant == .settings) {
-                        SettingsView(theme: self.theme, onBackClick: back)
+                        SettingsView(
+                            theme: self.theme,
+                            onBackClick: back,
+                            onReloadSettings: reloadSettings
+                        )
                     }
                 }
             }
@@ -368,6 +372,10 @@ struct ContentView: View {
     func openSettings() {
         print("opening settings")
         self.currentScreenVariant = .settings
+    }
+    
+    func reloadSettings(_ theme: Theme) {
+        self.theme = theme
     }
 }
 

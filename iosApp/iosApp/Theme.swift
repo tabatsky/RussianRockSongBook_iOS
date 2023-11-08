@@ -30,6 +30,15 @@ struct DarkTheme: Theme {
     let fontCommon = Font.system(size: 16)
 }
 
+struct LightTheme: Theme {
+    let colorMain = colorBlack
+    let colorBg = colorLightYellow
+    let colorCommon = colorDarkYellow
+    let fontTitle = Font.system(size: 32)
+    let fontText = Font.system(size: 16, design: .monospaced)
+    let fontCommon = Font.system(size: 16)
+}
+
 extension Color {
     init(hex: UInt, alpha: Double = 1) {
         self.init(
@@ -55,6 +64,10 @@ enum ThemeVariant: Int {
     }
     
     func theme() -> Theme {
-        return DarkTheme()
+        if (self == .dark) {
+            return DarkTheme()
+        } else {
+            return LightTheme()
+        }
     }
 }

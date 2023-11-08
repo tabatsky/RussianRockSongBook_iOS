@@ -14,6 +14,7 @@ struct SettingsView: View {
     let onReloadSettings: () -> ()
     
     @State var themeVariant = Preferences.loadThemeVariant()
+    @State var fontScaleVariant = Preferences.loadFontScaleVariant()
     
     var body: some View {
         VStack {
@@ -31,9 +32,33 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 36.0)
                 .background(self.theme.colorCommon)
+            Menu {
+                Button(FontScaleVariant.xs.fontScaleName()) {
+                    self.fontScaleVariant = FontScaleVariant.xs
+                }
+                Button(FontScaleVariant.s.fontScaleName()) {
+                    self.fontScaleVariant = FontScaleVariant.s
+                }
+                Button(FontScaleVariant.m.fontScaleName()) {
+                    self.fontScaleVariant = FontScaleVariant.m
+                }
+                Button(FontScaleVariant.l.fontScaleName()) {
+                    self.fontScaleVariant = FontScaleVariant.l
+                }
+                Button(FontScaleVariant.xl.fontScaleName()) {
+                    self.fontScaleVariant = FontScaleVariant.xl
+                }
+            } label: {
+                Text(self.fontScaleVariant.fontScaleName())
+            }
+                .foregroundColor(colorBlack)
+                .frame(maxWidth: .infinity)
+                .frame(height: 36.0)
+                .background(self.theme.colorCommon)
             Spacer()
             Button(action: {
                 Preferences.saveThemeVariant(themeVariant: self.themeVariant)
+                Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
                 self.onReloadSettings()
             }, label: {
                 Text("Сохранить")

@@ -71,3 +71,26 @@ enum ThemeVariant: Int {
         }
     }
 }
+
+enum FontScaleVariant: Int {
+    case xs = -2
+    case s = -1
+    case m = 0
+    case l = 1
+    case xl = 2
+    
+    func fontScaleName() -> String {
+        switch(self) {
+        case .xs:
+            return "Очень мелкий"
+        case .s:
+            return "Мелкий"
+        case .m:
+            return "Обычный"
+        case .l:
+            return "Крупный"
+        case .xl:
+            return "Очень крупный"
+        }
+    }
+}

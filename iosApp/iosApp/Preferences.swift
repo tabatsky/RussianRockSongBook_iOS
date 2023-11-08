@@ -36,6 +36,18 @@ struct Preferences {
         didSave(preferences: preferences)
     }
     
+    static func loadFontScaleVariant() -> FontScaleVariant {
+        let preferences = UserDefaults.standard
+        let fontScaleVariantValue = preferences.integer(forKey: "font_scale_variant")
+        return FontScaleVariant(rawValue: fontScaleVariantValue)!
+    }
+    
+    static func saveFontScaleVariant(fontScaleVariant: FontScaleVariant) {
+        let preferences = UserDefaults.standard
+        preferences.set(fontScaleVariant.rawValue, forKey: "font_scale_variant")
+        didSave(preferences: preferences)
+    }
+    
     static func didSave(preferences: UserDefaults){
         let didSave = preferences.synchronize()
         if !didSave {

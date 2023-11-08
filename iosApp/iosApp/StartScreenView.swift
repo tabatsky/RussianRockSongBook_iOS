@@ -27,14 +27,14 @@ struct StartScreenView: View {
             let songRepo = ContentView.songRepo
             let concurrentQueue = DispatchQueue(label: "fill_db_queue", attributes: .concurrent)
             concurrentQueue.asyncAfter(deadline: .now() + 0.2) {
-                if Version.appWasUpdated() {
+                if Preferences.appWasUpdated() {
                     JsonLoaderKt.fillDbFromJSON(songRepo: songRepo, onProgressChanged: { done, total in
                         DispatchQueue.main.async {
                             self.progress = Double(truncating: done) / Double(truncating: total)
                             print("\(done) of \(total)")
                         }
                     })
-                    Version.confirmAppUpdate()
+                    Preferences.confirmAppUpdate()
                 }
                 DispatchQueue.main.async {
                     onUpdateDone()

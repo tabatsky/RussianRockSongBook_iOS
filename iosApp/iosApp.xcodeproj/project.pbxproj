@@ -31,7 +31,7 @@
 		CE46D4D22ADC920700582136 /* TheTextViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46D4D12ADC920600582136 /* TheTextViewer.swift */; };
 		CE50C4EF2AFAE3A300A11916 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50C4EE2AFAE3A300A11916 /* SettingsView.swift */; };
 		CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */; };
-		CE5A9C392AF2FABB006580F4 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C382AF2FABB006580F4 /* Version.swift */; };
+		CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C382AF2FABB006580F4 /* Preferences.swift */; };
 		CE5A9C3B2AF2FF9D006580F4 /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C3A2AF2FF9D006580F4 /* StartScreenView.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
 		CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */; };
@@ -68,7 +68,7 @@
 		CE46D4D12ADC920600582136 /* TheTextViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextViewer.swift; sourceTree = "<group>"; };
 		CE50C4EE2AFAE3A300A11916 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextEditor.swift; sourceTree = "<group>"; };
-		CE5A9C382AF2FABB006580F4 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		CE5A9C382AF2FABB006580F4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		CE5A9C3A2AF2FF9D006580F4 /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 				CE46D4D12ADC920600582136 /* TheTextViewer.swift */,
 				CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */,
 				CE11C7D52AE0B06D00A7716C /* AllChords.swift */,
-				CE5A9C382AF2FABB006580F4 /* Version.swift */,
+				CE5A9C382AF2FABB006580F4 /* Preferences.swift */,
 				CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */,
 				CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */,
 				CE50C4EE2AFAE3A300A11916 /* SettingsView.swift */,
@@ -313,7 +313,7 @@
 				CE3CC61E2AF87E6000B5A0D7 /* WarningDialog.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */,
-				CE5A9C392AF2FABB006580F4 /* Version.swift in Sources */,
+				CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				CE50C4EF2AFAE3A300A11916 /* SettingsView.swift in Sources */,
 				CE0F57652AD930590080E6B1 /* Chord.swift in Sources */,

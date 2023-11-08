@@ -18,7 +18,7 @@ struct ContentView: View {
         hideAfter: 2
     )
     
-    @State var theme = ThemeVariant.dark.theme()
+    @State var theme = Preferences.loadThemeVariant().theme()
 
 	@State var isDrawerOpen: Bool = false
 	@State var currentScreenVariant: ScreenVariant = ScreenVariant.start
@@ -374,8 +374,8 @@ struct ContentView: View {
         self.currentScreenVariant = .settings
     }
     
-    func reloadSettings(_ theme: Theme) {
-        self.theme = theme
+    func reloadSettings() {
+        self.theme = Preferences.loadThemeVariant().theme()
     }
 }
 

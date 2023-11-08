@@ -11,7 +11,7 @@ import SwiftUI
 struct SettingsView: View {
     let theme: Theme
     let onBackClick: () -> ()
-    let onReloadSettings: (Theme) -> ()
+    let onReloadSettings: () -> ()
     
     @State var themeVariant = ThemeVariant.dark
     
@@ -33,7 +33,8 @@ struct SettingsView: View {
                 .background(self.theme.colorCommon)
             Spacer()
             Button(action: {
-                self.onReloadSettings(self.themeVariant.theme())
+                Preferences.saveThemeVariant(themeVariant: self.themeVariant)
+                self.onReloadSettings()
             }, label: {
                 Text("Сохранить")
                     .foregroundColor(self.theme.colorBg)

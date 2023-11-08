@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct FretboardView: View {
+    let theme: Theme
     let fingers: [Int]
     let frets: [Int]
     let barres: [Int]
@@ -15,7 +16,8 @@ public struct FretboardView: View {
     
     let fretLineCount: Int = 6
         
-    public init(position: Chord.Position) {
+    init(position: Chord.Position, theme: Theme) {
+        self.theme = theme
         self.fingers = position.fingers
         self.frets = position.frets
         self.barres = position.barres
@@ -34,7 +36,7 @@ public struct FretboardView: View {
                         
                         if shouldShowFingers(for: index) {
                             Text("\(fingers[index])")
-                                .foregroundColor(.primary)
+                                .foregroundColor(self.theme.colorBg)
                                 .font(.system(size: proxy.size.width/10))
                                 .frame(width: gridWidth(for: proxy),
                                        height: gridHeight(for: proxy))
@@ -48,7 +50,7 @@ public struct FretboardView: View {
                     
                     if baseFret > 1 {
                         Text("\(baseFret)fr")
-                            .foregroundColor(.primary)
+                            .foregroundColor(self.theme.colorBg)
                             .font(.system(size: proxy.size.width/10))
                             .frame(height: gridHeight(for: proxy))
                             .offset(y: -gridHeight(for: proxy) * 3.0 - 3)
@@ -68,7 +70,7 @@ public struct FretboardView: View {
         
         return Group {
             if let barre = barres.first {
-                Color.primary
+                self.theme.colorBg
                     .clipShape(Capsule())
                     .frame(width: fretWidth,
                            height: gridHeight(for: proxy)/2)
@@ -93,14 +95,14 @@ public struct FretboardView: View {
                     if index > 0 && index < frets.count {
                         Color.gray
                     } else {
-                        Color.primary
+                        self.theme.colorBg
                     }
                 }
                 .frame(width: gridWidth(for: proxy) * CGFloat(frets.count-1) + CGFloat(frets.count), height: 1)
                 .overlay(
                     Group {
                         if index == 0 {
-                            Color.primary
+                            self.theme.colorBg
                         } else {
                             Color.clear
                         }
@@ -116,7 +118,7 @@ public struct FretboardView: View {
             ForEach(frets, id: \.self) { s in
                 Group {
                     if s >= 0 {
-                        Color.primary
+                        self.theme.colorBg
                     } else {
                         Color.gray
                     }
@@ -130,7 +132,7 @@ public struct FretboardView: View {
     private func setupStringOverlay(at index: Int, with proxy: GeometryProxy) -> some View {
         Group {
             if shouldShowFingers(for: index) {
-                Color.primary
+                self.theme.colorBg
                     .clipShape(Circle())
                     .padding(gridWidth(for: proxy)*0.1)
             } else if frets[index] < 0 {
@@ -170,18 +172,4 @@ public struct FretboardView: View {
     }
 }
 
-struct FretboardView_Previews: PreviewProvider {
-    
-    static let dAug9Chords = Instrument.guitar.findChordPositions(key: "D", suffix: "aug9")
 
-    static let cMajorUkuChords = Instrument.ukulele.findChordPositions(key: "C", suffix: "major")
-    
-    static var previews: some View {
-        Group {
-            ForEach(dAug9Chords, id: \.self) {
-                FretboardView(position: $0)
-                    .frame(width: 100, height: 200)
-            }
-        }
-    }
-}

@@ -43,12 +43,12 @@ struct ChordViewer: View {
     var body: some View {
         VStack {
             Text(self.chord)
-                .foregroundColor(self.theme.colorBg)
+                .foregroundColor(colorBlack)
                 .frame(width: 320, height: 80)
                 .background(self.theme.colorCommon)
             if !self.actualKey.isEmpty && !self.actualSuffix.isEmpty {
                 let position = guitar.findChordPositions(key: self.actualKey, suffix: self.actualSuffix)[0]
-                FretboardView(position: position)
+                FretboardView(position: position, theme: self.theme)
                     .frame(width: 320, height: 320)
             } else {
                 Spacer()
@@ -57,7 +57,7 @@ struct ChordViewer: View {
                 onDismiss()
             }, label: {
                 Text("Закрыть")
-                    .foregroundColor(self.theme.colorBg)
+                    .foregroundColor(colorBlack)
                     .frame(width: 320, height: 80)
                     .background(self.theme.colorCommon)
             })

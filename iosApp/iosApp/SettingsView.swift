@@ -13,7 +13,7 @@ struct SettingsView: View {
     let onBackClick: () -> ()
     let onReloadSettings: () -> ()
     
-    @State var themeVariant = ThemeVariant.dark
+    @State var themeVariant = Preferences.loadThemeVariant()
     
     var body: some View {
         VStack {
@@ -27,7 +27,7 @@ struct SettingsView: View {
             } label: {
                 Text(self.themeVariant.themeName())
             }
-                .foregroundColor(self.theme.colorMain)
+                .foregroundColor(colorBlack)
                 .frame(maxWidth: .infinity)
                 .frame(height: 36.0)
                 .background(self.theme.colorCommon)
@@ -37,7 +37,7 @@ struct SettingsView: View {
                 self.onReloadSettings()
             }, label: {
                 Text("Сохранить")
-                    .foregroundColor(self.theme.colorBg)
+                    .foregroundColor(colorBlack)
                     .frame(maxWidth: .infinity)
                     .frame(height: 45.0)
             })

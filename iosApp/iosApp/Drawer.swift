@@ -54,7 +54,7 @@ struct DrawerContent: View {
                         }
                         Text("Меню")
                             .bold()
-                            .foregroundColor(self.theme.colorBg)
+                            .foregroundColor(colorBlack)
                     }
                         .padding(16)
                         .frame(maxWidth: geometry.size.width, alignment: .leading)

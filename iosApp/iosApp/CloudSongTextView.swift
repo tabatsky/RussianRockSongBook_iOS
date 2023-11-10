@@ -24,6 +24,7 @@ struct CloudSongTextView: View {
     let onDownloadCurrent: (CloudSong) -> ()
     let onOpenSongAtYandexMusic: (Music) -> ()
     let onOpenSongAtYoutubeMusic: (Music) -> ()
+    let onOpenSongAtVkMusic: (Music) -> ()
     let onSendWarning: (Warning) -> ()
     let onShowToast: (String) -> ()
     
@@ -66,6 +67,7 @@ struct CloudSongTextView: View {
                         theme: self.theme,
                         onOpenYandexMusic: onOpenYandexMusic,
                         onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                        onOpenVkMusic: onOpenVkMusuc,
                         onDownloadFromCloud: onDownloadFromCloud,
                         onShowWarning: onShowWarning,
                         onLike: onLike,
@@ -146,6 +148,11 @@ struct CloudSongTextView: View {
         self.onOpenSongAtYoutubeMusic(self.cloudSong)
     }
     
+    func onOpenVkMusuc() {
+        print("open vk music")
+        self.onOpenSongAtVkMusic(self.cloudSong)
+    }
+    
     func onDownloadFromCloud() {
         print("download from cloud")
         self.onDownloadCurrent(self.cloudSong)
@@ -172,6 +179,7 @@ struct CloudSongTextPanel: View {
     let theme: Theme
     let onOpenYandexMusic: () -> ()
     let onOpenYoutubeMusic: () -> ()
+    let onOpenVkMusic: () -> ()
     let onDownloadFromCloud: () -> ()
     let onShowWarning: () -> ()
     let onLike: () -> ()
@@ -181,25 +189,41 @@ struct CloudSongTextPanel: View {
         let A = W / 7
         
         HStack(spacing: A / 5) {
-            Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onOpenYandexMusic()
+            if (Preferences.loadListenToMusicVariant().isYandex()) {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onOpenYandexMusic()
+                    }
+                }) {
+                    Image("ic_yandex")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
                 }
-            }) {
-                Image("ic_yandex")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
             }
-            Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onOpenYoutubeMusic()
+            if (Preferences.loadListenToMusicVariant().isVk()) {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onOpenVkMusic()
+                    }
+                }) {
+                    Image("ic_vk")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
                 }
-            }) {
-                Image("ic_youtube")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
+            }
+            if (Preferences.loadListenToMusicVariant().isYoutube()) {
+                Button(action: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        onOpenYoutubeMusic()
+                    }
+                }) {
+                    Image("ic_youtube")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
             }
             Button(action: {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

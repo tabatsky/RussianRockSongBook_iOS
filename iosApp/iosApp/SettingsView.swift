@@ -15,6 +15,7 @@ struct SettingsView: View {
     
     @State var themeVariant = Preferences.loadThemeVariant()
     @State var fontScaleVariant = Preferences.loadFontScaleVariant()
+    @State var listenToMusicVariant = Preferences.loadListenToMusicVariant()
     
     var body: some View {
         VStack {
@@ -55,10 +56,28 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 36.0)
                 .background(self.theme.colorCommon)
+            Menu {
+                Button(ListenToMusicVariant.yandexAndYoutube.listenToMusicName()) {
+                    self.listenToMusicVariant = ListenToMusicVariant.yandexAndYoutube
+                }
+                Button(ListenToMusicVariant.yandexAndVk.listenToMusicName()) {
+                    self.listenToMusicVariant = ListenToMusicVariant.yandexAndVk
+                }
+                Button(ListenToMusicVariant.youtubeAndVk.listenToMusicName()) {
+                    self.listenToMusicVariant = ListenToMusicVariant.youtubeAndVk
+                }
+            } label: {
+                Text(self.listenToMusicVariant.listenToMusicName())
+            }
+                .foregroundColor(colorBlack)
+                .frame(maxWidth: .infinity)
+                .frame(height: 36.0)
+                .background(self.theme.colorCommon)
             Spacer()
             Button(action: {
                 Preferences.saveThemeVariant(themeVariant: self.themeVariant)
                 Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
+                Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
                 self.onReloadSettings()
             }, label: {
                 Text("Сохранить")

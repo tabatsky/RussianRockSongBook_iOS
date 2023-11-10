@@ -16,4 +16,10 @@ interface Music {
             val searchForEncoded = searchFor.encodeURLPath()
             return "https://music.youtube.com/search?q=$searchForEncoded"
         }
+
+    val vkMusicUrl: String
+        get() {
+            val searchForEncoded = searchFor.encodeURLPath()
+            return "https://m.vk.com/audio?q=$searchForEncoded"
+        }
 }

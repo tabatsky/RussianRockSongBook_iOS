@@ -48,10 +48,51 @@ struct Preferences {
         didSave(preferences: preferences)
     }
     
+    static func loadListenToMusicVariant() -> ListenToMusicVariant {
+        let preferences = UserDefaults.standard
+        let fontScaleVariantValue = preferences.integer(forKey: "listen_to_music_variant")
+        return ListenToMusicVariant(rawValue: fontScaleVariantValue)!
+    }
+    
+    static func saveListenToMusicVariant(listenToMusicVariant: ListenToMusicVariant) {
+        let preferences = UserDefaults.standard
+        preferences.set(listenToMusicVariant.rawValue, forKey: "listen_to_music_variant")
+        didSave(preferences: preferences)
+    }
+    
     static func didSave(preferences: UserDefaults){
         let didSave = preferences.synchronize()
         if !didSave {
             print("Preferences could not be saved!")
         }
+    }
+}
+
+enum ListenToMusicVariant: Int {
+    case yandexAndYoutube = 0
+    case yandexAndVk = 1
+    case youtubeAndVk = 2
+    
+    func listenToMusicName() -> String {
+        switch (self) {
+        case .yandexAndYoutube:
+            return "Яндекс и Youtube"
+        case .yandexAndVk:
+            return "Яндекс и VK"
+        case .youtubeAndVk:
+            return "VK и Youtube"
+        }
+    }
+    
+    func isYandex() -> Bool {
+        return self == .yandexAndVk || self == .yandexAndYoutube
+    }
+    
+    func isYoutube() -> Bool {
+        return self == .youtubeAndVk || self == .yandexAndYoutube
+    }
+    
+    func isVk() -> Bool {
+        return self == .yandexAndVk || self == .youtubeAndVk
     }
 }

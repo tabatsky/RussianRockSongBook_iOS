@@ -73,6 +73,7 @@ struct ContentView: View {
                                      onShowToast: showToast,
                                      onOpenSongAtYandexMusic: openSongAtYandexMusic,
                                      onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
+                                     onOpenSongAtVkMusic: openSongAtVkMusic,
                                      onSendWarning: sendWarning
                         )
                     } else if (self.currentScreenVariant == .cloudSearch) {
@@ -102,6 +103,7 @@ struct ContentView: View {
                                           onDownloadCurrent: downloadCurrent,
                                           onOpenSongAtYandexMusic: openSongAtYandexMusic,
                                           onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
+                                          onOpenSongAtVkMusic: openSongAtVkMusic,
                                           onSendWarning: sendWarning,
                                           onShowToast: showToast
                         )
@@ -352,6 +354,12 @@ struct ContentView: View {
     
     func openSongAtYoutubeMusic(_ music: Music) {
         if let url = URL(string: music.youtubeMusicUrl) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    func openSongAtVkMusic(_ music: Music) {
+        if let url = URL(string: music.vkMusicUrl) {
             UIApplication.shared.open(url)
         }
     }

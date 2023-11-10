@@ -30,10 +30,10 @@ struct DarkTheme: Theme {
         Font.system(size: 32 * fontScale)
     }
     var fontText: Font {
-        Font.system(size: 16 * fontScale, design: .monospaced)
+        Font.system(size: 20 * fontScale, design: .monospaced)
     }
     var fontCommon: Font {
-        Font.system(size: 16 * fontScale)
+        Font.system(size: 20 * fontScale)
     }
 }
 
@@ -46,10 +46,10 @@ struct LightTheme: Theme {
         Font.system(size: 32 * fontScale)
     }
     var fontText: Font {
-        Font.system(size: 16 * fontScale, design: .monospaced)
+        Font.system(size: 20 * fontScale, design: .monospaced)
     }
     var fontCommon: Font {
-        Font.system(size: 16 * fontScale)
+        Font.system(size: 20 * fontScale)
     }
 }
 

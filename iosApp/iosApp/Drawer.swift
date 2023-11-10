@@ -64,7 +64,7 @@ struct DrawerContent: View {
                             let artist = artists[index]
                             let isBold = ContentView.predefinedList.contains(artist)
                             Text(artist)
-                                .font(Font.headline.weight(isBold ? .bold : .regular))
+                                .font(self.theme.fontCommon.weight(isBold ? .bold : .regular))
                                 .foregroundColor(self.theme.colorBg)
                                 .padding(16)
                                 .frame(maxWidth: .infinity, alignment: .leading)

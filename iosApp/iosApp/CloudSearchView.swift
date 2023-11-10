@@ -120,10 +120,12 @@ struct CloudSearchView: View {
                                     let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
                                     VStack {
                                         Text(visibleTitleWithRaiting)
+                                            .font(self.theme.fontCommon)
                                             .foregroundColor(self.theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Text(artist)
+                                            .font(self.theme.fontCommon)
                                             .foregroundColor(self.theme.colorMain)
                                             .padding(8)
                                             .frame(maxWidth: .infinity, alignment: .leading)

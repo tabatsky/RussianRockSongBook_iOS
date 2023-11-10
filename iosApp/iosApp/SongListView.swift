@@ -39,6 +39,7 @@ struct SongListView: View {
                                     let title = song.title
                                     Text(title)
                                         .id(song)
+                                        .font(self.theme.fontCommon)
                                         .foregroundColor(self.theme.colorMain)
                                         .padding(16)
                                         .frame(maxWidth: .infinity, alignment: .leading)

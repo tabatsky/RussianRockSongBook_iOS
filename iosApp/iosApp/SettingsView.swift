@@ -18,76 +18,96 @@ struct SettingsView: View {
     @State var listenToMusicVariant = Preferences.loadListenToMusicVariant()
     
     var body: some View {
-        VStack {
-            Menu {
-                Button(ThemeVariant.dark.themeName()) {
-                    self.themeVariant = ThemeVariant.dark
+        GeometryReader { geometry in
+            VStack{
+                HStack(spacing: 0) {
+                    Text("Тема:")
+                        .foregroundColor(self.theme.colorMain)
+                        .font(self.theme.fontCommon)
+                        .frame(width: (geometry.size.width - 20) / 2, alignment: .leading)
+                    Menu {
+                        Button(ThemeVariant.dark.themeName()) {
+                            self.themeVariant = ThemeVariant.dark
+                        }
+                        Button(ThemeVariant.light.themeName()) {
+                            self.themeVariant = ThemeVariant.light
+                        }
+                    } label: {
+                        Text(self.themeVariant.themeName())
+                    }
+                        .foregroundColor(colorBlack)
+                        .frame(width: (geometry.size.width - 20) / 2)
+                        .frame(height: 36.0)
+                        .background(self.theme.colorCommon)
                 }
-                Button(ThemeVariant.light.themeName()) {
-                    self.themeVariant = ThemeVariant.light
-                }
-            } label: {
-                Text(self.themeVariant.themeName())
-            }
-                .foregroundColor(colorBlack)
-                .frame(maxWidth: .infinity)
-                .frame(height: 36.0)
-                .background(self.theme.colorCommon)
-            Menu {
-                Button(FontScaleVariant.xs.fontScaleName()) {
-                    self.fontScaleVariant = FontScaleVariant.xs
-                }
-                Button(FontScaleVariant.s.fontScaleName()) {
-                    self.fontScaleVariant = FontScaleVariant.s
-                }
-                Button(FontScaleVariant.m.fontScaleName()) {
-                    self.fontScaleVariant = FontScaleVariant.m
-                }
-                Button(FontScaleVariant.l.fontScaleName()) {
-                    self.fontScaleVariant = FontScaleVariant.l
-                }
-                Button(FontScaleVariant.xl.fontScaleName()) {
-                    self.fontScaleVariant = FontScaleVariant.xl
-                }
-            } label: {
-                Text(self.fontScaleVariant.fontScaleName())
-            }
-                .foregroundColor(colorBlack)
-                .frame(maxWidth: .infinity)
-                .frame(height: 36.0)
-                .background(self.theme.colorCommon)
-            Menu {
-                Button(ListenToMusicVariant.yandexAndYoutube.listenToMusicName()) {
-                    self.listenToMusicVariant = ListenToMusicVariant.yandexAndYoutube
-                }
-                Button(ListenToMusicVariant.yandexAndVk.listenToMusicName()) {
-                    self.listenToMusicVariant = ListenToMusicVariant.yandexAndVk
-                }
-                Button(ListenToMusicVariant.youtubeAndVk.listenToMusicName()) {
-                    self.listenToMusicVariant = ListenToMusicVariant.youtubeAndVk
-                }
-            } label: {
-                Text(self.listenToMusicVariant.listenToMusicName())
-            }
-                .foregroundColor(colorBlack)
-                .frame(maxWidth: .infinity)
-                .frame(height: 36.0)
-                .background(self.theme.colorCommon)
-            Spacer()
-            Button(action: {
-                Preferences.saveThemeVariant(themeVariant: self.themeVariant)
-                Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
-                Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
-                self.onReloadSettings()
-            }, label: {
-                Text("Сохранить")
+                HStack(spacing: 0) {
+                    Text("Размер шрифта:")
+                        .foregroundColor(self.theme.colorMain)
+                        .font(self.theme.fontCommon)
+                        .frame(width: (geometry.size.width - 20) / 2, alignment: .leading)
+                    Menu {
+                        Button(FontScaleVariant.xs.fontScaleName()) {
+                            self.fontScaleVariant = FontScaleVariant.xs
+                        }
+                        Button(FontScaleVariant.s.fontScaleName()) {
+                            self.fontScaleVariant = FontScaleVariant.s
+                        }
+                        Button(FontScaleVariant.m.fontScaleName()) {
+                            self.fontScaleVariant = FontScaleVariant.m
+                        }
+                        Button(FontScaleVariant.l.fontScaleName()) {
+                            self.fontScaleVariant = FontScaleVariant.l
+                        }
+                        Button(FontScaleVariant.xl.fontScaleName()) {
+                            self.fontScaleVariant = FontScaleVariant.xl
+                        }
+                    } label: {
+                        Text(self.fontScaleVariant.fontScaleName())
+                    }
                     .foregroundColor(colorBlack)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 45.0)
-            })
-            .background(self.theme.colorCommon)
+                    .frame(height: 36.0)
+                    .background(self.theme.colorCommon)
+                }
+                HStack(spacing: 0) {
+                    Text("Слушать музыку:")
+                        .foregroundColor(self.theme.colorMain)
+                        .font(self.theme.fontCommon)
+                        .frame(width: (geometry.size.width - 20) / 2, alignment: .leading)
+                    Menu {
+                        Button(ListenToMusicVariant.yandexAndYoutube.listenToMusicName()) {
+                            self.listenToMusicVariant = ListenToMusicVariant.yandexAndYoutube
+                        }
+                        Button(ListenToMusicVariant.yandexAndVk.listenToMusicName()) {
+                            self.listenToMusicVariant = ListenToMusicVariant.yandexAndVk
+                        }
+                        Button(ListenToMusicVariant.youtubeAndVk.listenToMusicName()) {
+                            self.listenToMusicVariant = ListenToMusicVariant.youtubeAndVk
+                        }
+                    } label: {
+                        Text(self.listenToMusicVariant.listenToMusicName())
+                    }
+                    .foregroundColor(colorBlack)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 36.0)
+                    .background(self.theme.colorCommon)
+                }
+                Spacer()
+                Button(action: {
+                    Preferences.saveThemeVariant(themeVariant: self.themeVariant)
+                    Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
+                    Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
+                    self.onReloadSettings()
+                }, label: {
+                    Text("Сохранить")
+                        .foregroundColor(colorBlack)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 45.0)
+                })
+                .background(self.theme.colorCommon)
+            }
+            .padding(10.0)
         }
-        .padding(10.0)
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {

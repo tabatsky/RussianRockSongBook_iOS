@@ -9,11 +9,12 @@
 import Foundation
 
 struct Preferences {
-    static let appVersion = 22
+    static let appVersion = 31
     
     static func appWasUpdated() -> Bool {
         let preferences = UserDefaults.standard
         let savedAppVersion = preferences.integer(forKey: "app_version")
+        print("\(appVersion) \(savedAppVersion)")
         return appVersion > savedAppVersion
         
     }

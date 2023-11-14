@@ -13,9 +13,16 @@ struct SettingsView: View {
     let onBackClick: () -> ()
     let onReloadSettings: () -> ()
     
+    let formatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+    
     @State var themeVariant = Preferences.loadThemeVariant()
     @State var fontScaleVariant = Preferences.loadFontScaleVariant()
     @State var listenToMusicVariant = Preferences.loadListenToMusicVariant()
+    @State var scrollSpeed = Preferences.loadScrollSpeed()
     
     var body: some View {
         GeometryReader { geometry in
@@ -92,14 +99,27 @@ struct SettingsView: View {
                     .frame(height: 36.0)
                     .background(self.theme.colorCommon)
                 }
+                HStack(spacing: 0) {
+                    Text("Скорость прокрутки (x):")
+                        .foregroundColor(self.theme.colorMain)
+                        .font(self.theme.fontCommon)
+                        .frame(width: (geometry.size.width - 20) / 2, alignment: .leading)
+                    TextField("", value: self.$scrollSpeed, formatter: formatter)
+                        .foregroundColor(self.theme.colorBg)
+                        .font(self.theme.fontCommon)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 36.0)
+                        .background(self.theme.colorMain)
+                }
                 Spacer()
                 Button(action: {
                     Preferences.saveThemeVariant(themeVariant: self.themeVariant)
                     Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
                     Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
+                    Preferences.saveScrollSpeed(scrollSpeed: self.scrollSpeed)
                     self.onReloadSettings()
                 }, label: {
-                    Text("Сохранить")
+                    Text("Применить")
                         .foregroundColor(colorBlack)
                         .frame(maxWidth: .infinity)
                         .frame(height: 45.0)

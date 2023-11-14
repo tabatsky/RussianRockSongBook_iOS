@@ -61,6 +61,18 @@ struct Preferences {
         didSave(preferences: preferences)
     }
     
+    static func loadScrollSpeed() -> Float {
+        let preferences = UserDefaults.standard
+        let scrollSpeed = preferences.float(forKey: "scroll_speed")
+        return scrollSpeed > 0 ? scrollSpeed : 1.0
+    }
+    
+    static func saveScrollSpeed(scrollSpeed: Float) {
+        let preferences = UserDefaults.standard
+        preferences.set(scrollSpeed, forKey: "scroll_speed")
+        didSave(preferences: preferences)
+    }
+    
     static func didSave(preferences: UserDefaults){
         let didSave = preferences.synchronize()
         if !didSave {

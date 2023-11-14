@@ -24,7 +24,7 @@ struct SongTextView: View {
     let onOpenSongAtVkMusic: (Music) -> ()
     let onSendWarning: (Warning) -> ()
     
-    static let dY: CGFloat = 8.0
+    let dY: CGFloat = 8.0 * CGFloat(Preferences.loadScrollSpeed())
     
     @State var textHeight: CGFloat = 0.0
     @State var scrollViewHeight: CGFloat = 0.0
@@ -277,7 +277,7 @@ struct SongTextView: View {
     
     func autoScroll(sp: ScrollViewProxy) {
         if (self.isAutoScroll) {
-            self.scrollY += Self.dY
+            self.scrollY += self.dY
             performScrollToY(sp: sp)
         }
         if (self.isScreenActive) {

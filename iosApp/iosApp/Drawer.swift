@@ -33,6 +33,8 @@ struct DrawerContent: View {
     let theme: Theme
     let onArtistClick: (String) -> ()
     let onDismiss: () -> ()
+    
+    @State var expandedGroup = ""
 
     var body: some View {
         VStack {
@@ -60,25 +62,27 @@ struct DrawerContent: View {
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
                         .background(self.theme.colorCommon)
                     LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(0..<artists.count, id: \.self) { index in
-                            let artist = artists[index]
-                            let isBold = ContentView.predefinedList.contains(artist)
-                            Text(artist)
-                                .font(self.theme.fontCommon.weight(isBold ? .bold : .regular))
-                                .foregroundColor(self.theme.colorBg)
-                                .padding(16)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(self.theme.colorMain)
-                                .highPriorityGesture(
-                                    TapGesture()
-                                        .onEnded { _ in
-                                            onArtistClick(artist)
-                                        }
+                        let predefinedWithGroups = artists.predefinedArtistsWithGroups()
+                        ForEach(0..<predefinedWithGroups.count, id: \.self) { index in
+                            let artistOrGroup = predefinedWithGroups[index]
+                            let isPredefined = ContentView.predefinedList.contains(artistOrGroup)
+                            if (isPredefined) {
+                                ArtistItem(artist: artistOrGroup, theme: self.theme, onArtistClick: onArtistClick)
+                            } else {
+                                let expandedList = self.expandedGroup == artistOrGroup
+                                ? artists.filter { !ContentView.predefinedList.contains($0) && $0.starts(with: artistOrGroup) }
+                                    : []
+                                ArtistGroupItem(
+                                    artistGroup: artistOrGroup,
+                                    expandedList: expandedList,
+                                    theme: self.theme,
+                                    onGroupClick: {
+                                        expandGroup(group: artistOrGroup)
+                                    },
+                                    onArtistClick: onArtistClick
                                 )
-                            Rectangle()
-                                .fill(self.theme.colorCommon)
-                                .frame(height: 3)
-                                .edgesIgnoringSafeArea(.horizontal)
+                            }
+                            
                         }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                     }
                     Spacer()
@@ -86,6 +90,96 @@ struct DrawerContent: View {
                 .background(self.theme.colorMain)
             }
         }
+    }
+    
+    func expandGroup(group: String) {
+        self.expandedGroup = group
+    }
+}
+
+struct ArtistItem: View {
+    let artist: String
+    let theme: Theme
+    let onArtistClick: (String) -> ()
+    
+    var body: some View {
+        let isBold = ContentView.predefinedList.contains(artist)
+        Text(self.artist)
+            .font(self.theme.fontCommon.weight(isBold ? .bold : .regular))
+            .foregroundColor(self.theme.colorBg)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(self.theme.colorMain)
+            .highPriorityGesture(
+                TapGesture()
+                    .onEnded { _ in
+                        self.onArtistClick(artist)
+                    }
+            )
+        Rectangle()
+            .fill(self.theme.colorCommon)
+            .frame(height: 3)
+            .edgesIgnoringSafeArea(.horizontal)
+    }
+}
+
+struct ArtistGroupItem: View {
+    let artistGroup: String
+    let expandedList: [String]
+    let theme: Theme
+    let onGroupClick: () -> ()
+    let onArtistClick: (String) -> ()
+    
+    var body: some View {
+        Text(self.artistGroup)
+            .foregroundColor(self.theme.colorBg)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(self.theme.colorMain)
+            .highPriorityGesture(
+                TapGesture()
+                    .onEnded { _ in
+                        self.onGroupClick()
+                    }
+            )
+        Rectangle()
+            .fill(self.theme.colorCommon)
+            .frame(height: 3)
+            .edgesIgnoringSafeArea(.horizontal)
+        ForEach(expandedList, id: \.self) { artist in
+            ArtistItem(
+                artist: artist,
+                theme: self.theme,
+                onArtistClick: self.onArtistClick
+            )
+        }
+    }
+}
+
+extension [String] {
+    func artistGroups() -> [String] {
+        return self.filter {
+            !ContentView.predefinedList.contains($0)
+        }.map {
+            $0.artistGroup()
+        }.unique().sorted()
+    }
+    
+    func predefinedArtistsWithGroups() -> [String] {
+        return ContentView.predefinedList + self.artistGroups()
+    }
+}
+
+extension String {
+    func artistGroup() -> String {
+        return self.prefix(1).uppercased()
+    }
+}
+
+extension Sequence where Iterator.Element: Hashable {
+    func unique() -> [Iterator.Element] {
+        var seen: [Iterator.Element: Bool] = [:]
+        return self.filter { seen.updateValue(true, forKey: $0) == nil }
     }
 }
 

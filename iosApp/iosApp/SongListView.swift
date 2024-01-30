@@ -116,11 +116,8 @@ struct SongListView: View {
                 })
                 .navigationBarItems(leading:
                         Button(action: {
-                            Task.detached {
-                                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                await MainActor.run {
-                                    onDrawerClick()
-                                }
+                            Task.detached { @MainActor in
+                                onDrawerClick()
                             }
                         }) {
                             Image("ic_drawer")
@@ -130,11 +127,8 @@ struct SongListView: View {
                 .navigationTitle(self.artist)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            openSettings()
-                        }
+                    Task.detached { @MainActor in
+                        openSettings()
                     }
                 }) {
                     Image("ic_settings")

@@ -43,7 +43,6 @@ struct StartScreenView: View {
         .onAppear(perform: {
             let songRepo = ContentView.songRepo
             Task.detached {
-                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
                 if Preferences.appWasUpdated() {
                     JsonLoaderKt.fillDbFromJSON(songRepo: songRepo, onProgressChanged: { done, total in
                         Task.detached { @MainActor in

@@ -84,7 +84,7 @@ struct CloudSongTextView: View {
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onBackClick()
                 }
             }) {
@@ -93,7 +93,7 @@ struct CloudSongTextView: View {
                     .frame(width: 32.0, height: 32.0)
         }, trailing: HStack {
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onPrevClick()
                 }
             }) {
@@ -104,7 +104,7 @@ struct CloudSongTextView: View {
             let indexAndCount = "\(self.cloudSongIndex + 1) / \(self.cloudSongCount)"
             Text(indexAndCount)
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onNextClick()
                 }
             }) {
@@ -191,7 +191,7 @@ struct CloudSongTextPanel: View {
         HStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    Task.detached { @MainActor in
                         onOpenYandexMusic()
                     }
                 }) {
@@ -203,7 +203,7 @@ struct CloudSongTextPanel: View {
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    Task.detached { @MainActor in
                         onOpenVkMusic()
                     }
                 }) {
@@ -215,7 +215,7 @@ struct CloudSongTextPanel: View {
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    Task.detached { @MainActor in
                         onOpenYoutubeMusic()
                     }
                 }) {
@@ -226,7 +226,7 @@ struct CloudSongTextPanel: View {
                 }
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onDownloadFromCloud()
                 }
             }) {
@@ -236,7 +236,7 @@ struct CloudSongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onShowWarning()
                 }
             }) {
@@ -246,7 +246,7 @@ struct CloudSongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onLike()
                 }
             }) {
@@ -256,7 +256,7 @@ struct CloudSongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                Task.detached { @MainActor in
                     onDislike()
                 }
             }) {

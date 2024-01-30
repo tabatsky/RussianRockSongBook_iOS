@@ -127,11 +127,8 @@ struct SettingsView: View {
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            onBackClick()
-                        }
+                    Task.detached { @MainActor in
+                        onBackClick()
                     }
                 }) {
                     Image("ic_back")

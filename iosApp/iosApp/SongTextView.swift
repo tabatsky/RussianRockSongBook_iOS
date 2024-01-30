@@ -174,11 +174,8 @@ struct SongTextView: View {
         }
         .background(self.theme.colorBg)
         .navigationBarItems(leading: Button(action: {
-            Task.detached {
-                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                await MainActor.run {
-                    onBackClick()
-                }
+            Task.detached { @MainActor in
+                onBackClick()
             }
         }) {
             Image("ic_back")
@@ -201,11 +198,8 @@ struct SongTextView: View {
                 }
             }
             Button(action: {
-                Task.detached {
-                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                    await MainActor.run {
-                        onPrevClick()
-                    }
+                Task.detached { @MainActor in
+                    onPrevClick()
                 }
             }) {
                 Image("ic_left")
@@ -213,11 +207,8 @@ struct SongTextView: View {
                     .frame(width: 32.0, height: 32.0)
             }
             Button(action: {
-                Task.detached {
-                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                    await MainActor.run {
-                        onFavoriteToggle()
-                    }
+                Task.detached { @MainActor in
+                    onFavoriteToggle()
                 }
             }) {
                 if (song.favorite) {
@@ -231,11 +222,8 @@ struct SongTextView: View {
                 }
             }
             Button(action: {
-                Task.detached {
-                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                    await MainActor.run {
-                        onNextClick()
-                    }
+                Task.detached { @MainActor in
+                    onNextClick()
                 }
             }) {
                 Image("ic_right")
@@ -401,11 +389,8 @@ struct SongTextPanel: View {
         HStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
                 Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            onOpenYandexMusic()
-                        }
+                    Task.detached { @MainActor in
+                        onOpenYandexMusic()
                     }
                 }) {
                     Image("ic_yandex")
@@ -416,11 +401,8 @@ struct SongTextPanel: View {
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
                 Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            onOpenVkMusic()
-                        }
+                    Task.detached { @MainActor in
+                        onOpenVkMusic()
                     }
                 }) {
                     Image("ic_vk")
@@ -431,11 +413,8 @@ struct SongTextPanel: View {
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
                 Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            onOpenYoutubeMusic()
-                        }
+                    Task.detached { @MainActor in
+                        onOpenYoutubeMusic()
                     }
                 }) {
                     Image("ic_youtube")
@@ -445,11 +424,8 @@ struct SongTextPanel: View {
                 }
             }
             Button(action: {
-                Task.detached {
-                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                    await MainActor.run {
-                        onUploadToCloud()
-                    }
+                Task.detached { @MainActor in
+                    onUploadToCloud()
                 }
             }) {
                 Image("ic_upload")
@@ -458,11 +434,8 @@ struct SongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                Task.detached {
-                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                    await MainActor.run {
-                        onShowWarning()
-                    }
+                Task.detached { @MainActor in
+                    onShowWarning()
                 }
             }) {
                 Image("ic_warning")
@@ -471,11 +444,8 @@ struct SongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                Task.detached {
-                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                    await MainActor.run {
-                        onDeleteToTrash()
-                    }
+                Task.detached { @MainActor in
+                    onDeleteToTrash()
                 }
             }) {
                 Image("ic_trash")
@@ -485,11 +455,8 @@ struct SongTextPanel: View {
             }
             if (self.isEditorMode) {
                 Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            onSave()
-                        }
+                    Task.detached { @MainActor in
+                        onSave()
                     }
                 }) {
                     Image("ic_save")
@@ -500,11 +467,8 @@ struct SongTextPanel: View {
                 }
             } else {
                 Button(action: {
-                    Task.detached {
-                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                        await MainActor.run {
-                            onEdit()
-                        }
+                    Task.detached { @MainActor in
+                        onEdit()
                     }
                 }) {
                     Image("ic_edit")

@@ -46,11 +46,8 @@ struct DrawerContent: View {
                     let artists = ContentView.songRepo.getArtists()
                     HStack {
                         Button(action: {
-                            Task.detached {
-                                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                await MainActor.run {
-                                    onDismiss()
-                                }
+                            Task.detached { @MainActor in
+                                onDismiss()
                             }
                         }) {
                             Image("ic_drawer")

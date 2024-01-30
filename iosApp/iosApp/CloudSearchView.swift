@@ -76,7 +76,7 @@ struct CloudSearchView: View {
                             .background(self.theme.colorCommon)
                     }
                     Button(action: {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        Task.detached { @MainActor in
                             searchSongs(searchFor: searchFor, orderBy: OrderBy.byIdDesc)
                         }
                     }) {
@@ -170,9 +170,12 @@ struct CloudSearchView: View {
                                 if (self.currentCloudSongList != nil && !self.currentCloudSongList!.isEmpty) {
                                     sp.scrollTo(self.currentCloudSongList![self.currentCloudSongIndex], anchor: .top)
                                 }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                    self.initialScrollDone = true
-                                })
+                                Task.detached {
+                                    try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                    await MainActor.run {
+                                        self.initialScrollDone = true
+                                    }
+                                }
                             })
                             Spacer()
                         }
@@ -210,7 +213,7 @@ struct CloudSearchView: View {
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    Task.detached { @MainActor in
                         onBackClick()
                     }
                 }) {

@@ -126,7 +126,7 @@ struct TextView: UIViewRepresentable {
         
         uiView.invalidateIntrinsicContentSize()
         
-        DispatchQueue.main.async {
+        Task.detached { @MainActor in
             self.desiredHeight = uiView.intrinsicContentSize.height
         }
         

@@ -42,11 +42,11 @@ struct StartScreenView: View {
         .background(self.theme.colorBg)
         .onAppear(perform: {
             let songRepo = ContentView.songRepo
-            let concurrentQueue = DispatchQueue(label: "fill_db_queue", attributes: .concurrent)
-            concurrentQueue.asyncAfter(deadline: .now() + 0.2) {
+            Task.detached {
+                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
                 if Preferences.appWasUpdated() {
                     JsonLoaderKt.fillDbFromJSON(songRepo: songRepo, onProgressChanged: { done, total in
-                        DispatchQueue.main.async {
+                        Task.detached { @MainActor in
                             self.progress = Double(truncating: done) / Double(truncating: total)
                             self.progressStr = "\(done) из \(total)"
                             print("\(done) of \(total)")
@@ -54,7 +54,7 @@ struct StartScreenView: View {
                     })
                     Preferences.confirmAppUpdate()
                 }
-                DispatchQueue.main.async {
+                Task.detached { @MainActor in
                     onUpdateDone()
                 }
             }

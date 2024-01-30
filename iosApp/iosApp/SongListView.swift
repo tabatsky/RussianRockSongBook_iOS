@@ -88,9 +88,12 @@ struct SongListView: View {
                         if (!currentSongList.isEmpty) {
                             sp.scrollTo(currentSongList[songIndex], anchor: .top)
                         }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                            self.initialScrollDone = true
-                        })
+                        Task.detached {
+                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                            await MainActor.run {
+                                self.initialScrollDone = true
+                            }
+                        }
                     })
                     Spacer()
                 }
@@ -113,8 +116,11 @@ struct SongListView: View {
                 })
                 .navigationBarItems(leading:
                         Button(action: {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                onDrawerClick()
+                            Task.detached {
+                                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                await MainActor.run {
+                                    onDrawerClick()
+                                }
                             }
                         }) {
                             Image("ic_drawer")
@@ -124,8 +130,11 @@ struct SongListView: View {
                 .navigationTitle(self.artist)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        openSettings()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            openSettings()
+                        }
                     }
                 }) {
                     Image("ic_settings")

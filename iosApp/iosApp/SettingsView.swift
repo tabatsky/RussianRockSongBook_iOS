@@ -113,11 +113,7 @@ struct SettingsView: View {
                 }
                 Spacer()
                 Button(action: {
-                    Preferences.saveThemeVariant(themeVariant: self.themeVariant)
-                    Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
-                    Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
-                    Preferences.saveScrollSpeed(scrollSpeed: self.scrollSpeed)
-                    self.onReloadSettings()
+                    self.saveSettings()
                 }, label: {
                     Text("Применить")
                         .foregroundColor(colorBlack)
@@ -131,8 +127,11 @@ struct SettingsView: View {
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onBackClick()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            onBackClick()
+                        }
                     }
                 }) {
                     Image("ic_back")
@@ -143,4 +142,12 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
     }
-}
+    
+    private func saveSettings() {
+        Preferences.saveThemeVariant(themeVariant: self.themeVariant)
+        Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
+        Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
+        Preferences.saveScrollSpeed(scrollSpeed: self.scrollSpeed)
+        self.onReloadSettings()
+    }
+ }

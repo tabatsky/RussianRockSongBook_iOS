@@ -68,9 +68,12 @@ struct SongTextView: View {
                                                 if (height > 1) {
                                                     print("updating textHeight: \(height)")
                                                     self.textHeight = height
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                                        performScrollToY(sp: sp)
-                                                    })
+                                                    Task.detached {
+                                                        try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                                        await MainActor.run {
+                                                            performScrollToY(sp: sp)
+                                                        }
+                                                    }
                                                 } else {
                                                     print("not updating textHeight: \(height)")
                                                 }
@@ -104,9 +107,12 @@ struct SongTextView: View {
                                     self.scrollY = 0.0
                                     self.isScreenActive = true
                                     sp.scrollTo("text", anchor: .topLeading)
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                        autoScroll(sp: sp)
-                                    })
+                                    Task.detached {
+                                        try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                        await MainActor.run {
+                                            autoScroll(sp: sp)
+                                        }
+                                    }
                                 })
                                 .onDisappear(perform: {
                                     self.isAutoScroll = false
@@ -123,13 +129,19 @@ struct SongTextView: View {
                                 .onChange(of: self.isEditorMode, perform: { isEditorMode in
                                     print("editor mode: \(isEditorMode)")
                                     if #available(iOS 15, *) {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                            performScrollToY(sp: sp)
-                                        })
+                                        Task.detached {
+                                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                            await MainActor.run {
+                                                performScrollToY(sp: sp)
+                                            }
+                                        }
                                     } else if isEditorMode {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                                            performScrollToY(sp: sp)
-                                        })
+                                        Task.detached {
+                                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                            await MainActor.run {
+                                                performScrollToY(sp: sp)
+                                            }
+                                        }
                                     }
                                 })
                             }
@@ -162,8 +174,11 @@ struct SongTextView: View {
         }
         .background(self.theme.colorBg)
         .navigationBarItems(leading: Button(action: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                onBackClick()
+            Task.detached {
+                //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                await MainActor.run {
+                    onBackClick()
+                }
             }
         }) {
             Image("ic_back")
@@ -186,8 +201,11 @@ struct SongTextView: View {
                 }
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onPrevClick()
+                Task.detached {
+                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                    await MainActor.run {
+                        onPrevClick()
+                    }
                 }
             }) {
                 Image("ic_left")
@@ -195,8 +213,11 @@ struct SongTextView: View {
                     .frame(width: 32.0, height: 32.0)
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onFavoriteToggle()
+                Task.detached {
+                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                    await MainActor.run {
+                        onFavoriteToggle()
+                    }
                 }
             }) {
                 if (song.favorite) {
@@ -210,8 +231,11 @@ struct SongTextView: View {
                 }
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onNextClick()
+                Task.detached {
+                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                    await MainActor.run {
+                        onNextClick()
+                    }
                 }
             }) {
                 Image("ic_right")
@@ -281,9 +305,12 @@ struct SongTextView: View {
             performScrollToY(sp: sp)
         }
         if (self.isScreenActive) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                autoScroll(sp: sp)
-            })
+            Task.detached {
+                try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                await MainActor.run {
+                    autoScroll(sp: sp)
+                }
+            }
         }
     }
     
@@ -374,8 +401,11 @@ struct SongTextPanel: View {
         HStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onOpenYandexMusic()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            onOpenYandexMusic()
+                        }
                     }
                 }) {
                     Image("ic_yandex")
@@ -386,8 +416,11 @@ struct SongTextPanel: View {
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onOpenVkMusic()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            onOpenVkMusic()
+                        }
                     }
                 }) {
                     Image("ic_vk")
@@ -398,8 +431,11 @@ struct SongTextPanel: View {
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onOpenYoutubeMusic()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            onOpenYoutubeMusic()
+                        }
                     }
                 }) {
                     Image("ic_youtube")
@@ -409,8 +445,11 @@ struct SongTextPanel: View {
                 }
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onUploadToCloud()
+                Task.detached {
+                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                    await MainActor.run {
+                        onUploadToCloud()
+                    }
                 }
             }) {
                 Image("ic_upload")
@@ -419,8 +458,11 @@ struct SongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onShowWarning()
+                Task.detached {
+                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                    await MainActor.run {
+                        onShowWarning()
+                    }
                 }
             }) {
                 Image("ic_warning")
@@ -429,8 +471,11 @@ struct SongTextPanel: View {
                     .background(self.theme.colorCommon)
             }
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    onDeleteToTrash()
+                Task.detached {
+                    //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                    await MainActor.run {
+                        onDeleteToTrash()
+                    }
                 }
             }) {
                 Image("ic_trash")
@@ -440,8 +485,11 @@ struct SongTextPanel: View {
             }
             if (self.isEditorMode) {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onSave()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            onSave()
+                        }
                     }
                 }) {
                     Image("ic_save")
@@ -452,8 +500,11 @@ struct SongTextPanel: View {
                 }
             } else {
                 Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onEdit()
+                    Task.detached {
+                        //try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                        await MainActor.run {
+                            onEdit()
+                        }
                     }
                 }) {
                     Image("ic_edit")

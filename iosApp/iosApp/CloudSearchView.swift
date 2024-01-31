@@ -14,6 +14,7 @@ struct CloudSearchView: View {
     let onLoadSuccess: ([CloudSong]) -> ()
     let onCloudSongClick: (Int) -> ()
     let onOrderBySelected: (OrderBy) -> ()
+    let onBackupSearchFor: (String) -> ()
     
     let currentCloudSongList: [CloudSong]?
     let currentCloudSongIndex: Int
@@ -25,6 +26,8 @@ struct CloudSearchView: View {
     let allLikes: Dictionary<CloudSong, Int>
     let allDislikes: Dictionary<CloudSong, Int>
     
+    let searchForBackup: String
+    
     @State var currentSearchState: SearchState = .loading
     
     @State var searchFor: String = ""
@@ -33,7 +36,7 @@ struct CloudSearchView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(theme: Theme, cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, allLikes: Dictionary<CloudSong, Int>, allDislikes: Dictionary<CloudSong, Int>, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> ()) {
+    init(theme: Theme, cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, searchForBackup: String, allLikes: Dictionary<CloudSong, Int>, allDislikes: Dictionary<CloudSong, Int>, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> (), onBackupSearchFor: @escaping (String) -> ()) {
         self.theme = theme
         self.currentCloudSongList = cloudSongList
         self.currentCloudSongIndex = cloudSongIndex
@@ -44,6 +47,8 @@ struct CloudSearchView: View {
         self.onBackClick = onBackClick
         self.onCloudSongClick = onCloudSongClick
         self.onOrderBySelected = onOrderBySelected
+        self.searchForBackup = searchForBackup
+        self.onBackupSearchFor = onBackupSearchFor
     }
     
     var body: some View {
@@ -161,6 +166,7 @@ struct CloudSearchView: View {
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
+                                                     onBackupSearchFor(searchFor)
                                                      onCloudSongClick(index)
                                                  }
                                         )
@@ -189,6 +195,9 @@ struct CloudSearchView: View {
                                 .onPreferenceChange(FrameKey.self) { frame in
                                     self.scrollViewFrame = frame
                                 }
+                        })
+                        .onAppear(perform: {
+                            self.searchFor = self.searchForBackup
                         })
                         .onChange(of: self.scrollPosition, perform: { position in
                             //print("\(self.scrollPosition), \(position)")

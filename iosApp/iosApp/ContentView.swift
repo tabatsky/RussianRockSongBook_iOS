@@ -35,6 +35,7 @@ struct ContentView: View {
     @State var currentCloudSongIndex: Int = 0
     @State var currentCloudSong: CloudSong? = nil
     @State var currentCloudOrderBy: OrderBy = OrderBy.byIdDesc
+    @State var searchForBackup = ""
     
     @State var allLikes: Dictionary<CloudSong, Int> = [:]
     @State var allDislikes: Dictionary<CloudSong, Int> = [:]
@@ -81,12 +82,14 @@ struct ContentView: View {
                                         cloudSongList: self.currentCloudSongList,
                                         cloudSongIndex: self.currentCloudSongIndex,
                                         orderBy: self.currentCloudOrderBy,
+                                        searchForBackup: self.searchForBackup,
                                         allLikes: self.allLikes,
                                         allDislikes: self.allDislikes,
                                         onLoadSuccess: refreshCloudSongList,
                                         onBackClick: back,
                                         onCloudSongClick: selectCloudSong,
-                                        onOrderBySelected: selectOrderBy
+                                        onOrderBySelected: selectOrderBy,
+                                        onBackupSearchFor: backupSearchFor
                         )
                     } else if (self.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(theme: self.theme,
@@ -155,6 +158,7 @@ struct ContentView: View {
         print("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
+                self.searchForBackup = ""
                 self.currentCloudSongIndex = 0
                 self.currentCloudOrderBy = OrderBy.byIdDesc
                 self.currentScreenVariant = ScreenVariant.cloudSearch
@@ -275,6 +279,10 @@ struct ContentView: View {
         self.currentCloudSongIndex = 0
         self.currentCloudSong = nil
         self.currentCloudOrderBy = orderBy
+    }
+    
+    func backupSearchFor(_ searchFor: String) {
+        self.searchForBackup = searchFor
     }
     
     func selectCloudSong(_ index: Int) {

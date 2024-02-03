@@ -58,10 +58,7 @@ struct ContentView: View {
         )
     }
     
-    @State var theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
-
     @State var appState: AppState = AppState()
-    
     
     @State var needShowToast = false
     @State var toastText = ""
@@ -73,34 +70,34 @@ struct ContentView: View {
                 NavigationView {
                     if (self.appState.currentScreenVariant == .start) {
                         StartScreenView(
-                            theme: self.theme,
+                            theme: self.appState.theme,
                             onUpdateDone: onUpdateDone
                         )
                     } else if (self.appState.currentScreenVariant == .songList) {
-                        SongListView(theme: self.theme,
+                        SongListView(theme: self.appState.theme,
                                      localState: self.appState.localState,
                                      localCallbacks: self.localCallbacks
                                      
                         )
                     } else if (self.appState.currentScreenVariant == .songText) {
-                        SongTextView(theme: self.theme,
+                        SongTextView(theme: self.appState.theme,
                                      song: self.appState.localState.currentSong!,
                                      localCallbacks: self.localCallbacks
                                      
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
-                        CloudSearchView(theme: self.theme, 
+                        CloudSearchView(theme: self.appState.theme,
                                         cloudState: self.appState.cloudState,
                                         cloudCallbacks: self.cloudCallbacks
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSongText) {
-                        CloudSongTextView(theme: self.theme,
+                        CloudSongTextView(theme: self.appState.theme,
                                           cloudState: self.appState.cloudState,
                                           cloudCallbacks: self.cloudCallbacks
                         )
                     } else if (self.appState.currentScreenVariant == .settings) {
                         SettingsView(
-                            theme: self.theme,
+                            theme: self.appState.theme,
                             onBackClick: back,
                             onReloadSettings: reloadSettings
                         )
@@ -108,13 +105,13 @@ struct ContentView: View {
                 }
             }
             /// Navigation Drawer part
-            NavigationDrawer(theme: self.theme,
+            NavigationDrawer(theme: self.appState.theme,
                              isOpen: self.appState.localState.isDrawerOpen,
                              onArtistClick: selectArtist,
                              onDismiss: { self.appState.localState.isDrawerOpen.toggle() })
                  /// Other behaviors
         }
-        .background(self.theme.colorCommon)
+        .background(self.appState.theme.colorCommon)
         .onTapGesture {
             if self.appState.localState.isDrawerOpen {
                 self.appState.localState.isDrawerOpen.toggle()
@@ -123,8 +120,8 @@ struct ContentView: View {
         .simpleToast(isPresented: $needShowToast, options: toastOptions) {
             Label(self.toastText, systemImage: "exclamationmark.triangle")
                .padding()
-               .background(self.theme.colorMain.opacity(0.8))
-               .foregroundColor(self.theme.colorBg)
+               .background(self.appState.theme.colorMain.opacity(0.8))
+               .foregroundColor(self.appState.theme.colorBg)
                .cornerRadius(10)
                .padding(.top)
         }
@@ -379,7 +376,7 @@ struct ContentView: View {
     }
     
     func reloadSettings() {
-        self.theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
+        self.appState.theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
     }
 }
 

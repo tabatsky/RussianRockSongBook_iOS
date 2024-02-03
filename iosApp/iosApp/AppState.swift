@@ -10,6 +10,7 @@ import Foundation
 import shared
 
 struct AppState {
+    var theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
     var currentScreenVariant: ScreenVariant = ScreenVariant.start
     var localState: LocalState = LocalState()
     var cloudState: CloudState = CloudState()

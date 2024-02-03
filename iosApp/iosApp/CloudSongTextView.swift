@@ -12,17 +12,7 @@ import shared
 struct CloudSongTextView: View {
     let theme: Theme
     let cloudState: CloudState
-    let onBackClick: () -> ()
-    let onPrevClick: () -> ()
-    let onNextClick: () -> ()
-    let onPerformLike: (CloudSong) -> ()
-    let onPerformDislike: (CloudSong) -> ()
-    let onDownloadCurrent: (CloudSong) -> ()
-    let onOpenSongAtYandexMusic: (Music) -> ()
-    let onOpenSongAtYoutubeMusic: (Music) -> ()
-    let onOpenSongAtVkMusic: (Music) -> ()
-    let onSendWarning: (Warning) -> ()
-    let onShowToast: (String) -> ()
+    let cloudCallbacks: CloudCallbacks
     
     @State var currentChord: String? = nil
     @State var needShowWarningDialog = false
@@ -81,7 +71,7 @@ struct CloudSongTextView: View {
         .navigationBarItems(leading:
             Button(action: {
                 Task.detached { @MainActor in
-                    onBackClick()
+                    self.cloudCallbacks.onBackClick()
                 }
             }) {
                 Image("ic_back")
@@ -90,7 +80,7 @@ struct CloudSongTextView: View {
         }, trailing: HStack {
             Button(action: {
                 Task.detached { @MainActor in
-                    onPrevClick()
+                    self.cloudCallbacks.onPrevClick()
                 }
             }) {
                 Image("ic_left")
@@ -101,7 +91,7 @@ struct CloudSongTextView: View {
             Text(indexAndCount)
             Button(action: {
                 Task.detached { @MainActor in
-                    onNextClick()
+                    self.cloudCallbacks.onNextClick()
                 }
             }) {
                 Image("ic_right")
@@ -118,11 +108,11 @@ struct CloudSongTextView: View {
                     self.needShowWarningDialog = false
                 }, onSend: {
                     if ($0.isEmpty) {
-                        self.onShowToast("Комментарий не должен быть пустым")
+                        self.cloudCallbacks.onShowToast("Комментарий не должен быть пустым")
                     } else {
                         self.needShowWarningDialog = false
                         let warning = self.cloudState.currentCloudSong!.warningWithComment(comment: $0)
-                        self.onSendWarning(warning)
+                        self.cloudCallbacks.onSendWarning(warning)
                     }
                 }
             )
@@ -136,22 +126,22 @@ struct CloudSongTextView: View {
     
     func onOpenYandexMusic() {
         print("open yandex music")
-        self.onOpenSongAtYandexMusic(self.cloudState.currentCloudSong!)
+        self.cloudCallbacks.onOpenSongAtYandexMusic(self.cloudState.currentCloudSong!)
     }
     
     func onOpenYoutubeMusuc() {
         print("open youtube music")
-        self.onOpenSongAtYoutubeMusic(self.cloudState.currentCloudSong!)
+        self.cloudCallbacks.onOpenSongAtYoutubeMusic(self.cloudState.currentCloudSong!)
     }
     
     func onOpenVkMusuc() {
         print("open vk music")
-        self.onOpenSongAtVkMusic(self.cloudState.currentCloudSong!)
+        self.cloudCallbacks.onOpenSongAtVkMusic(self.cloudState.currentCloudSong!)
     }
     
     func onDownloadFromCloud() {
         print("download from cloud")
-        self.onDownloadCurrent(self.cloudState.currentCloudSong!)
+        self.cloudCallbacks.onDownloadCurrent(self.cloudState.currentCloudSong!)
     }
     
     func onShowWarning() {
@@ -161,12 +151,12 @@ struct CloudSongTextView: View {
     
     func onLike() {
         print("like")
-        self.onPerformLike(self.cloudState.currentCloudSong!)
+        self.cloudCallbacks.onPerformLike(self.cloudState.currentCloudSong!)
     }
     
     func onDislike() {
         print("dislike")
-        self.onPerformDislike(self.cloudState.currentCloudSong!)
+        self.cloudCallbacks.onPerformDislike(self.cloudState.currentCloudSong!)
     }
 }
 

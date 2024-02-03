@@ -44,3 +44,39 @@ class LocalCallbacks {
         self.onSendWarning = onSendWarning
     }
 }
+
+class CloudCallbacks {
+    let onBackClick: () -> ()
+    let onLoadSuccess: ([CloudSong]) -> ()
+    let onCloudSongClick: (Int) -> ()
+    let onOrderBySelected: (OrderBy) -> ()
+    let onBackupSearchFor: (String) -> ()
+    let onPrevClick: () -> ()
+    let onNextClick: () -> ()
+    let onPerformLike: (CloudSong) -> ()
+    let onPerformDislike: (CloudSong) -> ()
+    let onDownloadCurrent: (CloudSong) -> ()
+    let onOpenSongAtYandexMusic: (Music) -> ()
+    let onOpenSongAtYoutubeMusic: (Music) -> ()
+    let onOpenSongAtVkMusic: (Music) -> ()
+    let onSendWarning: (Warning) -> ()
+    let onShowToast: (String) -> ()
+    
+    init(onBackClick: @escaping () -> Void, onLoadSuccess: @escaping ([CloudSong]) -> Void, onCloudSongClick: @escaping (Int) -> Void, onOrderBySelected: @escaping (OrderBy) -> Void, onBackupSearchFor: @escaping (String) -> Void, onPrevClick: @escaping () -> Void, onNextClick: @escaping () -> Void, onPerformLike: @escaping (CloudSong) -> Void, onPerformDislike: @escaping (CloudSong) -> Void, onDownloadCurrent: @escaping (CloudSong) -> Void, onOpenSongAtYandexMusic: @escaping (Music) -> Void, onOpenSongAtYoutubeMusic: @escaping (Music) -> Void, onOpenSongAtVkMusic: @escaping (Music) -> Void, onSendWarning: @escaping (Warning) -> Void, onShowToast: @escaping (String) -> Void) {
+        self.onBackClick = onBackClick
+        self.onLoadSuccess = onLoadSuccess
+        self.onCloudSongClick = onCloudSongClick
+        self.onOrderBySelected = onOrderBySelected
+        self.onBackupSearchFor = onBackupSearchFor
+        self.onPrevClick = onPrevClick
+        self.onNextClick = onNextClick
+        self.onPerformLike = onPerformLike
+        self.onPerformDislike = onPerformDislike
+        self.onDownloadCurrent = onDownloadCurrent
+        self.onOpenSongAtYandexMusic = onOpenSongAtYandexMusic
+        self.onOpenSongAtYoutubeMusic = onOpenSongAtYoutubeMusic
+        self.onOpenSongAtVkMusic = onOpenSongAtVkMusic
+        self.onSendWarning = onSendWarning
+        self.onShowToast = onShowToast
+    }
+}

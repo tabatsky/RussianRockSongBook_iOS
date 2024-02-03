@@ -38,6 +38,26 @@ struct ContentView: View {
         )
     }
     
+    private var cloudCallbacks: CloudCallbacks {
+        CloudCallbacks(
+            onBackClick: back,
+            onLoadSuccess: refreshCloudSongList,
+            onCloudSongClick: selectCloudSong,
+            onOrderBySelected: selectOrderBy,
+            onBackupSearchFor: backupSearchFor,
+            onPrevClick: prevCloudSong,
+            onNextClick: nextCloudSong,
+            onPerformLike: performLike,
+            onPerformDislike: performDislike,
+            onDownloadCurrent: downloadCurrent,
+            onOpenSongAtYandexMusic: openSongAtYandexMusic,
+            onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
+            onOpenSongAtVkMusic: openSongAtVkMusic,
+            onSendWarning: sendWarning,
+            onShowToast: showToast
+        )
+    }
+    
     @State var theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
 
     @State var appState: AppState = AppState()
@@ -71,26 +91,12 @@ struct ContentView: View {
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(theme: self.theme, 
                                         cloudState: self.appState.cloudState,
-                                        onLoadSuccess: refreshCloudSongList,
-                                        onBackClick: back,
-                                        onCloudSongClick: selectCloudSong,
-                                        onOrderBySelected: selectOrderBy,
-                                        onBackupSearchFor: backupSearchFor
+                                        cloudCallbacks: self.cloudCallbacks
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(theme: self.theme,
                                           cloudState: self.appState.cloudState,
-                                          onBackClick: back,
-                                          onPrevClick: prevCloudSong,
-                                          onNextClick: nextCloudSong,
-                                          onPerformLike: performLike,
-                                          onPerformDislike: performDislike,
-                                          onDownloadCurrent: downloadCurrent,
-                                          onOpenSongAtYandexMusic: openSongAtYandexMusic,
-                                          onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-                                          onOpenSongAtVkMusic: openSongAtVkMusic,
-                                          onSendWarning: sendWarning,
-                                          onShowToast: showToast
+                                          cloudCallbacks: self.cloudCallbacks
                         )
                     } else if (self.appState.currentScreenVariant == .settings) {
                         SettingsView(

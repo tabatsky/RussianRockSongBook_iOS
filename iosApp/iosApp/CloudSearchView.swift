@@ -10,15 +10,10 @@ import SwiftUI
 import shared
 
 struct CloudSearchView: View {
-    let onBackClick: () -> ()
-    let onLoadSuccess: ([CloudSong]) -> ()
-    let onCloudSongClick: (Int) -> ()
-    let onOrderBySelected: (OrderBy) -> ()
-    let onBackupSearchFor: (String) -> ()
-    
-    
+  
     let theme: Theme
     let cloudState: CloudState
+    let cloudCallbacks: CloudCallbacks
     
     @State var currentSearchState: SearchState = .loading
     
@@ -28,14 +23,10 @@ struct CloudSearchView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(theme: Theme, cloudState: CloudState, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> (), onBackupSearchFor: @escaping (String) -> ()) {
+    init(theme: Theme, cloudState: CloudState, cloudCallbacks: CloudCallbacks) {
         self.theme = theme
         self.cloudState = cloudState
-        self.onLoadSuccess = onLoadSuccess
-        self.onBackClick = onBackClick
-        self.onCloudSongClick = onCloudSongClick
-        self.onOrderBySelected = onOrderBySelected
-        self.onBackupSearchFor = onBackupSearchFor
+        self.cloudCallbacks = cloudCallbacks
     }
     
     var body: some View {
@@ -153,8 +144,8 @@ struct CloudSearchView: View {
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
-                                                     onBackupSearchFor(searchFor)
-                                                     onCloudSongClick(index)
+                                                     self.cloudCallbacks.onBackupSearchFor(searchFor)
+                                                     self.cloudCallbacks.onCloudSongClick(index)
                                                  }
                                         )
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
@@ -210,7 +201,7 @@ struct CloudSearchView: View {
         .navigationBarItems(leading:
                 Button(action: {
                     Task.detached { @MainActor in
-                        onBackClick()
+                        self.cloudCallbacks.onBackClick()
                     }
                 }) {
                     Image("ic_back")
@@ -228,7 +219,7 @@ struct CloudSearchView: View {
             searchFor: searchFor,
             orderBy: orderBy,
             onSuccess: { data in
-                self.onLoadSuccess(data)
+                self.cloudCallbacks.onLoadSuccess(data)
                 if (data.isEmpty) {
                    self.currentSearchState = .emptyList
                } else {
@@ -242,7 +233,7 @@ struct CloudSearchView: View {
     }
     
     func selectOrderBy(orderBy: OrderBy) {
-        onOrderBySelected(orderBy)
+        self.cloudCallbacks.onOrderBySelected(orderBy)
     }
 }
 

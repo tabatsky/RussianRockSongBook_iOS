@@ -12,6 +12,7 @@ import shared
 struct AppState {
     var currentScreenVariant: ScreenVariant = ScreenVariant.start
     var localState: LocalState = LocalState()
+    var cloudState: CloudState = CloudState()
 }
 
 
@@ -24,4 +25,15 @@ struct LocalState {
     }()
     var currentSongIndex: Int = 0
     var currentSong: Song? = nil
+}
+
+struct CloudState {
+    var currentCloudSongList: [CloudSong]? = nil
+    var currentCloudSongCount: Int = 0
+    var currentCloudSongIndex: Int = 0
+    var currentCloudSong: CloudSong? = nil
+    var currentCloudOrderBy: OrderBy = OrderBy.byIdDesc
+    var searchForBackup: String = ""
+    var allLikes: Dictionary<CloudSong, Int> = [:]
+    var allDislikes: Dictionary<CloudSong, Int> = [:]
 }

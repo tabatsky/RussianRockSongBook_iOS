@@ -42,15 +42,6 @@ struct ContentView: View {
 
     @State var appState: AppState = AppState()
     
-    @State var currentCloudSongList: [CloudSong]? = nil
-    @State var currentCloudSongCount: Int = 0
-    @State var currentCloudSongIndex: Int = 0
-    @State var currentCloudSong: CloudSong? = nil
-    @State var currentCloudOrderBy: OrderBy = OrderBy.byIdDesc
-    @State var searchForBackup = ""
-    
-    @State var allLikes: Dictionary<CloudSong, Int> = [:]
-    @State var allDislikes: Dictionary<CloudSong, Int> = [:]
     
     @State var needShowToast = false
     @State var toastText = ""
@@ -79,12 +70,7 @@ struct ContentView: View {
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(theme: self.theme, 
-                                        cloudSongList: self.currentCloudSongList,
-                                        cloudSongIndex: self.currentCloudSongIndex,
-                                        orderBy: self.currentCloudOrderBy,
-                                        searchForBackup: self.searchForBackup,
-                                        allLikes: self.allLikes,
-                                        allDislikes: self.allDislikes,
+                                        cloudState: self.appState.cloudState,
                                         onLoadSuccess: refreshCloudSongList,
                                         onBackClick: back,
                                         onCloudSongClick: selectCloudSong,
@@ -93,11 +79,7 @@ struct ContentView: View {
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(theme: self.theme,
-                                          cloudSong: self.currentCloudSong!,
-                                          cloudSongIndex: self.currentCloudSongIndex,
-                                          cloudSongCount: self.currentCloudSongCount,
-                                          allLikes: self.allLikes,
-                                          allDislikes: self.allDislikes,
+                                          cloudState: self.appState.cloudState,
                                           onBackClick: back,
                                           onPrevClick: prevCloudSong,
                                           onNextClick: nextCloudSong,
@@ -158,9 +140,9 @@ struct ContentView: View {
         print("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
-                self.searchForBackup = ""
-                self.currentCloudSongIndex = 0
-                self.currentCloudOrderBy = OrderBy.byIdDesc
+                self.appState.cloudState.searchForBackup = ""
+                self.appState.cloudState.currentCloudSongIndex = 0
+                self.appState.cloudState.currentCloudOrderBy = OrderBy.byIdDesc
                 self.appState.currentScreenVariant = ScreenVariant.cloudSearch
             }
         } else if (self.appState.localState.currentArtist != artist || self.appState.localState.currentCount == 0) {
@@ -269,38 +251,38 @@ struct ContentView: View {
     func refreshCloudSongList(_ cloudSongList: [CloudSong]) {
         print(cloudSongList.count)
         
-        self.allLikes = [:]
-        self.allDislikes = [:]
-        self.currentCloudSongList = cloudSongList
-        self.currentCloudSongCount = cloudSongList.count
+        self.appState.cloudState.allLikes = [:]
+        self.appState.cloudState.allDislikes = [:]
+        self.appState.cloudState.currentCloudSongList = cloudSongList
+        self.appState.cloudState.currentCloudSongCount = cloudSongList.count
     }
 
     func selectOrderBy(_ orderBy: OrderBy) {
-        self.currentCloudSongIndex = 0
-        self.currentCloudSong = nil
-        self.currentCloudOrderBy = orderBy
+        self.appState.cloudState.currentCloudSongIndex = 0
+        self.appState.cloudState.currentCloudSong = nil
+        self.appState.cloudState.currentCloudOrderBy = orderBy
     }
     
     func backupSearchFor(_ searchFor: String) {
-        self.searchForBackup = searchFor
+        self.appState.cloudState.searchForBackup = searchFor
     }
     
     func selectCloudSong(_ index: Int) {
         print("select cloud song: \(index)")
-        self.currentCloudSongIndex = index
-        self.currentCloudSong = self.currentCloudSongList![index]
+        self.appState.cloudState.currentCloudSongIndex = index
+        self.appState.cloudState.currentCloudSong = self.appState.cloudState.currentCloudSongList![index]
         self.appState.currentScreenVariant = .cloudSongText
     }
     
     func prevCloudSong() {
-        if (self.currentCloudSongIndex - 1 >= 0) {
-            selectCloudSong(self.currentCloudSongIndex - 1)
+        if (self.appState.cloudState.currentCloudSongIndex - 1 >= 0) {
+            selectCloudSong(self.appState.cloudState.currentCloudSongIndex - 1)
         }
     }
     
     func nextCloudSong() {
-        if (self.currentCloudSongIndex + 1 < self.currentCloudSongCount) {
-            selectCloudSong(self.currentCloudSongIndex + 1)
+        if (self.appState.cloudState.currentCloudSongIndex + 1 < self.appState.cloudState.currentCloudSongCount) {
+            selectCloudSong(self.appState.cloudState.currentCloudSongIndex + 1)
         }
     }
     
@@ -308,7 +290,7 @@ struct ContentView: View {
         if (self.appState.currentScreenVariant == .songText) {
             self.appState.currentScreenVariant = .songList
         } else if (self.appState.currentScreenVariant == .cloudSearch) {
-            self.currentCloudSongList = nil
+            self.appState.cloudState.currentCloudSongList = nil
             self.appState.currentScreenVariant = .songList
         } else if (self.appState.currentScreenVariant == .cloudSongText) {
             self.appState.currentScreenVariant = .cloudSearch
@@ -322,8 +304,8 @@ struct ContentView: View {
             cloudSong: cloudSong, voteValue: 1,
             onSuccess: {
                 print($0)
-                let oldCount = self.allLikes[cloudSong] ?? 0
-                self.allLikes[cloudSong] = oldCount + 1
+                let oldCount = self.appState.cloudState.allLikes[cloudSong] ?? 0
+                self.appState.cloudState.allLikes[cloudSong] = oldCount + 1
                 showToast("Ваш голос засчитан")
             }, onServerMessage: {
                 showToast($0)
@@ -338,8 +320,8 @@ struct ContentView: View {
             cloudSong: cloudSong, voteValue: -1,
             onSuccess: {
                 print($0)
-                let oldCount = self.allDislikes[cloudSong] ?? 0
-                self.allDislikes[cloudSong] = oldCount + 1
+                let oldCount = self.appState.cloudState.allDislikes[cloudSong] ?? 0
+                self.appState.cloudState.allDislikes[cloudSong] = oldCount + 1
                 showToast("Ваш голос засчитан")
             }, onServerMessage: {
                 showToast($0)

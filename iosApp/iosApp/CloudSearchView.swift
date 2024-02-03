@@ -16,17 +16,9 @@ struct CloudSearchView: View {
     let onOrderBySelected: (OrderBy) -> ()
     let onBackupSearchFor: (String) -> ()
     
-    let currentCloudSongList: [CloudSong]?
-    let currentCloudSongIndex: Int
     
     let theme: Theme
-    
-    let orderBy: OrderBy
-    
-    let allLikes: Dictionary<CloudSong, Int>
-    let allDislikes: Dictionary<CloudSong, Int>
-    
-    let searchForBackup: String
+    let cloudState: CloudState
     
     @State var currentSearchState: SearchState = .loading
     
@@ -36,18 +28,13 @@ struct CloudSearchView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(theme: Theme, cloudSongList: [CloudSong]?, cloudSongIndex: Int, orderBy: OrderBy, searchForBackup: String, allLikes: Dictionary<CloudSong, Int>, allDislikes: Dictionary<CloudSong, Int>, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> (), onBackupSearchFor: @escaping (String) -> ()) {
+    init(theme: Theme, cloudState: CloudState, onLoadSuccess: @escaping ([CloudSong]) -> (), onBackClick: @escaping () -> (), onCloudSongClick: @escaping (Int) -> (), onOrderBySelected: @escaping (OrderBy) -> (), onBackupSearchFor: @escaping (String) -> ()) {
         self.theme = theme
-        self.currentCloudSongList = cloudSongList
-        self.currentCloudSongIndex = cloudSongIndex
-        self.orderBy = orderBy
-        self.allLikes = allLikes
-        self.allDislikes = allDislikes
+        self.cloudState = cloudState
         self.onLoadSuccess = onLoadSuccess
         self.onBackClick = onBackClick
         self.onCloudSongClick = onCloudSongClick
         self.onOrderBySelected = onOrderBySelected
-        self.searchForBackup = searchForBackup
         self.onBackupSearchFor = onBackupSearchFor
     }
     
@@ -73,7 +60,7 @@ struct CloudSearchView: View {
                                 selectOrderBy(orderBy: OrderBy.byArtist)
                             }
                         } label: {
-                            Text(orderBy.orderByRus)
+                            Text(self.cloudState.currentCloudOrderBy.orderByRus)
                         }
                             .foregroundColor(self.theme.colorMain)
                             .frame(maxWidth: .infinity)
@@ -114,14 +101,14 @@ struct CloudSearchView: View {
                             let columns = [
                                 GridItem(.flexible())
                             ]
-                            let currentList = self.currentCloudSongList!
+                            let currentList = self.cloudState.currentCloudSongList!
                             LazyVGrid(columns: columns, spacing: 0) {
                                 ForEach(0..<currentList.count, id: \.self) { index in
                                     let cloudSong = currentList[index]
                                     let title = cloudSong.visibleTitle
                                     let artist = cloudSong.artist
-                                    let likeCount = Int(cloudSong.likeCount) + (self.allLikes[cloudSong] ?? 0)
-                                    let dislikeCount = Int(cloudSong.dislikeCount) + (self.allDislikes[cloudSong] ?? 0)
+                                    let likeCount = Int(cloudSong.likeCount) + (self.cloudState.allLikes[cloudSong] ?? 0)
+                                    let dislikeCount = Int(cloudSong.dislikeCount) + (self.cloudState.allDislikes[cloudSong] ?? 0)
                                     let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
                                     VStack {
                                         Text(visibleTitleWithRaiting)
@@ -173,8 +160,8 @@ struct CloudSearchView: View {
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                             }
                             .onAppear(perform: {
-                                if (self.currentCloudSongList != nil && !self.currentCloudSongList!.isEmpty) {
-                                    sp.scrollTo(self.currentCloudSongList![self.currentCloudSongIndex], anchor: .top)
+                                if (self.cloudState.currentCloudSongList != nil && !self.cloudState.currentCloudSongList!.isEmpty) {
+                                    sp.scrollTo(self.cloudState.currentCloudSongList![self.cloudState.currentCloudSongIndex], anchor: .top)
                                 }
                                 Task.detached {
                                     try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
@@ -197,7 +184,7 @@ struct CloudSearchView: View {
                                 }
                         })
                         .onAppear(perform: {
-                            self.searchFor = self.searchForBackup
+                            self.searchFor = self.cloudState.searchForBackup
                         })
                         .onChange(of: self.scrollPosition, perform: { position in
                             //print("\(self.scrollPosition), \(position)")
@@ -207,15 +194,15 @@ struct CloudSearchView: View {
                 }
             }
             .onAppear(perform: {
-                if (self.currentCloudSongList == nil) {
-                    searchSongs(searchFor: "", orderBy: self.orderBy)
-                } else if (self.currentCloudSongList!.isEmpty) {
+                if (self.cloudState.currentCloudSongList == nil) {
+                    searchSongs(searchFor: "", orderBy: self.cloudState.currentCloudOrderBy)
+                } else if (self.cloudState.currentCloudSongList!.isEmpty) {
                     self.currentSearchState = .emptyList
                 } else {
                     self.currentSearchState = .loadSuccess
                 }
             })
-            .onChange(of: self.orderBy, perform: { orderBy in
+            .onChange(of: self.cloudState.currentCloudOrderBy, perform: { orderBy in
                 searchSongs(searchFor: self.searchFor, orderBy: orderBy)
             })
         }

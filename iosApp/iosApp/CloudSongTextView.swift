@@ -11,11 +11,7 @@ import shared
 
 struct CloudSongTextView: View {
     let theme: Theme
-    let cloudSong: CloudSong
-    let cloudSongIndex: Int
-    let cloudSongCount: Int
-    let allLikes: Dictionary<CloudSong, Int>
-    let allDislikes: Dictionary<CloudSong, Int>
+    let cloudState: CloudState
     let onBackClick: () -> ()
     let onPrevClick: () -> ()
     let onNextClick: () -> ()
@@ -33,11 +29,11 @@ struct CloudSongTextView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            let artist = cloudSong.artist
-            let title = cloudSong.visibleTitle
+            let artist = self.cloudState.currentCloudSong!.artist
+            let title = self.cloudState.currentCloudSong!.visibleTitle
             
-            let likeCount = Int(cloudSong.likeCount) + (self.allLikes[cloudSong] ?? 0)
-            let dislikeCount = Int(cloudSong.dislikeCount) + (self.allDislikes[cloudSong] ?? 0)
+            let likeCount = Int(self.cloudState.currentCloudSong!.likeCount) + (self.cloudState.allLikes[self.cloudState.currentCloudSong!] ?? 0)
+            let dislikeCount = Int(self.cloudState.currentCloudSong!.dislikeCount) + (self.cloudState.allDislikes[self.cloudState.currentCloudSong!] ?? 0)
             
             let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
             
@@ -55,7 +51,7 @@ struct CloudSongTextView: View {
                             ScrollView(.vertical) {
                                 TheTextViewer(
                                     theme: self.theme,
-                                    text: cloudSong.text,
+                                    text: self.cloudState.currentCloudSong!.text,
                                     width: geometry.size.width,
                                     onChordTapped: onChordTapped,
                                     onHeightChanged: { height in })
@@ -101,7 +97,7 @@ struct CloudSongTextView: View {
                     .resizable()
                     .frame(width: 32.0, height: 32.0)
             }
-            let indexAndCount = "\(self.cloudSongIndex + 1) / \(self.cloudSongCount)"
+            let indexAndCount = "\(self.cloudState.currentCloudSongIndex + 1) / \(self.cloudState.currentCloudSongCount)"
             Text(indexAndCount)
             Button(action: {
                 Task.detached { @MainActor in
@@ -125,7 +121,7 @@ struct CloudSongTextView: View {
                         self.onShowToast("Комментарий не должен быть пустым")
                     } else {
                         self.needShowWarningDialog = false
-                        let warning = self.cloudSong.warningWithComment(comment: $0)
+                        let warning = self.cloudState.currentCloudSong!.warningWithComment(comment: $0)
                         self.onSendWarning(warning)
                     }
                 }
@@ -140,22 +136,22 @@ struct CloudSongTextView: View {
     
     func onOpenYandexMusic() {
         print("open yandex music")
-        self.onOpenSongAtYandexMusic(self.cloudSong)
+        self.onOpenSongAtYandexMusic(self.cloudState.currentCloudSong!)
     }
     
     func onOpenYoutubeMusuc() {
         print("open youtube music")
-        self.onOpenSongAtYoutubeMusic(self.cloudSong)
+        self.onOpenSongAtYoutubeMusic(self.cloudState.currentCloudSong!)
     }
     
     func onOpenVkMusuc() {
         print("open vk music")
-        self.onOpenSongAtVkMusic(self.cloudSong)
+        self.onOpenSongAtVkMusic(self.cloudState.currentCloudSong!)
     }
     
     func onDownloadFromCloud() {
         print("download from cloud")
-        self.onDownloadCurrent(self.cloudSong)
+        self.onDownloadCurrent(self.cloudState.currentCloudSong!)
     }
     
     func onShowWarning() {
@@ -165,12 +161,12 @@ struct CloudSongTextView: View {
     
     func onLike() {
         print("like")
-        self.onPerformLike(self.cloudSong)
+        self.onPerformLike(self.cloudState.currentCloudSong!)
     }
     
     func onDislike() {
         print("dislike")
-        self.onPerformDislike(self.cloudSong)
+        self.onPerformDislike(self.cloudState.currentCloudSong!)
     }
 }
 

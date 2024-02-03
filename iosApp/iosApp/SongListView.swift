@@ -10,8 +10,7 @@ import SwiftUI
 
 struct SongListView: View {
     let theme: Theme
-    let artist: String
-    let songIndex: Int
+    let localState: LocalState
     let onSongClick: (Int) -> ()
     let onScroll: (Int) -> ()
     let onDrawerClick: () -> ()
@@ -22,7 +21,6 @@ struct SongListView: View {
     @State var scrollViewFrame: CGRect = CGRect()
     
 
-
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { sp in
@@ -30,7 +28,7 @@ struct SongListView: View {
                     let columns = [
                         GridItem(.flexible())
                     ]
-                    let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.artist)
+                    let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.localState.currentArtist)
                     ContainerView {
                         if (!currentSongList.isEmpty) {
                             LazyVGrid(columns: columns, spacing: 0) {
@@ -84,9 +82,9 @@ struct SongListView: View {
                         }
                     }
                     .onAppear(perform: {
-                        self.scrollPosition = songIndex
+                        self.scrollPosition = localState.currentSongIndex
                         if (!currentSongList.isEmpty) {
-                            sp.scrollTo(currentSongList[songIndex], anchor: .top)
+                            sp.scrollTo(currentSongList[localState.currentSongIndex], anchor: .top)
                         }
                         Task.detached {
                             try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
@@ -124,7 +122,7 @@ struct SongListView: View {
                                 .resizable()
                                 .frame(width: 32.0, height: 32.0)
                         }, trailing: Spacer())
-                .navigationTitle(self.artist)
+                .navigationTitle(self.localState.currentArtist)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(action: {
                     Task.detached { @MainActor in

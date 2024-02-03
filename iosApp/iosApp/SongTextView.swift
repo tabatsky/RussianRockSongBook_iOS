@@ -12,17 +12,7 @@ import shared
 struct SongTextView: View {
     let theme: Theme
     let song: Song
-    let onBackClick: () -> ()
-    let onPrevClick: () -> ()
-    let onNextClick: () -> ()
-    let onFavoriteToggle: () -> ()
-    let onSaveSongText: (String) -> ()
-    let onDeleteToTrashConfirmed: () -> ()
-    let onShowToast: (String) -> ()
-    let onOpenSongAtYandexMusic: (Music) -> ()
-    let onOpenSongAtYoutubeMusic: (Music) -> ()
-    let onOpenSongAtVkMusic: (Music) -> ()
-    let onSendWarning: (Warning) -> ()
+    let localCallbacks: LocalCallbacks
     
     let dY: CGFloat = 8.0 * CGFloat(Preferences.loadScrollSpeed())
     
@@ -175,7 +165,7 @@ struct SongTextView: View {
         .background(self.theme.colorBg)
         .navigationBarItems(leading: Button(action: {
             Task.detached { @MainActor in
-                onBackClick()
+                self.localCallbacks.onBackClick()
             }
         }) {
             Image("ic_back")
@@ -199,7 +189,7 @@ struct SongTextView: View {
             }
             Button(action: {
                 Task.detached { @MainActor in
-                    onPrevClick()
+                    self.localCallbacks.onPrevClick()
                 }
             }) {
                 Image("ic_left")
@@ -208,7 +198,7 @@ struct SongTextView: View {
             }
             Button(action: {
                 Task.detached { @MainActor in
-                    onFavoriteToggle()
+                    self.localCallbacks.onFavoriteToggle()
                 }
             }) {
                 if (song.favorite) {
@@ -223,7 +213,7 @@ struct SongTextView: View {
             }
             Button(action: {
                 Task.detached { @MainActor in
-                    onNextClick()
+                    self.localCallbacks.onNextClick()
                 }
             }) {
                 Image("ic_right")
@@ -249,7 +239,7 @@ struct SongTextView: View {
                     .background(self.theme.colorBg)
                 Button(action: {
                     self.isPresentingDeleteConfirm = false
-                    self.onDeleteToTrashConfirmed()
+                    self.localCallbacks.onDeleteToTrashConfirmed()
                 }, label: {
                     Text("Ок")
                         .foregroundColor(self.theme.colorBg)
@@ -276,11 +266,11 @@ struct SongTextView: View {
                     self.needShowWarningDialog = false
                 }, onSend: {
                     if ($0.isEmpty) {
-                        self.onShowToast("Комментарий не должен быть пустым")
+                        self.localCallbacks.onShowToast("Комментарий не должен быть пустым")
                     } else {
                         self.needShowWarningDialog = false
                         let warning = self.song.warningWithComment(comment: $0)
-                        self.onSendWarning(warning)
+                        self.localCallbacks.onSendWarning(warning)
                     }
                 }
             )
@@ -322,7 +312,7 @@ struct SongTextView: View {
     func onSave() {
         self.isAutoScroll = false
         self.isEditorMode = false
-        self.onSaveSongText(self.editorText)
+        self.localCallbacks.onSaveSongText(self.editorText)
     }
     
     func onDeleteToTrash() {
@@ -338,35 +328,35 @@ struct SongTextView: View {
         print("upload to cloud")
         let textWasChanged = song.textWasChanged
         if (!textWasChanged) {
-            self.onShowToast("Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака")
+            self.localCallbacks.onShowToast("Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака")
         } else {
             CloudRepository.shared.addCloudSongAsync(
                 cloudSong: song.asCloudSong(),
                 onSuccess: {
-                    self.onShowToast("Успешно добавлено в облако")
+                    self.localCallbacks.onShowToast("Успешно добавлено в облако")
                 },
                 onServerMessage: {
-                    self.onShowToast($0)
+                    self.localCallbacks.onShowToast($0)
                 }, onError: {
                     $0.printStackTrace()
-                    self.onShowToast("Ошибка в приложении")
+                    self.localCallbacks.onShowToast("Ошибка в приложении")
                 })
         }
     }
     
     func onOpenYandexMusic() {
         print("open yandex music")
-        self.onOpenSongAtYandexMusic(self.song)
+        self.localCallbacks.onOpenSongAtYandexMusic(self.song)
     }
     
     func onOpenYoutubeMusuc() {
         print("open youtube music")
-        self.onOpenSongAtYoutubeMusic(self.song)
+        self.localCallbacks.onOpenSongAtYoutubeMusic(self.song)
     }
     
     func onOpenVkMusuc() {
         print("open vk music")
-        self.onOpenSongAtVkMusic(self.song)
+        self.localCallbacks.onOpenSongAtVkMusic(self.song)
     }
 }
 

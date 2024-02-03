@@ -11,10 +11,7 @@ import SwiftUI
 struct SongListView: View {
     let theme: Theme
     let localState: LocalState
-    let onSongClick: (Int) -> ()
-    let onScroll: (Int) -> ()
-    let onDrawerClick: () -> ()
-    let onOpenSettings: () -> ()
+    let localCallbacks: LocalCallbacks
     
     @State var scrollPosition: Int = -1
     @State var initialScrollDone: Bool = false
@@ -66,7 +63,7 @@ struct SongListView: View {
                                         .highPriorityGesture(
                                             TapGesture()
                                                 .onEnded { _ in
-                                                    onSongClick(index)
+                                                    self.localCallbacks.onSongClick(index)
                                                 }
                                         )
                                     Rectangle()
@@ -109,13 +106,13 @@ struct SongListView: View {
                 .onChange(of: self.scrollPosition, perform: { [scrollPosition] position in
                     //print("\(self.scrollPosition), \(position)")
                     if (scrollPosition >= 0) {
-                        onScroll(position)
+                        self.localCallbacks.onScroll(position)
                     }
                 })
                 .navigationBarItems(leading:
                         Button(action: {
                             Task.detached { @MainActor in
-                                onDrawerClick()
+                                self.localCallbacks.onDrawerClick()
                             }
                         }) {
                             Image("ic_drawer")
@@ -139,7 +136,7 @@ struct SongListView: View {
     }
     
     func openSettings() {
-        self.onOpenSettings()
+        self.localCallbacks.onOpenSettings()
     }
 }
 

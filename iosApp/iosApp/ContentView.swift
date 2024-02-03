@@ -18,6 +18,26 @@ struct ContentView: View {
         hideAfter: 2
     )
     
+    private var localCallbacks: LocalCallbacks {
+        LocalCallbacks(
+            onSongClick: selectSong,
+            onScroll: updateSongIndexByScroll,
+            onDrawerClick: toggleDrawer,
+            onOpenSettings: openSettings,
+            onBackClick: back,
+            onPrevClick: prevSong,
+            onNextClick: nextSong,
+            onFavoriteToggle: toggleFavorite,
+            onSaveSongText: saveSongText,
+            onDeleteToTrashConfirmed: deleteCurrentToTrash,
+            onShowToast: showToast,
+            onOpenSongAtYandexMusic: openSongAtYandexMusic,
+            onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
+            onOpenSongAtVkMusic: openSongAtVkMusic,
+            onSendWarning: sendWarning
+        )
+    }
+    
     @State var theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
 
     @State var appState: AppState = AppState()
@@ -47,26 +67,15 @@ struct ContentView: View {
                         )
                     } else if (self.appState.currentScreenVariant == .songList) {
                         SongListView(theme: self.theme,
-                                     localState: appState.localState,
-                                     onSongClick: selectSong,
-                                     onScroll: updateSongIndexByScroll,
-                                     onDrawerClick: toggleDrawer,
-                                     onOpenSettings: openSettings
+                                     localState: self.appState.localState,
+                                     localCallbacks: self.localCallbacks
+                                     
                         )
                     } else if (self.appState.currentScreenVariant == .songText) {
                         SongTextView(theme: self.theme,
                                      song: self.appState.localState.currentSong!,
-                                     onBackClick: back,
-                                     onPrevClick: prevSong,
-                                     onNextClick: nextSong,
-                                     onFavoriteToggle: toggleFavorite,
-                                     onSaveSongText: saveSongText,
-                                     onDeleteToTrashConfirmed: deleteCurrentToTrash,
-                                     onShowToast: showToast,
-                                     onOpenSongAtYandexMusic: openSongAtYandexMusic,
-                                     onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-                                     onOpenSongAtVkMusic: openSongAtVkMusic,
-                                     onSendWarning: sendWarning
+                                     localCallbacks: self.localCallbacks
+                                     
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(theme: self.theme, 

@@ -144,7 +144,6 @@ struct CloudSearchView: View {
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
-                                                     self.cloudCallbacks.onBackupSearchFor(searchFor)
                                                      self.cloudCallbacks.onCloudSongClick(index)
                                                  }
                                         )
@@ -197,6 +196,9 @@ struct CloudSearchView: View {
                 searchSongs(searchFor: self.searchFor, orderBy: orderBy)
             })
         }
+        .onDisappear {
+            self.cloudCallbacks.onBackupSearchFor(self.searchFor)
+        }
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
@@ -233,6 +235,7 @@ struct CloudSearchView: View {
     }
     
     func selectOrderBy(orderBy: OrderBy) {
+        self.cloudCallbacks.onBackupSearchFor(self.searchFor)
         self.cloudCallbacks.onOrderBySelected(orderBy)
     }
 }

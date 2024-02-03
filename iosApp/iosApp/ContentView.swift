@@ -62,13 +62,34 @@ struct ContentView: View {
     
     @State var needShowToast = false
     @State var toastText = ""
+    
+    @State var orientation = UIDevice.current.orientation
 
+    let orientationChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+        .makeConnectable()
+        .autoconnect()
+
+    @State var isReady = true
+    
 	var body: some View {
 	    ZStack {
             /// Navigation Bar Title part
             if !self.appState.localState.isDrawerOpen {
                 NavigationView {
-                    if (self.appState.currentScreenVariant == .start) {
+                    if (!self.isReady) {
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: self.appState.theme.colorMain))
+                                    .scaleEffect(5.0)
+                                Spacer()
+                            }
+                            Spacer()
+                        }
+                        .background(self.appState.theme.colorBg)
+                    } else if (self.appState.currentScreenVariant == .start) {
                         StartScreenView(
                             theme: self.appState.theme,
                             onUpdateDone: onUpdateDone
@@ -117,6 +138,9 @@ struct ContentView: View {
                 self.appState.localState.isDrawerOpen.toggle()
             }
         }
+        .onReceive(self.orientationChanged) { _ in
+            forceReload()
+        }
         .simpleToast(isPresented: $needShowToast, options: toastOptions) {
             Label(self.toastText, systemImage: "exclamationmark.triangle")
                .padding()
@@ -124,6 +148,16 @@ struct ContentView: View {
                .foregroundColor(self.appState.theme.colorBg)
                .cornerRadius(10)
                .padding(.top)
+        }
+    }
+    
+    func forceReload() {
+        self.isReady = false
+        Task.detached {
+            try await Task.sleep(nanoseconds: 50 * 100 * 100)
+            Task.detached { @MainActor in
+                self.isReady = true
+            }
         }
     }
     

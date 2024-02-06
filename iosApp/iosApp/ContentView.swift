@@ -18,26 +18,6 @@ struct ContentView: View {
         hideAfter: 2
     )
     
-    private var localCallbacks: LocalCallbacks {
-        LocalCallbacks(
-            onSongClick: selectSong,
-            onScroll: updateSongIndexByScroll,
-            onDrawerClick: toggleDrawer,
-            onOpenSettings: openSettings,
-            onBackClick: back,
-            onPrevClick: prevSong,
-            onNextClick: nextSong,
-            onFavoriteToggle: toggleFavorite,
-            onSaveSongText: saveSongText,
-            onDeleteToTrashConfirmed: deleteCurrentToTrash,
-            onShowToast: showToast,
-            onOpenSongAtYandexMusic: openSongAtYandexMusic,
-            onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-            onOpenSongAtVkMusic: openSongAtVkMusic,
-            onSendWarning: sendWarning
-        )
-    }
-    
     private var cloudCallbacks: CloudCallbacks {
         CloudCallbacks(
             onBackClick: back,
@@ -97,13 +77,13 @@ struct ContentView: View {
                     } else if (self.appState.currentScreenVariant == .songList) {
                         SongListView(theme: self.appState.theme,
                                      localState: self.appState.localState,
-                                     localCallbacks: self.localCallbacks
+                                     onPerformAction: self.performAction
                                      
                         )
                     } else if (self.appState.currentScreenVariant == .songText) {
                         SongTextView(theme: self.appState.theme,
                                      song: self.appState.localState.currentSong!,
-                                     localCallbacks: self.localCallbacks
+                                     onPerformAction: self.performAction
                                      
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
@@ -148,6 +128,40 @@ struct ContentView: View {
                .foregroundColor(self.appState.theme.colorBg)
                .cornerRadius(10)
                .padding(.top)
+        }
+    }
+        
+    func performAction(_ action: AppUIAction) {
+        if (action is SongClick) {
+            self.selectSong((action as! SongClick).songIndex)
+        } else if (action is LocalScroll) {
+            self.updateSongIndexByScroll((action as! LocalScroll).songIndex)
+        } else if (action is DrawerClick) {
+            self.toggleDrawer()
+        } else if (action is OpenSettings) {
+            self.openSettings()
+        } else if (action is BackClick) {
+            self.back()
+        } else if (action is LocalPrevClick) {
+            self.prevSong()
+        } else if (action is LocalNextClick) {
+            self.nextSong()
+        } else if (action is FavoriteToggle) {
+            self.toggleFavorite()
+        } else if (action is SaveSongText) {
+            self.saveSongText((action as! SaveSongText).newText)
+        } else if (action is ConfirmDeleteToTrash) {
+            self.deleteCurrentToTrash()
+        } else if (action is ShowToast) {
+            self.showToast((action as! ShowToast).text)
+        } else if (action is OpenSongAtVkMusic) {
+            self.openSongAtVkMusic((action as! OpenSongAtVkMusic).music)
+        } else if (action is OpenSongAtYandexMusic) {
+            self.openSongAtYandexMusic((action as! OpenSongAtYandexMusic).music)
+        } else if (action is OpenSongAtYoutubeMusic) {
+            self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
+        } else if (action is SendWarning) {
+            self.sendWarning((action as! SendWarning).warning)
         }
     }
     
@@ -272,7 +286,7 @@ struct ContentView: View {
         showToast("Удалено")
     }
     
-    func saveSongText(newText: String) {
+    func saveSongText(_ newText: String) {
         let song = self.appState.localState.currentSong!.copy() as! Song
         song.text = newText
         Self.songRepo.updateSong(song: song)

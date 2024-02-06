@@ -33,6 +33,7 @@
 		CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */; };
 		CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C382AF2FABB006580F4 /* Preferences.swift */; };
 		CE5A9C3B2AF2FF9D006580F4 /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C3A2AF2FF9D006580F4 /* StartScreenView.swift */; };
+		CE6EC64A2B72CE28005101E8 /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6EC6492B72CE28005101E8 /* UIAction.swift */; };
 		CE82A5442B6DBAE200DE4D2B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82A5432B6DBAE200DE4D2B /* AppState.swift */; };
 		CE82A5462B6DC17200DE4D2B /* AppCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82A5452B6DC17200DE4D2B /* AppCallbacks.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
@@ -72,6 +73,7 @@
 		CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextEditor.swift; sourceTree = "<group>"; };
 		CE5A9C382AF2FABB006580F4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		CE5A9C3A2AF2FF9D006580F4 /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
+		CE6EC6492B72CE28005101E8 /* UIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAction.swift; sourceTree = "<group>"; };
 		CE82A5432B6DBAE200DE4D2B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		CE82A5452B6DC17200DE4D2B /* AppCallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCallbacks.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				CE50C4EE2AFAE3A300A11916 /* SettingsView.swift */,
 				CE82A5432B6DBAE200DE4D2B /* AppState.swift */,
 				CE82A5452B6DC17200DE4D2B /* AppCallbacks.swift */,
+				CE6EC6492B72CE28005101E8 /* UIAction.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */,
 				CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */,
 				CE82A5462B6DC17200DE4D2B /* AppCallbacks.swift in Sources */,
+				CE6EC64A2B72CE28005101E8 /* UIAction.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				CE50C4EF2AFAE3A300A11916 /* SettingsView.swift in Sources */,
 				CE0F57652AD930590080E6B1 /* Chord.swift in Sources */,

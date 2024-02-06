@@ -18,26 +18,6 @@ struct ContentView: View {
         hideAfter: 2
     )
     
-    private var cloudCallbacks: CloudCallbacks {
-        CloudCallbacks(
-            onBackClick: back,
-            onLoadSuccess: refreshCloudSongList,
-            onCloudSongClick: selectCloudSong,
-            onOrderBySelected: selectOrderBy,
-            onBackupSearchFor: backupSearchFor,
-            onPrevClick: prevCloudSong,
-            onNextClick: nextCloudSong,
-            onPerformLike: performLike,
-            onPerformDislike: performDislike,
-            onDownloadCurrent: downloadCurrent,
-            onOpenSongAtYandexMusic: openSongAtYandexMusic,
-            onOpenSongAtYoutubeMusic: openSongAtYoutubeMusic,
-            onOpenSongAtVkMusic: openSongAtVkMusic,
-            onSendWarning: sendWarning,
-            onShowToast: showToast
-        )
-    }
-    
     @State var appState: AppState = AppState()
     
     @State var needShowToast = false
@@ -89,12 +69,12 @@ struct ContentView: View {
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(theme: self.appState.theme,
                                         cloudState: self.appState.cloudState,
-                                        cloudCallbacks: self.cloudCallbacks
+                                        onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(theme: self.appState.theme,
                                           cloudState: self.appState.cloudState,
-                                          cloudCallbacks: self.cloudCallbacks
+                                          onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .settings) {
                         SettingsView(
@@ -107,6 +87,7 @@ struct ContentView: View {
             }
             /// Navigation Drawer part
             NavigationDrawer(theme: self.appState.theme,
+                             artists: self.appState.artists,
                              isOpen: self.appState.localState.isDrawerOpen,
                              onArtistClick: selectArtist,
                              onDismiss: { self.appState.localState.isDrawerOpen.toggle() })
@@ -130,7 +111,7 @@ struct ContentView: View {
                .padding(.top)
         }
     }
-        
+    
     func performAction(_ action: AppUIAction) {
         if (action is SongClick) {
             self.selectSong((action as! SongClick).songIndex)
@@ -162,6 +143,24 @@ struct ContentView: View {
             self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
         } else if (action is SendWarning) {
             self.sendWarning((action as! SendWarning).warning)
+        } else if (action is LoadSuccess) {
+            self.refreshCloudSongList((action as! LoadSuccess).cloudSongList)
+        } else if (action is CloudSongClick) {
+            self.selectCloudSong((action as! CloudSongClick).index)
+        } else if (action is SelectOrderBy) {
+            self.selectOrderBy((action as! SelectOrderBy).orderBy)
+        } else if (action is BackupSearchFor) {
+            self.backupSearchFor((action as! BackupSearchFor).searchFor)
+        } else if (action is CloudPrevClick) {
+            self.prevCloudSong()
+        } else if (action is CloudNextClick) {
+            self.nextCloudSong()
+        } else if (action is LikeClick) {
+            self.performLike((action as! LikeClick).cloudSong)
+        } else if (action is DislikeClick) {
+            self.performDislike((action as! DislikeClick).cloudSong)
+        } else if (action is DownloadClick) {
+            self.downloadCurrent((action as! DownloadClick).cloudSong)
         }
     }
     
@@ -275,6 +274,7 @@ struct ContentView: View {
         Self.songRepo.updateSong(song: song)
         let count = Self.songRepo.getCountByArtist(artist: self.appState.localState.currentArtist)
         self.appState.localState.currentCount = Int(count)
+        self.appState.artists = ContentView.songRepo.getArtists()
         if (self.appState.localState.currentCount > 0) {
             if (self.appState.localState.currentSongIndex >= self.appState.localState.currentCount) {
                 self.appState.localState.currentSongIndex -= 1
@@ -306,6 +306,8 @@ struct ContentView: View {
         self.appState.cloudState.allDislikes = [:]
         self.appState.cloudState.currentCloudSongList = cloudSongList
         self.appState.cloudState.currentCloudSongCount = cloudSongList.count
+        self.appState.cloudState.currentCloudSongIndex = 0
+        self.appState.cloudState.currentCloudSong = nil
     }
 
     func selectOrderBy(_ orderBy: OrderBy) {
@@ -384,6 +386,7 @@ struct ContentView: View {
     
     func downloadCurrent(_ cloudSong: CloudSong) {
         Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
+        self.appState.artists = ContentView.songRepo.getArtists()
         showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     

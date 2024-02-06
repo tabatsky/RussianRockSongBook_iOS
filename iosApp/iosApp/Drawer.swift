@@ -12,13 +12,14 @@ struct NavigationDrawer: View {
     private let width = UIScreen.main.bounds.width - 100
     private let height = UIScreen.main.bounds.height
     let theme: Theme
+    let artists: [String]
     let isOpen: Bool
     let onArtistClick: (String) -> ()
     let onDismiss: () -> ()
 
     var body: some View {
         HStack {
-            DrawerContent(theme: self.theme, onArtistClick: onArtistClick, onDismiss: onDismiss)
+            DrawerContent(theme: self.theme, artists: self.artists, onArtistClick: onArtistClick, onDismiss: onDismiss)
                 .frame(width: self.width)
                 .background(self.theme.colorMain)
                 .offset(x: self.isOpen ? 0 : -self.width)
@@ -31,6 +32,7 @@ struct NavigationDrawer: View {
 
 struct DrawerContent: View {
     let theme: Theme
+    let artists: [String]
     let onArtistClick: (String) -> ()
     let onDismiss: () -> ()
     
@@ -43,7 +45,6 @@ struct DrawerContent: View {
                     let columns = [
                         GridItem(.flexible())
                     ]
-                    let artists = ContentView.songRepo.getArtists()
                     HStack {
                         Button(action: {
                             Task.detached { @MainActor in
@@ -62,7 +63,7 @@ struct DrawerContent: View {
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
                         .background(self.theme.colorCommon)
                     LazyVGrid(columns: columns, spacing: 0) {
-                        let predefinedWithGroups = artists.predefinedArtistsWithGroups()
+                        let predefinedWithGroups = self.artists.predefinedArtistsWithGroups()
                         ForEach(0..<predefinedWithGroups.count, id: \.self) { index in
                             let artistOrGroup = predefinedWithGroups[index]
                             let isPredefined = ContentView.predefinedList.contains(artistOrGroup)
@@ -70,7 +71,7 @@ struct DrawerContent: View {
                                 ArtistItem(artist: artistOrGroup, theme: self.theme, onArtistClick: onArtistClick)
                             } else {
                                 let expandedList = self.expandedGroup == artistOrGroup
-                                ? artists.filter { !ContentView.predefinedList.contains($0) && $0.starts(with: artistOrGroup) }
+                                ? self.artists.filter { !ContentView.predefinedList.contains($0) && $0.uppercased().starts(with: artistOrGroup) }
                                     : []
                                 ArtistGroupItem(
                                     artistGroup: artistOrGroup,

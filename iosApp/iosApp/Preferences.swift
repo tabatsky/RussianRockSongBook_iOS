@@ -14,7 +14,7 @@ struct Preferences {
     static func appWasUpdated() -> Bool {
         let preferences = UserDefaults.standard
         let savedAppVersion = preferences.integer(forKey: "app_version")
-        print("\(appVersion) \(savedAppVersion)")
+        print("version became: \(appVersion); was: \(savedAppVersion)")
         return appVersion > savedAppVersion
         
     }

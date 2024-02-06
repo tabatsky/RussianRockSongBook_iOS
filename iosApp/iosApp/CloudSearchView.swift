@@ -13,7 +13,7 @@ struct CloudSearchView: View {
   
     let theme: Theme
     let cloudState: CloudState
-    let cloudCallbacks: CloudCallbacks
+    let onPerformAction: (AppUIAction) -> ()
     
     @State var currentSearchState: SearchState = .loading
     
@@ -23,11 +23,6 @@ struct CloudSearchView: View {
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
-    init(theme: Theme, cloudState: CloudState, cloudCallbacks: CloudCallbacks) {
-        self.theme = theme
-        self.cloudState = cloudState
-        self.cloudCallbacks = cloudCallbacks
-    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -35,9 +30,9 @@ struct CloudSearchView: View {
                 HStack {
                     VStack {
                         TextField("", text: $searchFor)
-                            .foregroundColor(self.theme.colorMain)
+                            .foregroundColor(self.theme.colorBg)
                             .frame(height: 56.0)
-                            .background(Color.black)
+                            .background(self.theme.colorMain)
                             .padding(8)
                             .background(self.theme.colorCommon)
                         Menu {
@@ -144,13 +139,13 @@ struct CloudSearchView: View {
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
-                                                     self.cloudCallbacks.onCloudSongClick(index)
+                                                     self.onPerformAction(CloudSongClick(index: index))
                                                  }
                                         )
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                             }
                             .onAppear(perform: {
-                                if (self.cloudState.currentCloudSongList != nil && !self.cloudState.currentCloudSongList!.isEmpty) {
+                                if (self.cloudState.currentCloudSongList != nil && self.cloudState.currentCloudSongList!.count > self.cloudState.currentCloudSongIndex) {
                                     sp.scrollTo(self.cloudState.currentCloudSongList![self.cloudState.currentCloudSongIndex], anchor: .top)
                                 }
                                 Task.detached {
@@ -197,13 +192,13 @@ struct CloudSearchView: View {
             })
         }
         .onDisappear {
-            self.cloudCallbacks.onBackupSearchFor(self.searchFor)
+            self.onPerformAction(BackupSearchFor(searchFor: self.searchFor))
         }
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
                 Button(action: {
                     Task.detached { @MainActor in
-                        self.cloudCallbacks.onBackClick()
+                        self.onPerformAction(BackClick())
                     }
                 }) {
                     Image("ic_back")
@@ -221,7 +216,7 @@ struct CloudSearchView: View {
             searchFor: searchFor,
             orderBy: orderBy,
             onSuccess: { data in
-                self.cloudCallbacks.onLoadSuccess(data)
+                self.onPerformAction(LoadSuccess(cloudSongList: data))
                 if (data.isEmpty) {
                    self.currentSearchState = .emptyList
                } else {
@@ -235,8 +230,8 @@ struct CloudSearchView: View {
     }
     
     func selectOrderBy(orderBy: OrderBy) {
-        self.cloudCallbacks.onBackupSearchFor(self.searchFor)
-        self.cloudCallbacks.onOrderBySelected(orderBy)
+        self.onPerformAction(BackupSearchFor(searchFor: self.searchFor))
+        self.onPerformAction(SelectOrderBy(orderBy: orderBy))
     }
 }
 

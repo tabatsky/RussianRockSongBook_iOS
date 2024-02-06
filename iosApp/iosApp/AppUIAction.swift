@@ -51,3 +51,34 @@ struct OpenSongAtYoutubeMusic: AppUIAction {
 struct SendWarning: AppUIAction {
     let warning: Warning
 }
+
+struct LoadSuccess: AppUIAction {
+    let cloudSongList: [CloudSong]
+}
+
+struct CloudSongClick: AppUIAction {
+    let index: Int
+}
+
+struct SelectOrderBy: AppUIAction {
+    let orderBy: OrderBy
+}
+
+struct BackupSearchFor: AppUIAction {
+    let searchFor: String
+}
+
+struct CloudPrevClick: AppUIAction {}
+struct CloudNextClick: AppUIAction {}
+
+struct LikeClick: AppUIAction {
+    let cloudSong: CloudSong
+}
+
+struct DislikeClick: AppUIAction {
+    let cloudSong: CloudSong
+}
+
+struct DownloadClick: AppUIAction {
+    let cloudSong: CloudSong
+}

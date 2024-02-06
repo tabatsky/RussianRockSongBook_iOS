@@ -18,6 +18,10 @@ struct ContentView: View {
         hideAfter: 2
     )
     
+    private var appStateMachine: AppStateMachine {
+        AppStateMachine()
+    }
+    
     @State var appState: AppState = AppState()
     
     @State var needShowToast = false
@@ -113,16 +117,8 @@ struct ContentView: View {
     }
     
     func performAction(_ action: AppUIAction) {
-        if (action is SongClick) {
-            self.selectSong((action as! SongClick).songIndex)
-        } else if (action is LocalScroll) {
-            self.updateSongIndexByScroll((action as! LocalScroll).songIndex)
-        } else if (action is DrawerClick) {
-            self.toggleDrawer()
-        } else if (action is OpenSettings) {
-            self.openSettings()
-        } else if (action is BackClick) {
-            self.back()
+        if let newState = self.appStateMachine.performAction(appState: self.appState, action: action) {
+            self.appState = newState
         } else if (action is LocalPrevClick) {
             self.prevSong()
         } else if (action is LocalNextClick) {

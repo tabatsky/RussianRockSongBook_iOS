@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TheTextEditor: View {
     let theme: Theme
+    let invertTextColor: Bool
     let text: String
     let width: CGFloat
     let height: CGFloat
@@ -19,8 +20,9 @@ struct TheTextEditor: View {
     @State var desiredHeight: CGFloat = 0.0
     @State var desiredWidth: CGFloat = 0.0
     
-    init(theme: Theme, text: String, width: CGFloat, height: CGFloat, onTextChanged: @escaping (String) -> ()) {
+    init(theme: Theme, invertTextColor: Bool = false, text: String, width: CGFloat, height: CGFloat, onTextChanged: @escaping (String) -> ()) {
         self.theme = theme
+        self.invertTextColor = invertTextColor
         self.text = text
         self.width = width
         self.height = height
@@ -32,13 +34,14 @@ struct TheTextEditor: View {
     }
     
     var body: some View {
+        let textColor = self.invertTextColor ? self.theme.colorBg : self.theme.colorMain
         if #available(iOS 16, *) {
             TextEditor(text: self.$editorText)
                 .frame(width: self.width, height: self.height)
                 .scrollDisabled(true)
                 .scrollContentBackground(.hidden)
                 .font(self.theme.fontText)
-                .foregroundColor(self.theme.colorMain)
+                .foregroundColor(textColor)
                 .onAppear(perform: {
                     self.editorText = self.text
                 })
@@ -50,7 +53,7 @@ struct TheTextEditor: View {
                 })
         } else {
             TextViewForEditor(text: self.$editorText, desiredHeight: self.$desiredHeight, desiredWidth: self.$desiredWidth, theme: self.theme, onTextChanged: onTextChanged)
-                .foregroundColor(self.theme.colorMain)
+                .foregroundColor(textColor)
                 .onAppear(perform: {
                     self.editorText = self.text
                     self.desiredWidth = self.width

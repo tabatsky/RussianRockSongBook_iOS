@@ -56,7 +56,7 @@ struct ContentView: View {
                     } else if (self.appState.currentScreenVariant == .start) {
                         StartScreenView(
                             theme: self.appState.theme,
-                            onUpdateDone: onUpdateDone
+                            onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .songList) {
                         SongListView(theme: self.appState.theme,
@@ -136,30 +136,6 @@ struct ContentView: View {
         withAnimation {
             self.needShowToast.toggle()
         }
-    }
-    
-    func onUpdateDone() {
-        selectArtist(Self.defaultArtist)
-        self.appState.currentScreenVariant = .songList
-    }
-
-    func selectArtist(_ artist: String) {
-        print("select artist: \(artist)")
-        if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
-            if (artist == Self.ARTIST_CLOUD_SONGS) {
-                self.appState.cloudState.searchForBackup = ""
-                self.appState.cloudState.currentCloudSongIndex = 0
-                self.appState.cloudState.currentCloudOrderBy = OrderBy.byIdDesc
-                self.appState.currentScreenVariant = ScreenVariant.cloudSearch
-            }
-        } else if (self.appState.localState.currentArtist != artist || self.appState.localState.currentCount == 0) {
-            print("artist changed")
-            self.appState.localState.currentArtist = artist
-            let count = Self.songRepo.getCountByArtist(artist: artist)
-            self.appState.localState.currentCount = Int(count)
-            self.appState.localState.currentSongIndex = 0
-        }
-        self.appState.localState.isDrawerOpen = false
     }
     
     func back() {

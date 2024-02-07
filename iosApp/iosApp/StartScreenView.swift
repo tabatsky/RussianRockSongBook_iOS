@@ -11,7 +11,7 @@ import shared
 
 struct StartScreenView: View {
     let theme: Theme
-    let onUpdateDone: () -> ()
+    let onPerformAction: (AppUIAction) -> ()
     
     @State var progress = 0.0
     @State var progressStr = "0 из 0"
@@ -54,7 +54,7 @@ struct StartScreenView: View {
                     Preferences.confirmAppUpdate()
                 }
                 Task.detached { @MainActor in
-                    onUpdateDone()
+                    self.onPerformAction(UpdateDone())
                 }
             }
         })

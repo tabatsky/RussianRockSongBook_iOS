@@ -102,6 +102,8 @@ struct AppStateMachine {
                                 cloudSong: (action as! DislikeClick).cloudSong)
         } else if (action is DownloadClick) {
             self.downloadCurrent(appState: &newState, cloudSong: (action as! DownloadClick).cloudSong)
+        } else if (action is UpdateDone) {
+            self.onUpdateDone(appState: &newState)
         }
         
         if (!async) {
@@ -311,7 +313,7 @@ struct AppStateMachine {
         }
     }
     
-    func performLike(changeState: @escaping (AppState) -> Void, appState: AppState, cloudSong: CloudSong) {
+    private func performLike(changeState: @escaping (AppState) -> Void, appState: AppState, cloudSong: CloudSong) {
         CloudRepository.shared.voteAsync(
             cloudSong: cloudSong, voteValue: 1,
             onSuccess: {
@@ -329,7 +331,7 @@ struct AppStateMachine {
             })
     }
     
-    func performDislike(changeState: @escaping (AppState) -> Void, appState: AppState, cloudSong: CloudSong) {
+    private func performDislike(changeState: @escaping (AppState) -> Void, appState: AppState, cloudSong: CloudSong) {
         CloudRepository.shared.voteAsync(
             cloudSong: cloudSong, voteValue: -1,
             onSuccess: {
@@ -347,10 +349,14 @@ struct AppStateMachine {
             })
     }
     
-    
-    func downloadCurrent(appState: inout AppState, cloudSong: CloudSong) {
+    private func downloadCurrent(appState: inout AppState, cloudSong: CloudSong) {
         ContentView.songRepo.addSongFromCloud(song: cloudSong.asSong())
         appState.artists = ContentView.songRepo.getArtists()
         self.showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
+    }
+    
+    func onUpdateDone(appState: inout AppState) {
+        self.selectArtist(appState: &appState, artist: ContentView.defaultArtist)
+        appState.currentScreenVariant = .songList
     }
 }

@@ -86,3 +86,5 @@ struct DislikeClick: AppUIAction {
 struct DownloadClick: AppUIAction {
     let cloudSong: CloudSong
 }
+
+struct UpdateDone: AppUIAction {}

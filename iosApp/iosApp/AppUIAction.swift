@@ -58,8 +58,9 @@ struct SendWarning: AppUIAction {
     let warning: Warning
 }
 
-struct LoadSuccess: AppUIAction {
-    let cloudSongList: [CloudSong]
+struct CloudSearch: AppUIAction {
+    let searchFor: String
+    let orderBy: OrderBy
 }
 
 struct CloudSongClick: AppUIAction {

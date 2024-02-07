@@ -33,6 +33,7 @@ struct LocalState {
 }
 
 struct CloudState {
+    var currentSearchState: SearchState = .loading
     var currentCloudSongList: [CloudSong]? = nil
     var currentCloudSongCount: Int = 0
     var currentCloudSongIndex: Int = 0
@@ -52,6 +53,13 @@ enum ScreenVariant {
     case settings
 }
 
+enum SearchState {
+    case loading
+    case loadSuccess
+    case loadError
+    case emptyList
+}
+
 struct AppStateMachine {
     static let songRepo: SongRepository = {
         let factory = DatabaseDriverFactory()
@@ -68,7 +76,7 @@ struct AppStateMachine {
     
     func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
         var newState = appState
-        var async = false
+        var asyncMode = false
         if (action is SelectArtist) {
             self.selectArtist(appState: &newState, artist: (action as! SelectArtist).artist)
         } else if (action is OpenSettings) {
@@ -103,8 +111,13 @@ struct AppStateMachine {
             self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
         } else if (action is SendWarning) {
             self.sendWarning((action as! SendWarning).warning)
-        } else if (action is LoadSuccess) {
-            self.refreshCloudSongList(appState: &newState, cloudSongList: (action as! LoadSuccess).cloudSongList)
+        } else if (action is CloudSearch) {
+            asyncMode = true
+            let cloudSearchAction = action as! CloudSearch
+            self.searchSongs(changeState: { changeState($0) },
+                             appState: newState,
+                             searchFor: cloudSearchAction.searchFor,
+                             orderBy: cloudSearchAction.orderBy)
         } else if (action is SelectOrderBy) {
             self.selectOrderBy(appState: &newState, orderBy: (action as! SelectOrderBy).orderBy)
         } else if (action is BackupSearchFor) {
@@ -116,12 +129,12 @@ struct AppStateMachine {
         } else if (action is CloudNextClick) {
             self.nextCloudSong(appState: &newState)
         } else if (action is LikeClick) {
-            async = true
+            asyncMode = true
             self.performLike(changeState: { changeState($0) },
                              appState: newState,
                              cloudSong: (action as! LikeClick).cloudSong)
         } else if (action is DislikeClick) {
-            async = true
+            asyncMode = true
             self.performDislike(changeState: { changeState($0) },
                                 appState: newState,
                                 cloudSong: (action as! DislikeClick).cloudSong)
@@ -131,7 +144,7 @@ struct AppStateMachine {
             self.onUpdateDone(appState: &newState)
         }
         
-        if (!async) {
+        if (!asyncMode) {
             changeState(newState)
         }
     }
@@ -143,6 +156,7 @@ struct AppStateMachine {
                 appState.cloudState.searchForBackup = ""
                 appState.cloudState.currentCloudSongIndex = 0
                 appState.cloudState.currentCloudOrderBy = OrderBy.byIdDesc
+                appState.cloudState.currentCloudSongList = nil
                 appState.currentScreenVariant = ScreenVariant.cloudSearch
             }
         } else if (appState.localState.currentArtist != artist || appState.localState.currentCount == 0) {
@@ -302,6 +316,29 @@ struct AppStateMachine {
                 $0.printStackTrace()
                 self.showToast("Ошибка в приложении")
             })
+    }
+    
+    private func searchSongs(changeState: @escaping (AppState) -> Void, appState: AppState, searchFor: String, orderBy: OrderBy) {
+        var newState = appState
+        newState.cloudState.currentSearchState = SearchState.loading
+        changeState(newState)
+        CloudRepository.shared.searchSongsAsync(
+            searchFor: searchFor,
+            orderBy: orderBy,
+            onSuccess: { data in
+                self.refreshCloudSongList(appState: &newState, cloudSongList: data)
+                if (data.isEmpty) {
+                    newState.cloudState.currentSearchState = .emptyList
+               } else {
+                   newState.cloudState.currentSearchState = .loadSuccess
+               }
+                changeState(newState)
+            },onError: { t in
+                t.printStackTrace()
+                newState.cloudState.currentSearchState = SearchState.loadError
+                changeState(newState)
+            }
+        )
     }
     
     private func refreshCloudSongList(appState: inout AppState, cloudSongList: [CloudSong]) {

@@ -15,8 +15,6 @@ struct CloudSearchView: View {
     let cloudState: CloudState
     let onPerformAction: (AppUIAction) -> ()
     
-    @State var currentSearchState: SearchState = .loading
-    
     @State var searchFor: String = ""
     
     @State var scrollPosition: Int = 0
@@ -55,7 +53,7 @@ struct CloudSearchView: View {
                     }
                     Button(action: {
                         Task.detached { @MainActor in
-                            searchSongs(searchFor: searchFor, orderBy: OrderBy.byIdDesc)
+                            cloudSearchClick()
                         }
                     }) {
                         Image("ic_cloud_search_white")
@@ -67,7 +65,7 @@ struct CloudSearchView: View {
                             .frame(width: 120.0, height: 120.0)
                     }
                 }
-                if (self.currentSearchState == .loading) {
+                if (self.cloudState.currentSearchState == .loading) {
                     Spacer()
                     HStack {
                         Spacer()
@@ -77,19 +75,19 @@ struct CloudSearchView: View {
                         Spacer()
                     }
                     Spacer()
-                } else if (self.currentSearchState == .emptyList) {
+                } else if (self.cloudState.currentSearchState == .emptyList) {
                     Text("Список пуст")
                         .foregroundColor(self.theme.colorMain)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                } else if (self.currentSearchState == .loadSuccess) {
+                } else if (self.cloudState.currentSearchState == .loadSuccess) {
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
                             let columns = [
                                 GridItem(.flexible())
                             ]
-                            let currentList = self.cloudState.currentCloudSongList!
+                            let currentList = self.cloudState.currentCloudSongList ?? [CloudSong]()
                             LazyVGrid(columns: columns, spacing: 0) {
-                                ForEach(0..<currentList.count, id: \.self) { index in
+                                ForEach(0 ..< currentList.count, id: \.self) { index in
                                     let cloudSong = currentList[index]
                                     let title = cloudSong.visibleTitle
                                     let artist = cloudSong.artist
@@ -180,15 +178,11 @@ struct CloudSearchView: View {
             }
             .onAppear(perform: {
                 if (self.cloudState.currentCloudSongList == nil) {
-                    searchSongs(searchFor: "", orderBy: self.cloudState.currentCloudOrderBy)
-                } else if (self.cloudState.currentCloudSongList!.isEmpty) {
-                    self.currentSearchState = .emptyList
-                } else {
-                    self.currentSearchState = .loadSuccess
+                    self.onPerformAction(CloudSearch(searchFor: "", orderBy: self.cloudState.currentCloudOrderBy))
                 }
             })
             .onChange(of: self.cloudState.currentCloudOrderBy, perform: { orderBy in
-                searchSongs(searchFor: self.searchFor, orderBy: orderBy)
+                self.onPerformAction(CloudSearch(searchFor: self.searchFor, orderBy: orderBy))
             })
         }
         .onDisappear {
@@ -210,23 +204,10 @@ struct CloudSearchView: View {
         .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
     }
     
-    func searchSongs(searchFor: String, orderBy: OrderBy) {
-        self.currentSearchState = SearchState.loading
-        CloudRepository.shared.searchSongsAsync(
-            searchFor: searchFor,
-            orderBy: orderBy,
-            onSuccess: { data in
-                self.onPerformAction(LoadSuccess(cloudSongList: data))
-                if (data.isEmpty) {
-                   self.currentSearchState = .emptyList
-               } else {
-                   self.currentSearchState = .loadSuccess
-               }
-            },onError: { t in
-                t.printStackTrace()
-                self.currentSearchState = SearchState.loadError
-            }
-        )
+    
+    func cloudSearchClick() {
+        self.onPerformAction(BackupSearchFor(searchFor: self.searchFor))
+        self.onPerformAction(CloudSearch(searchFor: self.searchFor, orderBy: self.cloudState.currentCloudOrderBy))
     }
     
     func selectOrderBy(orderBy: OrderBy) {
@@ -234,11 +215,3 @@ struct CloudSearchView: View {
         self.onPerformAction(SelectOrderBy(orderBy: orderBy))
     }
 }
-
-enum SearchState {
-    case loading
-    case loadSuccess
-    case loadError
-    case emptyList
-}
-

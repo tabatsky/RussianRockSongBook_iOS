@@ -70,12 +70,12 @@ struct DrawerContent: View {
                         let predefinedWithGroups = self.artists.predefinedArtistsWithGroups()
                         ForEach(0..<predefinedWithGroups.count, id: \.self) { index in
                             let artistOrGroup = predefinedWithGroups[index]
-                            let isPredefined = ContentView.predefinedList.contains(artistOrGroup)
+                            let isPredefined = AppStateMachine.predefinedList.contains(artistOrGroup)
                             if (isPredefined) {
                                 ArtistItem(artist: artistOrGroup, theme: self.theme, onArtistClick: onArtistClick)
                             } else {
                                 let expandedList = self.expandedGroup == artistOrGroup
-                                ? self.artists.filter { !ContentView.predefinedList.contains($0) && $0.uppercased().starts(with: artistOrGroup) }
+                                ? self.artists.filter { !AppStateMachine.predefinedList.contains($0) && $0.uppercased().starts(with: artistOrGroup) }
                                     : []
                                 ArtistGroupItem(
                                     artistGroup: artistOrGroup,
@@ -108,7 +108,7 @@ struct ArtistItem: View {
     let onArtistClick: (String) -> ()
     
     var body: some View {
-        let isBold = ContentView.predefinedList.contains(artist)
+        let isBold = AppStateMachine.predefinedList.contains(artist)
         Text(self.artist)
             .font(self.theme.fontCommon.weight(isBold ? .bold : .regular))
             .foregroundColor(self.theme.colorBg)
@@ -164,14 +164,14 @@ struct ArtistGroupItem: View {
 extension [String] {
     func artistGroups() -> [String] {
         return self.filter {
-            !ContentView.predefinedList.contains($0)
+            !AppStateMachine.predefinedList.contains($0)
         }.map {
             $0.artistGroup()
         }.unique().sorted()
     }
     
     func predefinedArtistsWithGroups() -> [String] {
-        return ContentView.predefinedList + self.artistGroups()
+        return AppStateMachine.predefinedList + self.artistGroups()
     }
 }
 

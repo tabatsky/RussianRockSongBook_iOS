@@ -41,7 +41,7 @@ struct StartScreenView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(self.theme.colorBg)
         .onAppear(perform: {
-            let songRepo = ContentView.songRepo
+            let songRepo = AppStateMachine.songRepo
             Task.detached {
                 if Preferences.appWasUpdated() {
                     JsonLoaderKt.fillDbFromJSON(songRepo: songRepo, onProgressChanged: { done, total in

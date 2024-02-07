@@ -12,7 +12,7 @@ import shared
 struct AppState {
     var theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
     var currentScreenVariant: ScreenVariant = ScreenVariant.start
-    var artists = ContentView.songRepo.getArtists()
+    var artists = AppStateMachine.songRepo.getArtists()
     var localState: LocalState = LocalState()
     var cloudState: CloudState = CloudState()
 }
@@ -20,9 +20,9 @@ struct AppState {
 
 struct LocalState {
     var isDrawerOpen: Bool = false
-    var currentArtist: String = ContentView.defaultArtist
+    var currentArtist: String = AppStateMachine.defaultArtist
     var currentCount: Int = {
-        let count = ContentView.songRepo.getCountByArtist(artist: ContentView.defaultArtist)
+        let count = AppStateMachine.songRepo.getCountByArtist(artist: AppStateMachine.defaultArtist)
         return Int(count)
     }()
     var currentSongIndex: Int = 0
@@ -40,7 +40,27 @@ struct CloudState {
     var allDislikes: Dictionary<CloudSong, Int> = [:]
 }
 
+enum ScreenVariant {
+    case start
+    case songList
+    case songText
+    case cloudSearch
+    case cloudSongText
+    case settings
+}
+
 struct AppStateMachine {
+    static let songRepo: SongRepository = {
+        let factory = DatabaseDriverFactory()
+        Injector.companion.initiate(databaseDriverFactory: factory)
+        return Injector.Companion.shared.songRepo
+    }()
+
+    static let predefinedList = SongRepositoryImplKt.predefinedList
+    static let ARTIST_FAVORITE = SongRepositoryKt.ARTIST_FAVORITE
+    static let ARTIST_CLOUD_SONGS = SongRepositoryKt.ARTIST_CLOUD_SONGS
+    static let defaultArtist = "Кино"
+    
     let showToast: (String) -> ()
     
     func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
@@ -115,8 +135,8 @@ struct AppStateMachine {
     
     func selectArtist(appState: inout AppState, artist: String) {
         print("select artist: \(artist)")
-        if (ContentView.predefinedList.contains(artist) && artist != ContentView.ARTIST_FAVORITE) {
-            if (artist == ContentView.ARTIST_CLOUD_SONGS) {
+        if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
+            if (artist == Self.ARTIST_CLOUD_SONGS) {
                 appState.cloudState.searchForBackup = ""
                 appState.cloudState.currentCloudSongIndex = 0
                 appState.cloudState.currentCloudOrderBy = OrderBy.byIdDesc
@@ -125,7 +145,7 @@ struct AppStateMachine {
         } else if (appState.localState.currentArtist != artist || appState.localState.currentCount == 0) {
             print("artist changed")
             appState.localState.currentArtist = artist
-            let count = ContentView.songRepo.getCountByArtist(artist: artist)
+            let count = Self.songRepo.getCountByArtist(artist: artist)
             appState.localState.currentCount = Int(count)
             appState.localState.currentSongIndex = 0
         }
@@ -169,8 +189,7 @@ struct AppStateMachine {
     }
     
     private func refreshCurrentSong(appState: inout AppState) {
-        appState.localState.currentSong = ContentView
-            .songRepo
+        appState.localState.currentSong = Self.songRepo
             .getSongByArtistAndPosition(artist: appState.localState.currentArtist, position: Int32(appState.localState.currentSongIndex))
     }
     
@@ -200,9 +219,9 @@ struct AppStateMachine {
         let song = appState.localState.currentSong!.copy() as! Song
         let becomeFavorite = !song.favorite
         song.favorite = becomeFavorite
-        ContentView.songRepo.updateSong(song: song)
-        if (!becomeFavorite && appState.localState.currentArtist == ContentView.ARTIST_FAVORITE) {
-            let count = ContentView.songRepo.getCountByArtist(artist: ContentView.ARTIST_FAVORITE)
+        Self.songRepo.updateSong(song: song)
+        if (!becomeFavorite && appState.localState.currentArtist == Self.ARTIST_FAVORITE) {
+            let count = Self.songRepo.getCountByArtist(artist: Self.ARTIST_FAVORITE)
             appState.localState.currentCount = Int(count)
             if (appState.localState.currentCount > 0) {
                 if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
@@ -225,7 +244,7 @@ struct AppStateMachine {
     private func saveSongText(appState: inout AppState, newText: String) {
         let song = appState.localState.currentSong!.copy() as! Song
         song.text = newText
-        ContentView.songRepo.updateSong(song: song)
+        Self.songRepo.updateSong(song: song)
         self.refreshCurrentSong(appState: &appState)
     }
     
@@ -233,10 +252,10 @@ struct AppStateMachine {
         print("deleting to trash: \(appState.localState.currentSong!.artist) - \(appState.localState.currentSong!.title)")
         let song = appState.localState.currentSong!.copy() as! Song
         song.deleted = true
-        ContentView.songRepo.updateSong(song: song)
-        let count = ContentView.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
+        Self.songRepo.updateSong(song: song)
+        let count = Self.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
         appState.localState.currentCount = Int(count)
-        appState.artists = ContentView.songRepo.getArtists()
+        appState.artists = Self.songRepo.getArtists()
         if (appState.localState.currentCount > 0) {
             if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
                 appState.localState.currentSongIndex -= 1
@@ -357,13 +376,13 @@ struct AppStateMachine {
     }
     
     private func downloadCurrent(appState: inout AppState, cloudSong: CloudSong) {
-        ContentView.songRepo.addSongFromCloud(song: cloudSong.asSong())
-        appState.artists = ContentView.songRepo.getArtists()
+        Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
+        appState.artists = Self.songRepo.getArtists()
         self.showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     
     func onUpdateDone(appState: inout AppState) {
-        self.selectArtist(appState: &appState, artist: ContentView.defaultArtist)
+        self.selectArtist(appState: &appState, artist: Self.defaultArtist)
         appState.currentScreenVariant = .songList
     }
 }

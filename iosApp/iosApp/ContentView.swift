@@ -3,17 +3,6 @@ import shared
 import SwiftUI_SimpleToast
 
 struct ContentView: View {
-    static let songRepo: SongRepository = {
-        let factory = DatabaseDriverFactory()
-        Injector.companion.initiate(databaseDriverFactory: factory)
-        return Injector.Companion.shared.songRepo
-    }()
-
-    static let predefinedList = SongRepositoryImplKt.predefinedList
-    static let ARTIST_FAVORITE = SongRepositoryKt.ARTIST_FAVORITE
-    static let ARTIST_CLOUD_SONGS = SongRepositoryKt.ARTIST_CLOUD_SONGS
-    static let defaultArtist = "Кино"
-    
     private let toastOptions = SimpleToastOptions(
         hideAfter: 2
     )
@@ -136,15 +125,6 @@ struct ContentView: View {
             self.needShowToast.toggle()
         }
     }
-}
-
-enum ScreenVariant {
-    case start
-    case songList
-    case songText
-    case cloudSearch
-    case cloudSongText
-    case settings
 }
 
 struct ContentView_Previews: PreviewProvider {

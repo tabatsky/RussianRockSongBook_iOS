@@ -205,7 +205,7 @@ struct CloudSearchView: View {
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 }, trailing: Spacer())
-        .navigationTitle(ContentView.ARTIST_CLOUD_SONGS)
+        .navigationTitle(AppStateMachine.ARTIST_CLOUD_SONGS)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
     }

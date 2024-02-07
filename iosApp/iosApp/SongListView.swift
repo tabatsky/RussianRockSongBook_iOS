@@ -25,7 +25,7 @@ struct SongListView: View {
                     let columns = [
                         GridItem(.flexible())
                     ]
-                    let currentSongList = ContentView.songRepo.getSongsByArtist(artist: self.localState.currentArtist)
+                    let currentSongList = AppStateMachine.songRepo.getSongsByArtist(artist: self.localState.currentArtist)
                     ContainerView {
                         if (!currentSongList.isEmpty) {
                             LazyVGrid(columns: columns, spacing: 0) {

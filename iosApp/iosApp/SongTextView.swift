@@ -225,34 +225,37 @@ struct SongTextView: View {
         .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
         .customDialog(isShowing: self.$isPresentingDeleteConfirm, dialogContent: {
             VStack(spacing: 0.0) {
-                Text("Вы уверены?")
-                    .font(self.theme.fontTitle)
-                    .foregroundColor(self.theme.colorBg)
-                Spacer()
-                    .frame(height: 20.0)
-                Text("Песня будет удалена из локальной базы данных")
-                    .font(self.theme.fontCommon)
-                    .foregroundColor(self.theme.colorBg)
-                Spacer()
-                Divider()
-                    .frame(height: 5.0)
-                    .background(self.theme.colorBg)
+                VStack {
+                    Spacer()
+                    Text("Вы уверены?")
+                        .font(self.theme.fontTitle)
+                        .foregroundColor(self.theme.colorBg)
+                    Spacer()
+                        .frame(height: 20.0)
+                    Text("Песня будет удалена из локальной базы данных")
+                        .font(self.theme.fontCommon)
+                        .foregroundColor(self.theme.colorBg)
+                    Spacer()
+                    Spacer()
+                }
+                .frame(width: 200.0, height: 170.0)
+                .background(self.theme.colorMain)
                 Button(action: {
                     self.isPresentingDeleteConfirm = false
                     self.onPerformAction(ConfirmDeleteToTrash())
                 }, label: {
                     Text("Ок")
-                        .foregroundColor(self.theme.colorBg)
+                        .foregroundColor(self.theme.colorMain)
                         .frame(height: 45.0)
                 })
                 Divider()
                     .frame(height: 5.0)
-                    .background(self.theme.colorBg)
+                    .background(self.theme.colorMain)
                 Button(action: {
                     self.isPresentingDeleteConfirm = false
                 }, label: {
                     Text("Отмена")
-                        .foregroundColor(self.theme.colorBg)
+                        .foregroundColor(self.theme.colorMain)
                         .frame(height: 45.0)
                 })
             }

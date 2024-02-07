@@ -21,6 +21,9 @@ struct AppState {
 struct LocalState {
     var isDrawerOpen: Bool = false
     var currentArtist: String = AppStateMachine.defaultArtist
+    var currentSongList: [Song] = {
+        AppStateMachine.songRepo.getSongsByArtist(artist: AppStateMachine.defaultArtist)
+    }()
     var currentCount: Int = {
         let count = AppStateMachine.songRepo.getCountByArtist(artist: AppStateMachine.defaultArtist)
         return Int(count)
@@ -147,6 +150,7 @@ struct AppStateMachine {
             appState.localState.currentArtist = artist
             let count = Self.songRepo.getCountByArtist(artist: artist)
             appState.localState.currentCount = Int(count)
+            appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: artist)
             appState.localState.currentSongIndex = 0
         }
         appState.localState.isDrawerOpen = false
@@ -231,6 +235,7 @@ struct AppStateMachine {
             } else {
                 self.back(appState: &appState)
             }
+            appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: Self.ARTIST_FAVORITE)
         } else {
             self.refreshCurrentSong(appState: &appState)
         }
@@ -264,6 +269,7 @@ struct AppStateMachine {
         } else {
             back(appState: &appState)
         }
+        appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)
         showToast("Удалено")
     }
     

@@ -25,12 +25,11 @@ struct SongListView: View {
                     let columns = [
                         GridItem(.flexible())
                     ]
-                    let currentSongList = AppStateMachine.songRepo.getSongsByArtist(artist: self.localState.currentArtist)
                     ContainerView {
-                        if (!currentSongList.isEmpty) {
+                        if (!localState.currentSongList.isEmpty) {
                             LazyVGrid(columns: columns, spacing: 0) {
-                                ForEach(0..<currentSongList.count, id: \.self) { index in
-                                    let song = currentSongList[index]
+                                ForEach(0 ..< localState.currentSongList.count, id: \.self) { index in
+                                    let song = localState.currentSongList[index]
                                     let title = song.title
                                     Text(title)
                                         .id(song)
@@ -80,8 +79,8 @@ struct SongListView: View {
                     }
                     .onAppear(perform: {
                         self.scrollPosition = localState.currentSongIndex
-                        if (!currentSongList.isEmpty) {
-                            sp.scrollTo(currentSongList[localState.currentSongIndex], anchor: .top)
+                        if (!localState.currentSongList.isEmpty) {
+                            sp.scrollTo(localState.currentSongList[localState.currentSongIndex], anchor: .top)
                         }
                         Task.detached {
                             try await Task.sleep(nanoseconds: 200 * 1000 * 1000)

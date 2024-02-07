@@ -93,8 +93,7 @@ struct ContentView: View {
             NavigationDrawer(theme: self.appState.theme,
                              artists: self.appState.artists,
                              isOpen: self.appState.localState.isDrawerOpen,
-                             onArtistClick: selectArtist,
-                             onDismiss: { self.appState.localState.isDrawerOpen.toggle() })
+                             onPerformAction: self.performAction)
                  /// Other behaviors
         }
         .background(self.appState.theme.colorCommon)
@@ -162,13 +161,6 @@ struct ContentView: View {
         }
         self.appState.localState.isDrawerOpen = false
     }
-    
-    func toggleDrawer() {
-        self.appState.localState.isDrawerOpen.toggle()
-    }
-
-    
-    
     
     func back() {
         if (self.appState.currentScreenVariant == .songText) {

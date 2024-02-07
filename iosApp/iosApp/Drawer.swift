@@ -14,12 +14,16 @@ struct NavigationDrawer: View {
     let theme: Theme
     let artists: [String]
     let isOpen: Bool
-    let onArtistClick: (String) -> ()
-    let onDismiss: () -> ()
+    let onPerformAction: (AppUIAction) -> ()
 
     var body: some View {
         HStack {
-            DrawerContent(theme: self.theme, artists: self.artists, onArtistClick: onArtistClick, onDismiss: onDismiss)
+            DrawerContent(
+                theme: self.theme,
+                artists: self.artists,
+                onArtistClick: { self.onPerformAction(SelectArtist(artist: $0)) },
+                onDismiss: { self.onPerformAction(DrawerClick()) }
+            )
                 .frame(width: self.width)
                 .background(self.theme.colorMain)
                 .offset(x: self.isOpen ? 0 : -self.width)

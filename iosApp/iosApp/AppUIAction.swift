@@ -11,6 +11,10 @@ import shared
 
 protocol AppUIAction {}
 
+struct SelectArtist: AppUIAction {
+    let artist: String
+}
+
 struct SongClick: AppUIAction {
     let songIndex: Int
 }

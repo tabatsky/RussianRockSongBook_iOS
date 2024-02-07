@@ -46,7 +46,9 @@ struct AppStateMachine {
     func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
         var newState = appState
         var async = false
-        if (action is SongClick) {
+        if (action is SelectArtist) {
+            self.selectArtist(appState: &newState, artist: (action as! SelectArtist).artist)
+        } else if (action is SongClick) {
             self.selectSong(appState: &newState, songIndex: (action as! SongClick).songIndex)
         } else if (action is LocalScroll) {
             self.updateSongIndexByScroll(appState: &newState, songIndex: (action as! LocalScroll).songIndex)
@@ -105,6 +107,25 @@ struct AppStateMachine {
         if (!async) {
             changeState(newState)
         }
+    }
+    
+    func selectArtist(appState: inout AppState, artist: String) {
+        print("select artist: \(artist)")
+        if (ContentView.predefinedList.contains(artist) && artist != ContentView.ARTIST_FAVORITE) {
+            if (artist == ContentView.ARTIST_CLOUD_SONGS) {
+                appState.cloudState.searchForBackup = ""
+                appState.cloudState.currentCloudSongIndex = 0
+                appState.cloudState.currentCloudOrderBy = OrderBy.byIdDesc
+                appState.currentScreenVariant = ScreenVariant.cloudSearch
+            }
+        } else if (appState.localState.currentArtist != artist || appState.localState.currentCount == 0) {
+            print("artist changed")
+            appState.localState.currentArtist = artist
+            let count = ContentView.songRepo.getCountByArtist(artist: artist)
+            appState.localState.currentCount = Int(count)
+            appState.localState.currentSongIndex = 0
+        }
+        appState.localState.isDrawerOpen = false
     }
     
     private func selectSong(appState: inout AppState, songIndex: Int) {

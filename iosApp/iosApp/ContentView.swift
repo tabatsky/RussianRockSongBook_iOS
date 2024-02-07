@@ -117,27 +117,9 @@ struct ContentView: View {
     }
     
     func performAction(_ action: AppUIAction) {
-        if let newState = self.appStateMachine.performAction(appState: self.appState, action: action) {
-            self.appState = newState
-        } else if (action is LoadSuccess) {
-            self.refreshCloudSongList((action as! LoadSuccess).cloudSongList)
-        } else if (action is CloudSongClick) {
-            self.selectCloudSong((action as! CloudSongClick).index)
-        } else if (action is SelectOrderBy) {
-            self.selectOrderBy((action as! SelectOrderBy).orderBy)
-        } else if (action is BackupSearchFor) {
-            self.backupSearchFor((action as! BackupSearchFor).searchFor)
-        } else if (action is CloudPrevClick) {
-            self.prevCloudSong()
-        } else if (action is CloudNextClick) {
-            self.nextCloudSong()
-        } else if (action is LikeClick) {
-            self.performLike((action as! LikeClick).cloudSong)
-        } else if (action is DislikeClick) {
-            self.performDislike((action as! DislikeClick).cloudSong)
-        } else if (action is DownloadClick) {
-            self.downloadCurrent((action as! DownloadClick).cloudSong)
-        }
+        self.appStateMachine.performAction(changeState: { self.appState = $0 },
+                                           appState: self.appState,
+                                           action: action)
     }
     
     func forceReload() {
@@ -184,46 +166,9 @@ struct ContentView: View {
     func toggleDrawer() {
         self.appState.localState.isDrawerOpen.toggle()
     }
-    
-    func refreshCloudSongList(_ cloudSongList: [CloudSong]) {
-        print(cloudSongList.count)
-        
-        self.appState.cloudState.allLikes = [:]
-        self.appState.cloudState.allDislikes = [:]
-        self.appState.cloudState.currentCloudSongList = cloudSongList
-        self.appState.cloudState.currentCloudSongCount = cloudSongList.count
-        self.appState.cloudState.currentCloudSongIndex = 0
-        self.appState.cloudState.currentCloudSong = nil
-    }
 
-    func selectOrderBy(_ orderBy: OrderBy) {
-        self.appState.cloudState.currentCloudSongIndex = 0
-        self.appState.cloudState.currentCloudSong = nil
-        self.appState.cloudState.currentCloudOrderBy = orderBy
-    }
     
-    func backupSearchFor(_ searchFor: String) {
-        self.appState.cloudState.searchForBackup = searchFor
-    }
     
-    func selectCloudSong(_ index: Int) {
-        print("select cloud song: \(index)")
-        self.appState.cloudState.currentCloudSongIndex = index
-        self.appState.cloudState.currentCloudSong = self.appState.cloudState.currentCloudSongList![index]
-        self.appState.currentScreenVariant = .cloudSongText
-    }
-    
-    func prevCloudSong() {
-        if (self.appState.cloudState.currentCloudSongIndex - 1 >= 0) {
-            selectCloudSong(self.appState.cloudState.currentCloudSongIndex - 1)
-        }
-    }
-    
-    func nextCloudSong() {
-        if (self.appState.cloudState.currentCloudSongIndex + 1 < self.appState.cloudState.currentCloudSongCount) {
-            selectCloudSong(self.appState.cloudState.currentCloudSongIndex + 1)
-        }
-    }
     
     func back() {
         if (self.appState.currentScreenVariant == .songText) {
@@ -237,45 +182,6 @@ struct ContentView: View {
             self.appState.currentScreenVariant = .songList
         }
     }
-    
-    func performLike(_ cloudSong: CloudSong) {
-        CloudRepository.shared.voteAsync(
-            cloudSong: cloudSong, voteValue: 1,
-            onSuccess: {
-                print($0)
-                let oldCount = self.appState.cloudState.allLikes[cloudSong] ?? 0
-                self.appState.cloudState.allLikes[cloudSong] = oldCount + 1
-                showToast("Ваш голос засчитан")
-            }, onServerMessage: {
-                showToast($0)
-            }, onError: {
-                $0.printStackTrace()
-                showToast("Ошибка в приложении")
-            })
-    }
-    
-    func performDislike(_ cloudSong: CloudSong) {
-        CloudRepository.shared.voteAsync(
-            cloudSong: cloudSong, voteValue: -1,
-            onSuccess: {
-                print($0)
-                let oldCount = self.appState.cloudState.allDislikes[cloudSong] ?? 0
-                self.appState.cloudState.allDislikes[cloudSong] = oldCount + 1
-                showToast("Ваш голос засчитан")
-            }, onServerMessage: {
-                showToast($0)
-            }, onError: {
-                $0.printStackTrace()
-                showToast("Ошибка в приложении")
-            })
-    }
-    
-    func downloadCurrent(_ cloudSong: CloudSong) {
-        Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
-        self.appState.artists = ContentView.songRepo.getArtists()
-        showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
-    }
-    
     
     
     func reloadSettings() {

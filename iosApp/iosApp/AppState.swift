@@ -43,8 +43,9 @@ struct CloudState {
 struct AppStateMachine {
     let showToast: (String) -> ()
     
-    func performAction(appState: AppState, action: AppUIAction) -> AppState? {
+    func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
         var newState = appState
+        var async = false
         if (action is SongClick) {
             self.selectSong(appState: &newState, songIndex: (action as! SongClick).songIndex)
         } else if (action is LocalScroll) {
@@ -75,10 +76,35 @@ struct AppStateMachine {
             self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
         } else if (action is SendWarning) {
             self.sendWarning((action as! SendWarning).warning)
-        } else {
-            return nil
+        } else if (action is LoadSuccess) {
+            self.refreshCloudSongList(appState: &newState, cloudSongList: (action as! LoadSuccess).cloudSongList)
+        } else if (action is SelectOrderBy) {
+            self.selectOrderBy(appState: &newState, orderBy: (action as! SelectOrderBy).orderBy)
+        } else if (action is BackupSearchFor) {
+            self.backupSearchFor(appState: &newState, searchFor: (action as! BackupSearchFor).searchFor)
+        } else if (action is CloudSongClick) {
+            self.selectCloudSong(appState: &newState, index: (action as! CloudSongClick).index)
+        } else if (action is CloudPrevClick) {
+            self.prevCloudSong(appState: &newState)
+        } else if (action is CloudNextClick) {
+            self.nextCloudSong(appState: &newState)
+        } else if (action is LikeClick) {
+            async = true
+            self.performLike(changeState: { changeState($0) },
+                             appState: newState,
+                             cloudSong: (action as! LikeClick).cloudSong)
+        } else if (action is DislikeClick) {
+            async = true
+            self.performDislike(changeState: { changeState($0) },
+                                appState: newState,
+                                cloudSong: (action as! DislikeClick).cloudSong)
+        } else if (action is DownloadClick) {
+            self.downloadCurrent(appState: &newState, cloudSong: (action as! DownloadClick).cloudSong)
         }
-        return newState
+        
+        if (!async) {
+            changeState(newState)
+        }
     }
     
     private func selectSong(appState: inout AppState, songIndex: Int) {
@@ -221,5 +247,89 @@ struct AppStateMachine {
                 $0.printStackTrace()
                 self.showToast("Ошибка в приложении")
             })
+    }
+    
+    private func refreshCloudSongList(appState: inout AppState, cloudSongList: [CloudSong]) {
+        print(cloudSongList.count)
+        
+        appState.cloudState.allLikes = [:]
+        appState.cloudState.allDislikes = [:]
+        appState.cloudState.currentCloudSongList = cloudSongList
+        appState.cloudState.currentCloudSongCount = cloudSongList.count
+        appState.cloudState.currentCloudSongIndex = 0
+        appState.cloudState.currentCloudSong = nil
+    }
+    
+    private func selectOrderBy(appState: inout AppState, orderBy: OrderBy) {
+        appState.cloudState.currentCloudSongIndex = 0
+        appState.cloudState.currentCloudSong = nil
+        appState.cloudState.currentCloudOrderBy = orderBy
+    }
+    
+    
+    private func backupSearchFor(appState: inout AppState, searchFor: String) {
+        appState.cloudState.searchForBackup = searchFor
+    }
+    
+    private func selectCloudSong(appState: inout AppState, index: Int) {
+        print("select cloud song: \(index)")
+        appState.cloudState.currentCloudSongIndex = index
+        appState.cloudState.currentCloudSong = appState.cloudState.currentCloudSongList![index]
+        appState.currentScreenVariant = .cloudSongText
+    }
+    
+    private func prevCloudSong(appState: inout AppState) {
+        if (appState.cloudState.currentCloudSongIndex - 1 >= 0) {
+            self.selectCloudSong(appState: &appState, index: appState.cloudState.currentCloudSongIndex - 1)
+        }
+    }
+    
+    private func nextCloudSong(appState: inout AppState) {
+        if (appState.cloudState.currentCloudSongIndex + 1 < appState.cloudState.currentCloudSongCount) {
+            self.selectCloudSong(appState: &appState, index: appState.cloudState.currentCloudSongIndex + 1)
+        }
+    }
+    
+    func performLike(changeState: @escaping (AppState) -> Void, appState: AppState, cloudSong: CloudSong) {
+        CloudRepository.shared.voteAsync(
+            cloudSong: cloudSong, voteValue: 1,
+            onSuccess: {
+                var newState = appState
+                print($0)
+                let oldCount = newState.cloudState.allLikes[cloudSong] ?? 0
+                newState.cloudState.allLikes[cloudSong] = oldCount + 1
+                changeState(newState)
+                self.showToast("Ваш голос засчитан")
+            }, onServerMessage: {
+                self.showToast($0)
+            }, onError: {
+                $0.printStackTrace()
+                self.showToast("Ошибка в приложении")
+            })
+    }
+    
+    func performDislike(changeState: @escaping (AppState) -> Void, appState: AppState, cloudSong: CloudSong) {
+        CloudRepository.shared.voteAsync(
+            cloudSong: cloudSong, voteValue: -1,
+            onSuccess: {
+                var newState = appState
+                print($0)
+                let oldCount = newState.cloudState.allDislikes[cloudSong] ?? 0
+                newState.cloudState.allDislikes[cloudSong] = oldCount + 1
+                changeState(newState)
+                self.showToast("Ваш голос засчитан")
+            }, onServerMessage: {
+                self.showToast($0)
+            }, onError: {
+                $0.printStackTrace()
+                self.showToast("Ошибка в приложении")
+            })
+    }
+    
+    
+    func downloadCurrent(appState: inout AppState, cloudSong: CloudSong) {
+        ContentView.songRepo.addSongFromCloud(song: cloudSong.asSong())
+        appState.artists = ContentView.songRepo.getArtists()
+        self.showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
 }

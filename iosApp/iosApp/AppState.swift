@@ -6,7 +6,7 @@
 //  Copyright © 2024 orgName. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 import shared
 
 struct AppState {
@@ -41,6 +41,8 @@ struct CloudState {
 }
 
 struct AppStateMachine {
+    let showToast: (String) -> ()
+    
     func performAction(appState: AppState, action: AppUIAction) -> AppState? {
         var newState = appState
         if (action is SongClick) {
@@ -53,6 +55,26 @@ struct AppStateMachine {
             self.openSettings(appState: &newState)
         } else if (action is BackClick) {
             self.back(appState: &newState)
+        } else if (action is LocalPrevClick) {
+            self.prevSong(appState: &newState)
+        } else if (action is LocalNextClick) {
+            self.nextSong(appState: &newState)
+        } else if (action is FavoriteToggle) {
+            self.toggleFavorite(appState: &newState)
+        } else if (action is SaveSongText) {
+            self.saveSongText(appState: &newState, newText: (action as! SaveSongText).newText)
+        } else if (action is ConfirmDeleteToTrash) {
+            self.deleteCurrentToTrash(appState: &newState)
+        } else if (action is ShowToast) {
+            self.showToast((action as! ShowToast).text)
+        } else if (action is OpenSongAtVkMusic) {
+            self.openSongAtVkMusic((action as! OpenSongAtVkMusic).music)
+        } else if (action is OpenSongAtYandexMusic) {
+            self.openSongAtYandexMusic((action as! OpenSongAtYandexMusic).music)
+        } else if (action is OpenSongAtYoutubeMusic) {
+            self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
+        } else if (action is SendWarning) {
+            self.sendWarning((action as! SendWarning).warning)
         } else {
             return nil
         }
@@ -64,6 +86,26 @@ struct AppStateMachine {
         appState.localState.currentSongIndex = songIndex
         self.refreshCurrentSong(appState: &appState)
         appState.currentScreenVariant = ScreenVariant.songText
+    }
+    
+    private func prevSong(appState: inout AppState) {
+        if (appState.localState.currentCount == 0) {
+            return
+        }
+        if (appState.localState.currentSongIndex > 0) {
+            appState.localState.currentSongIndex -= 1
+        } else {
+            appState.localState.currentSongIndex = appState.localState.currentCount - 1
+        }
+        self.refreshCurrentSong(appState: &appState)
+    }
+    
+    func nextSong(appState: inout AppState) {
+        if (appState.localState.currentCount == 0) {
+            return
+        }
+        appState.localState.currentSongIndex = (appState.localState.currentSongIndex + 1) % appState.localState.currentCount
+        self.refreshCurrentSong(appState: &appState)
     }
     
     private func refreshCurrentSong(appState: inout AppState) {
@@ -96,5 +138,88 @@ struct AppStateMachine {
         } else if (appState.currentScreenVariant == .settings) {
             appState.currentScreenVariant = .songList
         }
+    }
+    
+    private func toggleFavorite(appState: inout AppState) {
+        let song = appState.localState.currentSong!.copy() as! Song
+        let becomeFavorite = !song.favorite
+        song.favorite = becomeFavorite
+        ContentView.songRepo.updateSong(song: song)
+        if (!becomeFavorite && appState.localState.currentArtist == ContentView.ARTIST_FAVORITE) {
+            let count = ContentView.songRepo.getCountByArtist(artist: ContentView.ARTIST_FAVORITE)
+            appState.localState.currentCount = Int(count)
+            if (appState.localState.currentCount > 0) {
+                if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
+                    appState.localState.currentSongIndex -= 1
+                }
+                self.refreshCurrentSong(appState: &appState)
+            } else {
+                self.back(appState: &appState)
+            }
+        } else {
+            self.refreshCurrentSong(appState: &appState)
+        }
+        if (becomeFavorite) {
+            self.showToast("Добавлено в избранное")
+        } else {
+            self.showToast("Удалено из избранного")
+        }
+    }
+    
+    private func saveSongText(appState: inout AppState, newText: String) {
+        let song = appState.localState.currentSong!.copy() as! Song
+        song.text = newText
+        ContentView.songRepo.updateSong(song: song)
+        self.refreshCurrentSong(appState: &appState)
+    }
+    
+    private func deleteCurrentToTrash(appState: inout AppState) {
+        print("deleting to trash: \(appState.localState.currentSong!.artist) - \(appState.localState.currentSong!.title)")
+        let song = appState.localState.currentSong!.copy() as! Song
+        song.deleted = true
+        ContentView.songRepo.updateSong(song: song)
+        let count = ContentView.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
+        appState.localState.currentCount = Int(count)
+        appState.artists = ContentView.songRepo.getArtists()
+        if (appState.localState.currentCount > 0) {
+            if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
+                appState.localState.currentSongIndex -= 1
+            }
+            refreshCurrentSong(appState: &appState)
+        } else {
+            back(appState: &appState)
+        }
+        showToast("Удалено")
+    }
+    
+    private func openSongAtYandexMusic(_ music: Music) {
+        if let url = URL(string: music.yandexMusicUrl) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    private func openSongAtYoutubeMusic(_ music: Music) {
+        if let url = URL(string: music.youtubeMusicUrl) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    private func openSongAtVkMusic(_ music: Music) {
+        if let url = URL(string: music.vkMusicUrl) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    private func sendWarning(_ warning: Warning) {
+        CloudRepository.shared.addWarningAsync(
+            warning: warning,
+            onSuccess: {
+                self.showToast("Уведомление отправлено")
+            }, onServerMessage: {
+                self.showToast($0)
+            }, onError: {
+                $0.printStackTrace()
+                self.showToast("Ошибка в приложении")
+            })
     }
 }

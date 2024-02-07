@@ -19,7 +19,7 @@ struct ContentView: View {
     )
     
     private var appStateMachine: AppStateMachine {
-        AppStateMachine()
+        AppStateMachine(showToast: showToast)
     }
     
     @State var appState: AppState = AppState()
@@ -119,26 +119,6 @@ struct ContentView: View {
     func performAction(_ action: AppUIAction) {
         if let newState = self.appStateMachine.performAction(appState: self.appState, action: action) {
             self.appState = newState
-        } else if (action is LocalPrevClick) {
-            self.prevSong()
-        } else if (action is LocalNextClick) {
-            self.nextSong()
-        } else if (action is FavoriteToggle) {
-            self.toggleFavorite()
-        } else if (action is SaveSongText) {
-            self.saveSongText((action as! SaveSongText).newText)
-        } else if (action is ConfirmDeleteToTrash) {
-            self.deleteCurrentToTrash()
-        } else if (action is ShowToast) {
-            self.showToast((action as! ShowToast).text)
-        } else if (action is OpenSongAtVkMusic) {
-            self.openSongAtVkMusic((action as! OpenSongAtVkMusic).music)
-        } else if (action is OpenSongAtYandexMusic) {
-            self.openSongAtYandexMusic((action as! OpenSongAtYandexMusic).music)
-        } else if (action is OpenSongAtYoutubeMusic) {
-            self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
-        } else if (action is SendWarning) {
-            self.sendWarning((action as! SendWarning).warning)
         } else if (action is LoadSuccess) {
             self.refreshCloudSongList((action as! LoadSuccess).cloudSongList)
         } else if (action is CloudSongClick) {
@@ -203,96 +183,6 @@ struct ContentView: View {
     
     func toggleDrawer() {
         self.appState.localState.isDrawerOpen.toggle()
-    }
-
-    func selectSong(_ songIndex: Int) {
-        print("select song with index: \(songIndex)")
-        self.appState.localState.currentSongIndex = songIndex
-        refreshCurrentSong()
-        self.appState.currentScreenVariant = ScreenVariant.songText
-    }
-    
-    func updateSongIndexByScroll(_ songIndex: Int) {
-        //print("scroll: \(songIndex)")
-        self.appState.localState.currentSongIndex = songIndex
-    }
-    
-    func prevSong() {
-        if (self.appState.localState.currentCount == 0) {
-            return
-        }
-        if (self.appState.localState.currentSongIndex > 0) {
-            self.appState.localState.currentSongIndex -= 1
-        } else {
-            self.appState.localState.currentSongIndex = self.appState.localState.currentCount - 1
-        }
-        refreshCurrentSong()
-    }
-    
-    func nextSong() {
-        if (self.appState.localState.currentCount == 0) {
-            return
-        }
-        self.appState.localState.currentSongIndex = (self.appState.localState.currentSongIndex + 1) % self.appState.localState.currentCount
-        refreshCurrentSong()
-    }
-    
-    func toggleFavorite() {
-        let song = self.appState.localState.currentSong!.copy() as! Song
-        let becomeFavorite = !song.favorite
-        song.favorite = becomeFavorite
-        Self.songRepo.updateSong(song: song)
-        if (!becomeFavorite && self.appState.localState.currentArtist == Self.ARTIST_FAVORITE) {
-            let count = Self.songRepo.getCountByArtist(artist: Self.ARTIST_FAVORITE)
-            self.appState.localState.currentCount = Int(count)
-            if (self.appState.localState.currentCount > 0) {
-                if (self.appState.localState.currentSongIndex >= self.appState.localState.currentCount) {
-                    self.appState.localState.currentSongIndex -= 1
-                }
-                refreshCurrentSong()
-            } else {
-                back()
-            }
-        } else {
-            refreshCurrentSong()
-        }
-        if (becomeFavorite) {
-            showToast("Добавлено в избранное")
-        } else {
-            showToast("Удалено из избранного")
-        }
-    }
-    
-    func deleteCurrentToTrash() {
-        print("deleting to trash: \(self.appState.localState.currentSong!.artist) - \(self.appState.localState.currentSong!.title)")
-        let song = self.appState.localState.currentSong!.copy() as! Song
-        song.deleted = true
-        Self.songRepo.updateSong(song: song)
-        let count = Self.songRepo.getCountByArtist(artist: self.appState.localState.currentArtist)
-        self.appState.localState.currentCount = Int(count)
-        self.appState.artists = ContentView.songRepo.getArtists()
-        if (self.appState.localState.currentCount > 0) {
-            if (self.appState.localState.currentSongIndex >= self.appState.localState.currentCount) {
-                self.appState.localState.currentSongIndex -= 1
-            }
-            refreshCurrentSong()
-        } else {
-            back()
-        }
-        showToast("Удалено")
-    }
-    
-    func saveSongText(_ newText: String) {
-        let song = self.appState.localState.currentSong!.copy() as! Song
-        song.text = newText
-        Self.songRepo.updateSong(song: song)
-        refreshCurrentSong()
-    }
-    
-    func refreshCurrentSong() {
-        self.appState.localState.currentSong = Self
-            .songRepo
-            .getSongByArtistAndPosition(artist: self.appState.localState.currentArtist, position: Int32(self.appState.localState.currentSongIndex))
     }
     
     func refreshCloudSongList(_ cloudSongList: [CloudSong]) {
@@ -386,41 +276,7 @@ struct ContentView: View {
         showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     
-    func openSongAtYandexMusic(_ music: Music) {
-        if let url = URL(string: music.yandexMusicUrl) {
-            UIApplication.shared.open(url)
-        }
-    }
     
-    func openSongAtYoutubeMusic(_ music: Music) {
-        if let url = URL(string: music.youtubeMusicUrl) {
-            UIApplication.shared.open(url)
-        }
-    }
-    
-    func openSongAtVkMusic(_ music: Music) {
-        if let url = URL(string: music.vkMusicUrl) {
-            UIApplication.shared.open(url)
-        }
-    }
-    
-    func sendWarning(_ warning: Warning) {
-        CloudRepository.shared.addWarningAsync(
-            warning: warning,
-            onSuccess: {
-                showToast("Уведомление отправлено")
-            }, onServerMessage: {
-                showToast($0)
-            }, onError: {
-                $0.printStackTrace()
-                showToast("Ошибка в приложении")
-            })
-    }
-    
-    func openSettings() {
-        print("opening settings")
-        self.appState.currentScreenVariant = .settings
-    }
     
     func reloadSettings() {
         self.appState.theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())

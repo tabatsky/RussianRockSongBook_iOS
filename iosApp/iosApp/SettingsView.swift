@@ -10,8 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
     let theme: Theme
-    let onBackClick: () -> ()
-    let onReloadSettings: () -> ()
+    let onPerformAction: (AppUIAction) -> ()
     
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -128,7 +127,7 @@ struct SettingsView: View {
         .navigationBarItems(leading:
                 Button(action: {
                     Task.detached { @MainActor in
-                        onBackClick()
+                        self.onPerformAction(BackClick())
                     }
                 }) {
                     Image("ic_back")
@@ -145,6 +144,6 @@ struct SettingsView: View {
         Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
         Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
         Preferences.saveScrollSpeed(scrollSpeed: self.scrollSpeed)
-        self.onReloadSettings()
+        self.onPerformAction(ReloadSettings())
     }
  }

@@ -15,6 +15,9 @@ struct SelectArtist: AppUIAction {
     let artist: String
 }
 
+struct OpenSettings: AppUIAction {}
+struct ReloadSettings: AppUIAction {}
+
 struct SongClick: AppUIAction {
     let songIndex: Int
 }
@@ -24,7 +27,6 @@ struct LocalScroll: AppUIAction {
 }
 
 struct DrawerClick: AppUIAction {}
-struct OpenSettings: AppUIAction {}
 struct BackClick: AppUIAction {}
 struct LocalPrevClick: AppUIAction {}
 struct LocalNextClick: AppUIAction {}

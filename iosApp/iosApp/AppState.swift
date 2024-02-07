@@ -48,14 +48,16 @@ struct AppStateMachine {
         var async = false
         if (action is SelectArtist) {
             self.selectArtist(appState: &newState, artist: (action as! SelectArtist).artist)
+        } else if (action is OpenSettings) {
+            self.openSettings(appState: &newState)
+        } else if (action is ReloadSettings) {
+            self.reloadSettings(appState: &newState)
         } else if (action is SongClick) {
             self.selectSong(appState: &newState, songIndex: (action as! SongClick).songIndex)
         } else if (action is LocalScroll) {
             self.updateSongIndexByScroll(appState: &newState, songIndex: (action as! LocalScroll).songIndex)
         } else if (action is DrawerClick) {
             self.toggleDrawer(appState: &newState)
-        } else if (action is OpenSettings) {
-            self.openSettings(appState: &newState)
         } else if (action is BackClick) {
             self.back(appState: &newState)
         } else if (action is LocalPrevClick) {
@@ -130,6 +132,15 @@ struct AppStateMachine {
         appState.localState.isDrawerOpen = false
     }
     
+    private func openSettings(appState: inout AppState) {
+        print("opening settings")
+        appState.currentScreenVariant = .settings
+    }
+    
+    private func reloadSettings(appState: inout AppState) {
+        appState.theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
+    }
+    
     private func selectSong(appState: inout AppState, songIndex: Int) {
         print("select song with index: \(songIndex)")
         appState.localState.currentSongIndex = songIndex
@@ -171,10 +182,6 @@ struct AppStateMachine {
         appState.localState.isDrawerOpen.toggle()
     }
     
-    private func openSettings(appState: inout AppState) {
-        print("opening settings")
-        appState.currentScreenVariant = .settings
-    }
     
     private func back(appState: inout AppState) {
         if (appState.currentScreenVariant == .songText) {

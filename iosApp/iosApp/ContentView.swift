@@ -83,8 +83,7 @@ struct ContentView: View {
                     } else if (self.appState.currentScreenVariant == .settings) {
                         SettingsView(
                             theme: self.appState.theme,
-                            onBackClick: back,
-                            onReloadSettings: reloadSettings
+                            onPerformAction: self.performAction
                         )
                     }
                 }
@@ -136,24 +135,6 @@ struct ContentView: View {
         withAnimation {
             self.needShowToast.toggle()
         }
-    }
-    
-    func back() {
-        if (self.appState.currentScreenVariant == .songText) {
-            self.appState.currentScreenVariant = .songList
-        } else if (self.appState.currentScreenVariant == .cloudSearch) {
-            self.appState.cloudState.currentCloudSongList = nil
-            self.appState.currentScreenVariant = .songList
-        } else if (self.appState.currentScreenVariant == .cloudSongText) {
-            self.appState.currentScreenVariant = .cloudSearch
-        } else if (self.appState.currentScreenVariant == .settings) {
-            self.appState.currentScreenVariant = .songList
-        }
-    }
-    
-    
-    func reloadSettings() {
-        self.appState.theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
     }
 }
 

@@ -101,6 +101,8 @@ struct AppStateMachine {
             self.saveSongText(appState: &newState, newText: (action as! SaveSongText).newText)
         } else if (action is ConfirmDeleteToTrash) {
             self.deleteCurrentToTrash(appState: &newState)
+        } else if (action is UploadCurrentToCloud) {
+            self.uploadCurrentToCloud(appState: newState)
         } else if (action is ShowToast) {
             self.showToast((action as! ShowToast).text)
         } else if (action is OpenSongAtVkMusic) {
@@ -286,7 +288,28 @@ struct AppStateMachine {
         appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)
         showToast("Удалено")
     }
-    
+
+    private func uploadCurrentToCloud(appState: AppState) {
+        print("upload to cloud")
+        let song = appState.localState.currentSong!
+        let textWasChanged = song.textWasChanged
+        if (!textWasChanged) {
+            showToast("Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака")
+        } else {
+            CloudRepository.shared.addCloudSongAsync(
+                cloudSong: song.asCloudSong(),
+                onSuccess: {
+                    showToast("Успешно добавлено в облако")
+                },
+                onServerMessage: {
+                    showToast($0)
+                }, onError: {
+                    $0.printStackTrace()
+                    showToast("Ошибка в приложении")
+                })
+        }
+    }
+
     private func openSongAtYandexMusic(_ music: Music) {
         if let url = URL(string: music.yandexMusicUrl) {
             UIApplication.shared.open(url)

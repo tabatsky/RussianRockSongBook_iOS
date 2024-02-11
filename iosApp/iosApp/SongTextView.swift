@@ -328,23 +328,7 @@ struct SongTextView: View {
     }
     
     func onUploadToCloud() {
-        print("upload to cloud")
-        let textWasChanged = song.textWasChanged
-        if (!textWasChanged) {
-            self.onPerformAction(ShowToast(text: "Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака"))
-        } else {
-            CloudRepository.shared.addCloudSongAsync(
-                cloudSong: song.asCloudSong(),
-                onSuccess: {
-                    self.onPerformAction(ShowToast(text: "Успешно добавлено в облако"))
-                },
-                onServerMessage: {
-                    self.onPerformAction(ShowToast(text: $0))
-                }, onError: {
-                    $0.printStackTrace()
-                    self.onPerformAction(ShowToast(text: "Ошибка в приложении"))
-                })
-        }
+        self.onPerformAction(UploadCurrentToCloud())
     }
     
     func onOpenYandexMusic() {

@@ -37,6 +37,7 @@ struct SaveSongText: AppUIAction {
 }
 
 struct ConfirmDeleteToTrash: AppUIAction {}
+struct UploadCurrentToCloud: AppUIAction {}
 
 struct ShowToast: AppUIAction {
     let text: String

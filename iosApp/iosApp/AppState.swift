@@ -444,6 +444,9 @@ struct AppStateMachine {
     private func downloadCurrent(appState: inout AppState, cloudSong: CloudSong) {
         Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
         appState.artists = Self.songRepo.getArtists()
+        let count = Self.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
+        appState.localState.currentCount = Int(count)
+        appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)
         self.showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     

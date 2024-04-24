@@ -48,16 +48,18 @@ struct ContentView: View {
                             onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .songList) {
-                        SongListView(theme: self.appState.theme,
-                                     localState: self.appState.localState,
-                                     onPerformAction: self.performAction
-                                     
+                        SongListView(
+                            songListComponent: nil,
+                            theme: self.appState.theme,
+                            localState: self.appState.localState,
+                            onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .songText) {
-                        SongTextView(theme: self.appState.theme,
-                                     song: self.appState.localState.currentSong!,
-                                     onPerformAction: self.performAction
-                                     
+                        SongTextView(
+                            songTextComponent: nil,
+                            theme: self.appState.theme,
+                            song: self.appState.localState.currentSong!,
+                            onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
                         CloudSearchView(theme: self.appState.theme,
@@ -76,6 +78,7 @@ struct ContentView: View {
                         )
                     }
                 }
+                .navigationViewStyle(StackNavigationViewStyle())
             }
             /// Navigation Drawer part
             NavigationDrawer(theme: self.appState.theme,

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -33,6 +33,12 @@
 		CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */; };
 		CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C382AF2FABB006580F4 /* Preferences.swift */; };
 		CE5A9C3B2AF2FF9D006580F4 /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5A9C3A2AF2FF9D006580F4 /* StartScreenView.swift */; };
+		CE5C0D932BD9A2FA00A8E1BE /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D922BD9A2FA00A8E1BE /* RootView.swift */; };
+		CE5C0D952BD9A37100A8E1BE /* StateValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D942BD9A37100A8E1BE /* StateValue.swift */; };
+		CE5C0D982BD9A45000A8E1BE /* ObservableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D972BD9A45000A8E1BE /* ObservableValue.swift */; };
+		CE5C0D9A2BD9A48100A8E1BE /* MutableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D992BD9A48100A8E1BE /* MutableValue.swift */; };
+		CE5C0D9C2BD9A4B700A8E1BE /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */; };
+		CE5C0D9E2BD9A4F600A8E1BE /* SimpleChildStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */; };
 		CE6EC64A2B72CE28005101E8 /* AppUIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6EC6492B72CE28005101E8 /* AppUIAction.swift */; };
 		CE82A5442B6DBAE200DE4D2B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82A5432B6DBAE200DE4D2B /* AppState.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
@@ -72,6 +78,12 @@
 		CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheTextEditor.swift; sourceTree = "<group>"; };
 		CE5A9C382AF2FABB006580F4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		CE5A9C3A2AF2FF9D006580F4 /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
+		CE5C0D922BD9A2FA00A8E1BE /* RootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		CE5C0D942BD9A37100A8E1BE /* StateValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateValue.swift; sourceTree = "<group>"; };
+		CE5C0D972BD9A45000A8E1BE /* ObservableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableValue.swift; sourceTree = "<group>"; };
+		CE5C0D992BD9A48100A8E1BE /* MutableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableValue.swift; sourceTree = "<group>"; };
+		CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
+		CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleChildStack.swift; sourceTree = "<group>"; };
 		CE6EC6492B72CE28005101E8 /* AppUIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIAction.swift; sourceTree = "<group>"; };
 		CE82A5432B6DBAE200DE4D2B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -133,6 +145,8 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				CE5C0D962BD9A43A00A8E1BE /* Decompose */,
+				CE5C0D922BD9A2FA00A8E1BE /* RootView.swift */,
 				CE11C7D52AE0B06D00A7716C /* AllChords.swift */,
 				CE82A5432B6DBAE200DE4D2B /* AppState.swift */,
 				CE6EC6492B72CE28005101E8 /* AppUIAction.swift */,
@@ -174,6 +188,18 @@
 				CE0F57682AD930B00080E6B1 /* ukulele.json */,
 			);
 			path = chords;
+			sourceTree = "<group>";
+		};
+		CE5C0D962BD9A43A00A8E1BE /* Decompose */ = {
+			isa = PBXGroup;
+			children = (
+				CE5C0D942BD9A37100A8E1BE /* StateValue.swift */,
+				CE5C0D972BD9A45000A8E1BE /* ObservableValue.swift */,
+				CE5C0D992BD9A48100A8E1BE /* MutableValue.swift */,
+				CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */,
+				CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */,
+			);
+			path = Decompose;
 			sourceTree = "<group>";
 		};
 		F22FAAA0B112809CBC13B5DC /* Pods */ = {
@@ -324,9 +350,11 @@
 				CE0F57442AD9253D0080E6B1 /* ChordViewer.swift in Sources */,
 				CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */,
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,
+				CE5C0D932BD9A2FA00A8E1BE /* RootView.swift in Sources */,
 				CE3CC61E2AF87E6000B5A0D7 /* WarningDialog.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */,
+				CE5C0D952BD9A37100A8E1BE /* StateValue.swift in Sources */,
 				CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */,
 				CE6EC64A2B72CE28005101E8 /* AppUIAction.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
@@ -339,13 +367,17 @@
 				CE11410E2A9ADC4E00DE09BE /* SongTextView.swift in Sources */,
 				CE82A5442B6DBAE200DE4D2B /* AppState.swift in Sources */,
 				CE3CC61C2AF87D3B00B5A0D7 /* CustomDialog.swift in Sources */,
+				CE5C0D9E2BD9A4F600A8E1BE /* SimpleChildStack.swift in Sources */,
 				CE0F57632AD930250080E6B1 /* Instrument.swift in Sources */,
 				CE11410C2A9ADBED00DE09BE /* SongListView.swift in Sources */,
 				CE0F15642AD60F8100F27CED /* ContainerView.swift in Sources */,
 				CE5A9C3B2AF2FF9D006580F4 /* StartScreenView.swift in Sources */,
+				CE5C0D982BD9A45000A8E1BE /* ObservableValue.swift in Sources */,
+				CE5C0D9C2BD9A4B700A8E1BE /* StackView.swift in Sources */,
 				CE0F575D2AD92EFA0080E6B1 /* FretboardView.swift in Sources */,
 				CE46D4D22ADC920700582136 /* TheTextViewer.swift in Sources */,
 				CE1141102A9ADCDA00DE09BE /* Drawer.swift in Sources */,
+				CE5C0D9A2BD9A48100A8E1BE /* MutableValue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,7 +435,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -458,7 +490,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -476,6 +508,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0001;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = XJV93C8ZJ5;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -493,7 +526,7 @@
 					"-framework",
 					shared,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = jatx.russianrocksongbook.iosApp;
 				PRODUCT_NAME = "Песенник русского рока";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -508,6 +541,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0001;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = XJV93C8ZJ5;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -525,7 +559,7 @@
 					"-framework",
 					shared,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = jatx.russianrocksongbook.iosApp;
 				PRODUCT_NAME = "Песенник русского рока";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

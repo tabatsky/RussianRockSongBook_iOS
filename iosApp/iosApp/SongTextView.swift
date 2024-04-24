@@ -10,6 +10,7 @@ import SwiftUI
 import shared
 
 struct SongTextView: View {
+    let songTextComponent: SongTextComponent?
     let theme: Theme
     let song: Song
     let onPerformAction: (AppUIAction) -> ()
@@ -166,6 +167,7 @@ struct SongTextView: View {
         .navigationBarItems(leading: Button(action: {
             Task.detached { @MainActor in
                 self.onPerformAction(BackClick())
+                self.songTextComponent?.finish()
             }
         }) {
             Image("ic_back")

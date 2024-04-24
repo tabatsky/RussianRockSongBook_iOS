@@ -7,8 +7,10 @@
 //
 
 import SwiftUI
+import shared
 
 struct SongListView: View {
+    let songListComponent: SongListComponent?
     let theme: Theme
     let localState: LocalState
     let onPerformAction: (AppUIAction) -> ()
@@ -63,6 +65,7 @@ struct SongListView: View {
                                             TapGesture()
                                                 .onEnded { _ in
                                                     self.onPerformAction(SongClick(songIndex: index))
+                                                    self.songListComponent?.onSongClicked(position: Int32(index))
                                                 }
                                         )
                                     Rectangle()

@@ -77,6 +77,11 @@ struct RootView: View {
                             cloudState: self.appState.cloudState,
                             onPerformAction: self.performAction
                         ).navigationBarBackButtonHidden(true)
+                        case let child as RootComponentChild.SettingsChild: SettingsView(
+                            settingsComponent: child.component,
+                            theme: self.appState.theme,
+                            onPerformAction: self.performAction
+                        ).navigationBarBackButtonHidden(true)
                         default: EmptyView()
                         }
                     }

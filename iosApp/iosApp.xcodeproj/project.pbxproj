@@ -145,8 +145,6 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				CE5C0D962BD9A43A00A8E1BE /* Decompose */,
-				CE5C0D922BD9A2FA00A8E1BE /* RootView.swift */,
 				CE11C7D52AE0B06D00A7716C /* AllChords.swift */,
 				CE82A5432B6DBAE200DE4D2B /* AppState.swift */,
 				CE6EC6492B72CE28005101E8 /* AppUIAction.swift */,
@@ -159,6 +157,7 @@
 				CE0F15632AD60F8100F27CED /* ContainerView.swift */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */,
+				CE5C0D962BD9A43A00A8E1BE /* Decompose */,
 				CE11410F2A9ADCDA00DE09BE /* Drawer.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
@@ -166,6 +165,7 @@
 				CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */,
 				CE5A9C382AF2FABB006580F4 /* Preferences.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				CE5C0D922BD9A2FA00A8E1BE /* RootView.swift */,
 				CE50C4EE2AFAE3A300A11916 /* SettingsView.swift */,
 				CE11410B2A9ADBED00DE09BE /* SongListView.swift */,
 				CE11410D2A9ADC4E00DE09BE /* SongTextView.swift */,

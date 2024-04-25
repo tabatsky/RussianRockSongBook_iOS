@@ -139,6 +139,7 @@ struct SongListView: View {
     
     func openSettings() {
         self.onPerformAction(OpenSettings())
+        self.songListComponent?.onSettingsClicked()
     }
 }
 

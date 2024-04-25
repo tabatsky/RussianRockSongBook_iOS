@@ -26,6 +26,7 @@ interface RootComponent {
         class SongTextChild(val component: SongTextComponent) : Child()
         class CloudSearchChild(val component: CloudSearchComponent) : Child()
         class CloudSongTextChild(val component: CloudSongTextComponent) : Child()
+        class SettingsChild(val component: SettingsComponent) : Child()
     }
 }
 
@@ -54,6 +55,7 @@ class DefaultRootComponent(
             is Config.SongText -> RootComponent.Child.SongTextChild(songTextComponent(componentContext, config))
             is Config.CloudSearch -> RootComponent.Child.CloudSearchChild(cloudSearchComponent(componentContext))
             is Config.CloudSongText -> RootComponent.Child.CloudSongTextChild(cloudSongTextComponent(componentContext, config))
+            is Config.Settings -> RootComponent.Child.SettingsChild(settingsComponent(componentContext))
         }
 
     private fun startComponent(componentContext: ComponentContext): StartComponent =
@@ -69,6 +71,9 @@ class DefaultRootComponent(
             componentContext = componentContext,
             onSongSelected = { position: Int -> // Supply dependencies and callbacks
                 navigation.push(Config.SongText(position = position)) // Push the details component
+            },
+            onSettingsSelected = {
+                navigation.push(Config.Settings)
             }
         )
 
@@ -95,6 +100,12 @@ class DefaultRootComponent(
             onFinished = navigation::pop, // Pop the details component
         )
 
+    private fun settingsComponent(componentContext: ComponentContext): SettingsComponent =
+        DefaultSettingsComponent(
+            componentContext = componentContext,
+            onFinished = navigation::pop,
+        )
+
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)
     }
@@ -114,5 +125,8 @@ class DefaultRootComponent(
 
         @Serializable
         data class CloudSongText(val position: Int) : Config
+
+        @Serializable
+        data object Settings : Config
     }
 }

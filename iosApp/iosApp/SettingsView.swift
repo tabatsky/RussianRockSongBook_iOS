@@ -7,8 +7,10 @@
 //
 
 import SwiftUI
+import shared
 
 struct SettingsView: View {
+    let settingsComponent: SettingsComponent?
     let theme: Theme
     let onPerformAction: (AppUIAction) -> ()
     
@@ -128,6 +130,7 @@ struct SettingsView: View {
                 Button(action: {
                     Task.detached { @MainActor in
                         self.onPerformAction(BackClick())
+                        self.settingsComponent?.onBackPressed()
                     }
                 }) {
                     Image("ic_back")

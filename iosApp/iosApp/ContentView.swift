@@ -78,6 +78,7 @@ struct ContentView: View {
                         )
                     } else if (self.appState.currentScreenVariant == .settings) {
                         SettingsView(
+                            settingsComponent: nil,
                             theme: self.appState.theme,
                             onPerformAction: self.performAction
                         )

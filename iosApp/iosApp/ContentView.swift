@@ -62,9 +62,11 @@ struct ContentView: View {
                             onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSearch) {
-                        CloudSearchView(theme: self.appState.theme,
-                                        cloudState: self.appState.cloudState,
-                                        onPerformAction: self.performAction
+                        CloudSearchView(
+                            cloudSearchComponent: nil,
+                            theme: self.appState.theme,
+                            cloudState: self.appState.cloudState,
+                            onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSongText) {
                         CloudSongTextView(theme: self.appState.theme,
@@ -81,10 +83,12 @@ struct ContentView: View {
                 .navigationViewStyle(StackNavigationViewStyle())
             }
             /// Navigation Drawer part
-            NavigationDrawer(theme: self.appState.theme,
-                             artists: self.appState.artists,
-                             isOpen: self.appState.localState.isDrawerOpen,
-                             onPerformAction: self.performAction)
+            NavigationDrawer(
+                rootComponent: nil,
+                theme: self.appState.theme,
+                artists: self.appState.artists,
+                isOpen: self.appState.localState.isDrawerOpen,
+                onPerformAction: self.performAction)
                  /// Other behaviors
         }
         .background(self.appState.theme.colorCommon)

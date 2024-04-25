@@ -16,10 +16,13 @@ interface RootComponent {
     // It's possible to pop multiple screens at a time on iOS
     fun onBackClicked(toIndex: Int)
 
+    fun onCloudSearchClicked()
+
     // Defines all possible child components
     sealed class Child {
         class SongListChild(val component: SongListComponent) : Child()
         class SongTextChild(val component: SongTextComponent) : Child()
+        class CloudSearchChild(val component: CloudSearchComponent) : Child()
     }
 }
 
@@ -37,10 +40,15 @@ class DefaultRootComponent(
             childFactory = ::child,
         )
 
+    override fun onCloudSearchClicked() {
+        navigation.push(Config.CloudSearch)
+    }
+
     private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
             is Config.SongList -> RootComponent.Child.SongListChild(songListComponent(componentContext))
             is Config.SongText -> RootComponent.Child.SongTextChild(songTextComponent(componentContext, config))
+            is Config.CloudSearch -> RootComponent.Child.CloudSearchChild(cloudSearchComponent(componentContext))
         }
 
     private fun songListComponent(componentContext: ComponentContext): SongListComponent =
@@ -48,7 +56,7 @@ class DefaultRootComponent(
             componentContext = componentContext,
             onSongSelected = { position: Int -> // Supply dependencies and callbacks
                 navigation.push(Config.SongText(position = position)) // Push the details component
-            },
+            }
         )
 
     private fun songTextComponent(componentContext: ComponentContext, config: Config.SongText): SongTextComponent =
@@ -56,6 +64,15 @@ class DefaultRootComponent(
             componentContext = componentContext,
             position = config.position, // Supply arguments from the configuration
             onFinished = navigation::pop, // Pop the details component
+        )
+
+    private fun cloudSearchComponent(componentContext: ComponentContext): CloudSearchComponent =
+        DefaultCloudSearchComponent(
+            componentContext = componentContext,
+            onFinished = navigation::pop,
+            onCloudSongSelected = { position: Int ->
+
+            }
         )
 
     override fun onBackClicked(toIndex: Int) {
@@ -69,33 +86,8 @@ class DefaultRootComponent(
 
         @Serializable
         data class SongText(val position: Int) : Config
-    }
-}
 
-interface SongListComponent {
-    fun onSongClicked(position: Int)
-}
-
-class DefaultSongListComponent(
-    componentContext: ComponentContext,
-    private val onSongSelected: (position: Int) -> Unit,
-) : SongListComponent {
-
-    override fun onSongClicked(position: Int) {
-        onSongSelected(position)
-    }
-}
-
-interface SongTextComponent {
-    fun finish()
-}
-
-class DefaultSongTextComponent(
-    componentContext: ComponentContext,
-    position: Int,
-    private val onFinished: () -> Unit
-) : SongTextComponent {
-    override fun finish() {
-        onFinished()
+        @Serializable
+        data object CloudSearch : Config
     }
 }

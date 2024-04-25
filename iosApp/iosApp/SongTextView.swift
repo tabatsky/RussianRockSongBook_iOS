@@ -167,7 +167,7 @@ struct SongTextView: View {
         .navigationBarItems(leading: Button(action: {
             Task.detached { @MainActor in
                 self.onPerformAction(BackClick())
-                self.songTextComponent?.finish()
+                self.songTextComponent?.onBackPressed()
             }
         }) {
             Image("ic_back")

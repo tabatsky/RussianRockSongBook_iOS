@@ -78,7 +78,8 @@ struct AppStateMachine {
         var newState = appState
         var asyncMode = false
         if (action is SelectArtist) {
-            self.selectArtist(appState: &newState, artist: (action as! SelectArtist).artist)
+            let selectArtistAction = action as! SelectArtist
+            self.selectArtist(appState: &newState, artist: selectArtistAction.artist, callback: selectArtistAction.callback)
         } else if (action is OpenSettings) {
             self.openSettings(appState: &newState)
         } else if (action is ReloadSettings) {
@@ -151,7 +152,7 @@ struct AppStateMachine {
         }
     }
     
-    func selectArtist(appState: inout AppState, artist: String) {
+    func selectArtist(appState: inout AppState, artist: String, callback: () -> ()) {
         print("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
@@ -170,6 +171,7 @@ struct AppStateMachine {
             appState.localState.currentSongIndex = 0
         }
         appState.localState.isDrawerOpen = false
+        callback()
     }
     
     private func openSettings(appState: inout AppState) {
@@ -451,7 +453,7 @@ struct AppStateMachine {
     }
     
     func onUpdateDone(appState: inout AppState) {
-        self.selectArtist(appState: &appState, artist: Self.defaultArtist)
+        self.selectArtist(appState: &appState, artist: Self.defaultArtist, callback: {})
         appState.currentScreenVariant = .songList
     }
 }

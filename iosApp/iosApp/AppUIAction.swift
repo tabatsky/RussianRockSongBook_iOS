@@ -13,6 +13,7 @@ protocol AppUIAction {}
 
 struct SelectArtist: AppUIAction {
     let artist: String
+    let callback: () -> ()
 }
 
 struct OpenSettings: AppUIAction {}

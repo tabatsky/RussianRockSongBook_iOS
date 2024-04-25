@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 
 struct CloudSearchView: View {
-  
+    let cloudSearchComponent: CloudSearchComponent?
     let theme: Theme
     let cloudState: CloudState
     let onPerformAction: (AppUIAction) -> ()
@@ -138,6 +138,7 @@ struct CloudSearchView: View {
                                              TapGesture()
                                                  .onEnded { _ in
                                                      self.onPerformAction(CloudSongClick(index: index))
+                                                     self.cloudSearchComponent?.onCloudSongClicked(position: Int32(index))
                                                  }
                                         )
                                 }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
@@ -193,6 +194,7 @@ struct CloudSearchView: View {
                 Button(action: {
                     Task.detached { @MainActor in
                         self.onPerformAction(BackClick())
+                        self.cloudSearchComponent?.onBackPressed()
                     }
                 }) {
                     Image("ic_back")

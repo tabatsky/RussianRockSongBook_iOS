@@ -7,10 +7,12 @@
 //
 
 import SwiftUI
+import shared
 
 struct NavigationDrawer: View {
     private let width = UIScreen.main.bounds.width - 100
     private let height = UIScreen.main.bounds.height
+    let rootComponent: RootComponent?
     let theme: Theme
     let artists: [String]
     let isOpen: Bool
@@ -21,7 +23,14 @@ struct NavigationDrawer: View {
             DrawerContent(
                 theme: self.theme,
                 artists: self.artists,
-                onArtistClick: { self.onPerformAction(SelectArtist(artist: $0)) },
+                onArtistClick: { artist in
+                    let callback = {
+                        if (artist == AppStateMachine.ARTIST_CLOUD_SONGS) {
+                            self.rootComponent?.onCloudSearchClicked()
+                        }
+                    }
+                    self.onPerformAction(SelectArtist(artist: artist, callback: callback))
+                },
                 onDismiss: { self.onPerformAction(DrawerClick()) }
             )
                 .frame(width: self.width)

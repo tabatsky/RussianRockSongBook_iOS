@@ -41,14 +41,22 @@ struct RootView: View {
                         song: self.appState.localState.currentSong!,
                         onPerformAction: self.performAction
                     ).navigationBarBackButtonHidden(true)
+                    case let child as RootComponentChild.CloudSearchChild: CloudSearchView(
+                        cloudSearchComponent: child.component,
+                        theme: self.appState.theme,
+                        cloudState: self.appState.cloudState,
+                        onPerformAction: self.performAction
+                    ).navigationBarBackButtonHidden(true)
                     default: EmptyView()
                     }
                 }
             )
-            NavigationDrawer(theme: self.appState.theme,
-                             artists: self.appState.artists,
-                             isOpen: self.appState.localState.isDrawerOpen,
-                             onPerformAction: self.performAction)
+            NavigationDrawer(
+                rootComponent: root,
+                theme: self.appState.theme,
+                artists: self.appState.artists,
+                isOpen: self.appState.localState.isDrawerOpen,
+                onPerformAction: self.performAction)
         }
     }
 

@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 
@@ -20,6 +21,7 @@ interface RootComponent {
 
     // Defines all possible child components
     sealed class Child {
+        class StartChild(val component: StartComponent) : Child()
         class SongListChild(val component: SongListComponent) : Child()
         class SongTextChild(val component: SongTextComponent) : Child()
         class CloudSearchChild(val component: CloudSearchComponent) : Child()
@@ -36,7 +38,7 @@ class DefaultRootComponent(
         childStack(
             source = navigation,
             serializer = Config.serializer(),
-            initialConfiguration = Config.SongList, // The initial child component is List
+            initialConfiguration = Config.Start, // The initial child component is List
             handleBackButton = true, // Automatically pop from the stack on back button presses
             childFactory = ::child,
         )
@@ -47,11 +49,20 @@ class DefaultRootComponent(
 
     private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
+            is Config.Start -> RootComponent.Child.StartChild(startComponent(componentContext))
             is Config.SongList -> RootComponent.Child.SongListChild(songListComponent(componentContext))
             is Config.SongText -> RootComponent.Child.SongTextChild(songTextComponent(componentContext, config))
             is Config.CloudSearch -> RootComponent.Child.CloudSearchChild(cloudSearchComponent(componentContext))
             is Config.CloudSongText -> RootComponent.Child.CloudSongTextChild(cloudSongTextComponent(componentContext, config))
         }
+
+    private fun startComponent(componentContext: ComponentContext): StartComponent =
+        DefaultStartComponent(
+            componentContext = componentContext,
+            onFinished = {
+                navigation.replaceCurrent(Config.SongList)
+            }
+        )
 
     private fun songListComponent(componentContext: ComponentContext): SongListComponent =
         DefaultSongListComponent(
@@ -90,6 +101,8 @@ class DefaultRootComponent(
 
     @Serializable // kotlinx-serialization plugin must be applied
     private sealed interface Config {
+        @Serializable
+        data object Start : Config
         @Serializable
         data object SongList : Config
 

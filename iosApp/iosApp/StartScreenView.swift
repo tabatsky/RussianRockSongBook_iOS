@@ -10,6 +10,7 @@ import SwiftUI
 import shared
 
 struct StartScreenView: View {
+    let startComponent: StartComponent?
     let theme: Theme
     let onPerformAction: (AppUIAction) -> ()
     
@@ -55,6 +56,7 @@ struct StartScreenView: View {
                 }
                 Task.detached { @MainActor in
                     self.onPerformAction(UpdateDone())
+                    self.startComponent?.onUpdateDone()
                 }
             }
         })

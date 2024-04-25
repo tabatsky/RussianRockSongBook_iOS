@@ -42,22 +42,23 @@ struct RootView: View {
             } else {
                 StackView(
                     stackValue: StateValue(root.stack),
-                    getTitle: {
-                        switch $0 {
-                        case is RootComponentChild.SongListChild: return "SongList"
-                        case is RootComponentChild.SongTextChild: return "SongText"
-                        default: return ""
-                        }
+                    getTitle: { _ in
+                        return ""
                     },
                     onBack: root.onBackClicked,
                     childContent: {
                         switch $0 {
+                        case let child as RootComponentChild.StartChild: StartScreenView(
+                            startComponent: child.component,
+                            theme: self.appState.theme,
+                            onPerformAction: self.performAction
+                        )
                         case let child as RootComponentChild.SongListChild: SongListView(
                             songListComponent: child.component,
                             theme: self.appState.theme,
                             localState: self.appState.localState,
                             onPerformAction: self.performAction
-                        )                                                                                   
+                        ).navigationBarBackButtonHidden(true)
                         case let child as RootComponentChild.SongTextChild: SongTextView(
                             songTextComponent: child.component,
                             theme: self.appState.theme,

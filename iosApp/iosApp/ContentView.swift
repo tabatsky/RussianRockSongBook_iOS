@@ -44,6 +44,7 @@ struct ContentView: View {
                         .background(self.appState.theme.colorBg)
                     } else if (self.appState.currentScreenVariant == .start) {
                         StartScreenView(
+                            startComponent: nil,
                             theme: self.appState.theme,
                             onPerformAction: self.performAction
                         )

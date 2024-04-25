@@ -14,6 +14,9 @@ struct RootView: View {
    }
 
     @State var appState: AppState = AppState()
+    
+    @State var needShowToast = false
+    @State var toastText = ""
 
     var body: some View {
         ZStack {
@@ -58,6 +61,23 @@ struct RootView: View {
                 isOpen: self.appState.localState.isDrawerOpen,
                 onPerformAction: self.performAction)
         }
+        .background(self.appState.theme.colorCommon)
+        .onTapGesture {
+            if self.appState.localState.isDrawerOpen {
+                self.appState.localState.isDrawerOpen.toggle()
+            }
+        }
+//        .onReceive(self.orientationChanged) { _ in
+//            forceReload()
+//        }
+        .simpleToast(isPresented: $needShowToast, options: toastOptions) {
+            Label(self.toastText, systemImage: "exclamationmark.triangle")
+               .padding()
+               .background(self.appState.theme.colorMain.opacity(0.8))
+               .foregroundColor(self.appState.theme.colorBg)
+               .cornerRadius(10)
+               .padding(.top)
+        }
     }
 
     func performAction(_ action: AppUIAction) {
@@ -67,6 +87,9 @@ struct RootView: View {
     }
 
     func showToast(_ text: String) {
-
+        self.toastText = text
+        withAnimation {
+            self.needShowToast.toggle()
+        }
     }
 }

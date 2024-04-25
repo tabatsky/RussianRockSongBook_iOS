@@ -200,7 +200,9 @@ struct SongTextView: View {
             }
             Button(action: {
                 Task.detached { @MainActor in
-                    self.onPerformAction(FavoriteToggle())
+                    self.onPerformAction(FavoriteToggle(emptyListCallback: {
+                        self.songTextComponent?.onBackPressed()
+                    }))
                 }
             }) {
                 if (song.favorite) {
@@ -244,7 +246,9 @@ struct SongTextView: View {
                 .background(self.theme.colorMain)
                 Button(action: {
                     self.isPresentingDeleteConfirm = false
-                    self.onPerformAction(ConfirmDeleteToTrash())
+                    self.onPerformAction(ConfirmDeleteToTrash(emptyListCallback: {
+                        self.songTextComponent?.onBackPressed()
+                    }))
                 }, label: {
                     Text("Ок")
                         .foregroundColor(self.theme.colorMain)

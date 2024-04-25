@@ -97,11 +97,11 @@ struct AppStateMachine {
         } else if (action is LocalNextClick) {
             self.nextSong(appState: &newState)
         } else if (action is FavoriteToggle) {
-            self.toggleFavorite(appState: &newState)
+            self.toggleFavorite(appState: &newState, emptyListCallback: (action as! FavoriteToggle).emptyListCallback)
         } else if (action is SaveSongText) {
             self.saveSongText(appState: &newState, newText: (action as! SaveSongText).newText)
         } else if (action is ConfirmDeleteToTrash) {
-            self.deleteCurrentToTrash(appState: &newState)
+            self.deleteCurrentToTrash(appState: &newState, emptyListCallback: (action as! ConfirmDeleteToTrash).emptyListCallback)
         } else if (action is UploadCurrentToCloud) {
             self.uploadCurrentToCloud(appState: newState)
         } else if (action is ShowToast) {
@@ -237,7 +237,7 @@ struct AppStateMachine {
         }
     }
     
-    private func toggleFavorite(appState: inout AppState) {
+    private func toggleFavorite(appState: inout AppState, emptyListCallback: () -> ()) {
         let song = appState.localState.currentSong!.copy() as! Song
         let becomeFavorite = !song.favorite
         song.favorite = becomeFavorite
@@ -252,6 +252,7 @@ struct AppStateMachine {
                 self.refreshCurrentSong(appState: &appState)
             } else {
                 self.back(appState: &appState)
+                emptyListCallback()
             }
             appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: Self.ARTIST_FAVORITE)
         } else {
@@ -271,7 +272,7 @@ struct AppStateMachine {
         self.refreshCurrentSong(appState: &appState)
     }
     
-    private func deleteCurrentToTrash(appState: inout AppState) {
+    private func deleteCurrentToTrash(appState: inout AppState, emptyListCallback: () -> ()) {
         print("deleting to trash: \(appState.localState.currentSong!.artist) - \(appState.localState.currentSong!.title)")
         let song = appState.localState.currentSong!.copy() as! Song
         song.deleted = true
@@ -286,6 +287,7 @@ struct AppStateMachine {
             refreshCurrentSong(appState: &appState)
         } else {
             back(appState: &appState)
+            emptyListCallback()
         }
         appState.localState.currentSongList = Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)
         showToast("Удалено")

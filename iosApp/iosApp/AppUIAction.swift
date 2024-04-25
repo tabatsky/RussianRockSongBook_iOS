@@ -31,13 +31,17 @@ struct DrawerClick: AppUIAction {}
 struct BackClick: AppUIAction {}
 struct LocalPrevClick: AppUIAction {}
 struct LocalNextClick: AppUIAction {}
-struct FavoriteToggle: AppUIAction {}
+struct FavoriteToggle: AppUIAction {
+    let emptyListCallback: () -> ()
+}
 
 struct SaveSongText: AppUIAction {
     let newText: String
 }
 
-struct ConfirmDeleteToTrash: AppUIAction {}
+struct ConfirmDeleteToTrash: AppUIAction {
+    let emptyListCallback: () -> ()
+}
 struct UploadCurrentToCloud: AppUIAction {}
 
 struct ShowToast: AppUIAction {

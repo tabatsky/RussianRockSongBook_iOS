@@ -18,42 +18,69 @@ struct RootView: View {
     @State var needShowToast = false
     @State var toastText = ""
 
+    let orientationChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+        .makeConnectable()
+        .autoconnect()
+
+    @State var isReady = true
+    
     var body: some View {
         ZStack {
-            StackView(
-                stackValue: StateValue(root.stack),
-                getTitle: {
-                    switch $0 {
-                    case is RootComponentChild.SongListChild: return "SongList"
-                    case is RootComponentChild.SongTextChild: return "SongText"
-                    default: return ""
+            if (!self.isReady) {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: self.appState.theme.colorMain))
+                            .scaleEffect(5.0)
+                        Spacer()
                     }
-                },
-                onBack: root.onBackClicked,
-                childContent: {
-                    switch $0 {
-                    case let child as RootComponentChild.SongListChild: SongListView(
-                        songListComponent: child.component,
-                        theme: self.appState.theme,
-                        localState: self.appState.localState,
-                        onPerformAction: self.performAction
-                    )                                                                                   
-                    case let child as RootComponentChild.SongTextChild: SongTextView(
-                        songTextComponent: child.component,
-                        theme: self.appState.theme,
-                        song: self.appState.localState.currentSong!,
-                        onPerformAction: self.performAction
-                    ).navigationBarBackButtonHidden(true)
-                    case let child as RootComponentChild.CloudSearchChild: CloudSearchView(
-                        cloudSearchComponent: child.component,
-                        theme: self.appState.theme,
-                        cloudState: self.appState.cloudState,
-                        onPerformAction: self.performAction
-                    ).navigationBarBackButtonHidden(true)
-                    default: EmptyView()
-                    }
+                    Spacer()
                 }
-            )
+                .background(self.appState.theme.colorBg)
+            } else {
+                StackView(
+                    stackValue: StateValue(root.stack),
+                    getTitle: {
+                        switch $0 {
+                        case is RootComponentChild.SongListChild: return "SongList"
+                        case is RootComponentChild.SongTextChild: return "SongText"
+                        default: return ""
+                        }
+                    },
+                    onBack: root.onBackClicked,
+                    childContent: {
+                        switch $0 {
+                        case let child as RootComponentChild.SongListChild: SongListView(
+                            songListComponent: child.component,
+                            theme: self.appState.theme,
+                            localState: self.appState.localState,
+                            onPerformAction: self.performAction
+                        )                                                                                   
+                        case let child as RootComponentChild.SongTextChild: SongTextView(
+                            songTextComponent: child.component,
+                            theme: self.appState.theme,
+                            song: self.appState.localState.currentSong!,
+                            onPerformAction: self.performAction
+                        ).navigationBarBackButtonHidden(true)
+                        case let child as RootComponentChild.CloudSearchChild: CloudSearchView(
+                            cloudSearchComponent: child.component,
+                            theme: self.appState.theme,
+                            cloudState: self.appState.cloudState,
+                            onPerformAction: self.performAction
+                        ).navigationBarBackButtonHidden(true)
+                        case let child as RootComponentChild.CloudSongTextChild: CloudSongTextView(
+                            cloudSongTextComponent: child.component,
+                            theme: self.appState.theme,
+                            cloudState: self.appState.cloudState,
+                            onPerformAction: self.performAction
+                        ).navigationBarBackButtonHidden(true)
+                        default: EmptyView()
+                        }
+                    }
+                )
+            }
             NavigationDrawer(
                 rootComponent: root,
                 theme: self.appState.theme,
@@ -67,9 +94,9 @@ struct RootView: View {
                 self.appState.localState.isDrawerOpen.toggle()
             }
         }
-//        .onReceive(self.orientationChanged) { _ in
-//            forceReload()
-//        }
+        .onReceive(self.orientationChanged) { _ in
+            forceReload()
+        }
         .simpleToast(isPresented: $needShowToast, options: toastOptions) {
             Label(self.toastText, systemImage: "exclamationmark.triangle")
                .padding()
@@ -86,6 +113,16 @@ struct RootView: View {
                                                action: action)
     }
 
+    func forceReload() {
+        self.isReady = false
+        Task.detached {
+            try await Task.sleep(nanoseconds: 50 * 100 * 100)
+            Task.detached { @MainActor in
+                self.isReady = true
+            }
+        }
+    }
+    
     func showToast(_ text: String) {
         self.toastText = text
         withAnimation {

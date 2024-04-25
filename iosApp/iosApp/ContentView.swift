@@ -69,9 +69,11 @@ struct ContentView: View {
                             onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .cloudSongText) {
-                        CloudSongTextView(theme: self.appState.theme,
-                                          cloudState: self.appState.cloudState,
-                                          onPerformAction: self.performAction
+                        CloudSongTextView(
+                            cloudSongTextComponent: nil,
+                            theme: self.appState.theme,
+                            cloudState: self.appState.cloudState,
+                            onPerformAction: self.performAction
                         )
                     } else if (self.appState.currentScreenVariant == .settings) {
                         SettingsView(

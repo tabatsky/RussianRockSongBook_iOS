@@ -10,6 +10,7 @@ import SwiftUI
 import shared
 
 struct CloudSongTextView: View {
+    let cloudSongTextComponent: CloudSongTextComponent?
     let theme: Theme
     let cloudState: CloudState
     let onPerformAction: (AppUIAction) -> ()
@@ -72,6 +73,7 @@ struct CloudSongTextView: View {
             Button(action: {
                 Task.detached { @MainActor in
                     self.onPerformAction(BackClick())
+                    self.cloudSongTextComponent?.onBackPressed()
                 }
             }) {
                 Image("ic_back")

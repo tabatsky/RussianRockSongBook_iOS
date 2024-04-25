@@ -23,6 +23,7 @@ interface RootComponent {
         class SongListChild(val component: SongListComponent) : Child()
         class SongTextChild(val component: SongTextComponent) : Child()
         class CloudSearchChild(val component: CloudSearchComponent) : Child()
+        class CloudSongTextChild(val component: CloudSongTextComponent) : Child()
     }
 }
 
@@ -49,6 +50,7 @@ class DefaultRootComponent(
             is Config.SongList -> RootComponent.Child.SongListChild(songListComponent(componentContext))
             is Config.SongText -> RootComponent.Child.SongTextChild(songTextComponent(componentContext, config))
             is Config.CloudSearch -> RootComponent.Child.CloudSearchChild(cloudSearchComponent(componentContext))
+            is Config.CloudSongText -> RootComponent.Child.CloudSongTextChild(cloudSongTextComponent(componentContext, config))
         }
 
     private fun songListComponent(componentContext: ComponentContext): SongListComponent =
@@ -71,8 +73,15 @@ class DefaultRootComponent(
             componentContext = componentContext,
             onFinished = navigation::pop,
             onCloudSongSelected = { position: Int ->
-
+                navigation.push(Config.CloudSongText(position = position))
             }
+        )
+
+    private fun cloudSongTextComponent(componentContext: ComponentContext, config: Config.CloudSongText): CloudSongTextComponent =
+        DefaultCloudSongTextComponent(
+            componentContext = componentContext,
+            position = config.position, // Supply arguments from the configuration
+            onFinished = navigation::pop, // Pop the details component
         )
 
     override fun onBackClicked(toIndex: Int) {
@@ -89,5 +98,8 @@ class DefaultRootComponent(
 
         @Serializable
         data object CloudSearch : Config
+
+        @Serializable
+        data class CloudSongText(val position: Int) : Config
     }
 }

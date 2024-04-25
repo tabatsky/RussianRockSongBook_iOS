@@ -82,12 +82,13 @@ struct SongTextView: View {
                                         )
                                         .onPreferenceChange(FrameKeySongText.self) { frame in
                                             let globalY = -frame.origin.y
-                                            if (self.minGlobalY == 0) {
+                                            if (self.minGlobalY == 0.0 && self.textHeight > 0.0) {
                                                 self.minGlobalY = globalY
                                             }
                                             let localY = globalY - self.minGlobalY
-                                            if (localY > 0) {
-                                                print("updating scrollY: \(localY)")
+                                            let absDeltaY = abs(self.scrollY - localY)
+                                            if (absDeltaY > 3 * dY) {
+                                                print("updating scrollY: \(localY); absDeltaY: \(absDeltaY)")
                                                 self.scrollY = localY
                                             }
                                         }

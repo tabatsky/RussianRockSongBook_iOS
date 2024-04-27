@@ -1,5 +1,5 @@
 //
-//  SongTextView.swift
+//  swift
 //  iosApp
 //
 //  Created by Evgeny Tabatsky on 26.08.2023.
@@ -43,119 +43,83 @@ struct SongTextView: View {
                         .padding(24)
                         .frame(maxWidth: geometry.size.width, alignment: .leading)
                     
-                    GeometryReader { scrollViewGeometry in
-                        ScrollViewReader { sp in
-                            ScrollView(.vertical) {
-                                ContainerView {
-                                    if (self.isEditorMode) {
-                                        TheTextEditor(theme: self.theme, text: song.text, width: geometry.size.width, height: self.textHeight, onTextChanged: { self.editorText = $0 })
-                                    } else {
-                                        TheTextViewer(
-                                            theme: self.theme,
-                                            text: song.text,
-                                            width: geometry.size.width,
-                                            onChordTapped: onChordTapped,
-                                            onHeightChanged: { height in
-                                                if (height > 1) {
-                                                    print("updating textHeight: \(height)")
-                                                    self.textHeight = height
-                                                    Task.detached {
-                                                        try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                                        await MainActor.run {
-                                                            performScrollToY(sp: sp)
-                                                        }
-                                                    }
-                                                } else {
-                                                    print("not updating textHeight: \(height)")
-                                                }
-                                            })
-                                    }
-                                }
-                                .id("text")
-                                .frame(minHeight: self.textHeight)
-                                .background(GeometryReader { scrollViewGeom in
-                                    self.theme.colorBg
-                                        .preference(
-                                            key: FrameKeySongText.self,
-                                            // See discussion!
-                                            value: scrollViewGeom.frame(in: .global)
-                                        )
-                                        .onPreferenceChange(FrameKeySongText.self) { frame in
-                                            let globalY = -frame.origin.y
-                                            if (self.minGlobalY == 0.0 && self.textHeight > 0.0) {
-                                                self.minGlobalY = globalY
-                                            }
-                                            let localY = globalY - self.minGlobalY
-                                            let absDeltaY = abs(self.scrollY - localY)
-                                            if (absDeltaY > 3 * dY) {
-                                                print("updating scrollY: \(localY); absDeltaY: \(absDeltaY)")
-                                                self.scrollY = localY
-                                            }
-                                        }
-                                })
-                                .onAppear(perform: {
-                                    print("appear")
-                                    self.editorText = song.text
-                                    self.scrollY = 0.0
-                                    self.isScreenActive = true
-                                    sp.scrollTo("text", anchor: .topLeading)
-                                    Task.detached {
-                                        try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                        await MainActor.run {
-                                            autoScroll(sp: sp)
-                                        }
-                                    }
-                                })
-                                .onDisappear(perform: {
-                                    self.isAutoScroll = false
-                                    self.isScreenActive = false
-                                })
-                                .onChange(of: ArtistWithTitle(artist: self.song.artist, title: self.song.title), perform: { artistWithTitle in
-                                    print("song changed")
-                                    self.editorText = song.text
-                                    self.isAutoScroll = false
-                                    self.scrollY = 0.0
-                                    self.isEditorMode = false
-                                    sp.scrollTo("text", anchor: .topLeading)
-                                })
-                                .onChange(of: self.isEditorMode, perform: { isEditorMode in
-                                    print("editor mode: \(isEditorMode)")
-                                    if #available(iOS 15, *) {
-                                        Task.detached {
-                                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                            await MainActor.run {
-                                                performScrollToY(sp: sp)
-                                            }
-                                        }
-                                    } else if isEditorMode {
-                                        Task.detached {
-                                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                            await MainActor.run {
-                                                performScrollToY(sp: sp)
-                                            }
-                                        }
-                                    }
-                                })
+                    GeometryReader { bodyWrapperGeometry in
+                        if (bodyWrapperGeometry.size.width < bodyWrapperGeometry.size.height) {
+                            VStack {
+                                SongTextBody(
+                                    geometry: bodyWrapperGeometry,
+                                    theme: self.theme,
+                                    song: self.song,
+                                    dY: self.dY,
+                                    isEditorMode: self.isEditorMode,
+                                    setEditorMode: { self.isEditorMode = $0 },
+                                    minGlobalY: self.minGlobalY,
+                                    setMinGlobalY: { self.minGlobalY = $0 },
+                                    scrollY: self.scrollY,
+                                    setScrollY: { self.scrollY = $0 },
+                                    textHeight: self.textHeight,
+                                    setTextHeight: { self.textHeight = $0 },
+                                    setEditorText: { self.editorText = $0 },
+                                    setIsAutoScroll: { self.isAutoScroll = $0 },
+                                    setIsScreenActive: { self.isScreenActive = $0 },
+                                    setScrollViewHeight: { self.scrollViewHeight = $0},
+                                    onChordTapped: self.onChordTapped,
+                                    performScrollToY: self.performScrollToY,
+                                    launchAutoScroll: self.autoScroll
+                                )
+                                HorizontalSongTextPanel(
+                                    W: bodyWrapperGeometry.size.width,
+                                    theme: self.theme,
+                                    isEditorMode: self.isEditorMode,
+                                    onEdit: onEdit,
+                                    onSave: onSave,
+                                    onDeleteToTrash: onDeleteToTrash,
+                                    onShowWarning: onShowWarning,
+                                    onUploadToCloud: onUploadToCloud,
+                                    onOpenYandexMusic: onOpenYandexMusic,
+                                    onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                                    onOpenVkMusic: onOpenVkMusuc
+                                )
+                            }
+                        } else {
+                            HStack {
+                                SongTextBody(
+                                    geometry: bodyWrapperGeometry,
+                                    theme: self.theme,
+                                    song: self.song,
+                                    dY: self.dY,
+                                    isEditorMode: self.isEditorMode,
+                                    setEditorMode: { self.isEditorMode = $0 },
+                                    minGlobalY: self.minGlobalY,
+                                    setMinGlobalY: { self.minGlobalY = $0 },
+                                    scrollY: self.scrollY,
+                                    setScrollY: { self.scrollY = $0 },
+                                    textHeight: self.textHeight,
+                                    setTextHeight: { self.textHeight = $0 },
+                                    setEditorText: { self.editorText = $0 },
+                                    setIsAutoScroll: { self.isAutoScroll = $0 },
+                                    setIsScreenActive: { self.isScreenActive = $0 },
+                                    setScrollViewHeight: { self.scrollViewHeight = $0},
+                                    onChordTapped: self.onChordTapped,
+                                    performScrollToY: self.performScrollToY,
+                                    launchAutoScroll: self.autoScroll
+                                )
+                                VerticalSongTextPanel(
+                                    H: bodyWrapperGeometry.size.height,
+                                    theme: self.theme,
+                                    isEditorMode: self.isEditorMode,
+                                    onEdit: onEdit,
+                                    onSave: onSave,
+                                    onDeleteToTrash: onDeleteToTrash,
+                                    onShowWarning: onShowWarning,
+                                    onUploadToCloud: onUploadToCloud,
+                                    onOpenYandexMusic: onOpenYandexMusic,
+                                    onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                                    onOpenVkMusic: onOpenVkMusuc
+                                )
                             }
                         }
-                        .onAppear(perform: {
-                            self.scrollViewHeight = scrollViewGeometry.size.height
-                            print(self.scrollViewHeight)
-                        })
                     }
-                    SongTextPanel(
-                        W: geometry.size.width,
-                        theme: self.theme,
-                        isEditorMode: self.isEditorMode,
-                        onEdit: onEdit,
-                        onSave: onSave,
-                        onDeleteToTrash: onDeleteToTrash,
-                        onShowWarning: onShowWarning,
-                        onUploadToCloud: onUploadToCloud,
-                        onOpenYandexMusic: onOpenYandexMusic,
-                        onOpenYoutubeMusic: onOpenYoutubeMusuc,
-                        onOpenVkMusic: onOpenVkMusuc
-                    )
                 }
                 if let chord = self.currentChord {
                     ChordViewer(theme: self.theme, chord: chord, onDismiss: {
@@ -290,7 +254,7 @@ struct SongTextView: View {
     func autoScroll(sp: ScrollViewProxy) {
         if (self.isAutoScroll) {
             self.scrollY += self.dY
-            performScrollToY(sp: sp)
+            self.performScrollToY(sp: sp)
         }
         if (self.isScreenActive) {
             Task.detached {
@@ -352,9 +316,136 @@ struct SongTextView: View {
         print("open vk music")
         self.onPerformAction(OpenSongAtVkMusic(music: self.song))
     }
+    
+    struct SongTextBody: View {
+        let geometry: GeometryProxy
+        let theme: Theme
+        let song: Song
+        let dY: CGFloat
+        
+        let isEditorMode: Bool
+        let setEditorMode: (Bool) -> ()
+        let minGlobalY: CGFloat
+        let setMinGlobalY: (CGFloat) -> ()
+        let scrollY: CGFloat
+        let setScrollY: (CGFloat) -> ()
+        let textHeight: CGFloat
+        let setTextHeight: (CGFloat) -> ()
+        let setEditorText: (String) -> ()
+        let setIsAutoScroll: (Bool) -> ()
+        let setIsScreenActive: (Bool) -> ()
+        let setScrollViewHeight: (CGFloat) -> ()
+        
+        let onChordTapped: (String) -> ()
+        let performScrollToY: (ScrollViewProxy) -> ()
+        let launchAutoScroll: (ScrollViewProxy) -> ()
+        
+        var body: some View {
+            GeometryReader { scrollViewGeometry in
+                ScrollViewReader { sp in
+                    ScrollView(.vertical) {
+                        ContainerView {
+                            if (isEditorMode) {
+                                TheTextEditor(theme: theme, text: song.text, width: geometry.size.width, height: textHeight, onTextChanged: setEditorText)
+                            } else {
+                                TheTextViewer(
+                                    theme: theme,
+                                    text: song.text,
+                                    width: geometry.size.width,
+                                    onChordTapped: onChordTapped,
+                                    onHeightChanged: { height in
+                                        if (height > 1) {
+                                            print("updating textHeight: \(height)")
+                                            setTextHeight(height)
+                                            Task.detached {
+                                                try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                                await MainActor.run {
+                                                    performScrollToY(sp)
+                                                }
+                                            }
+                                        } else {
+                                            print("not updating textHeight: \(height)")
+                                        }
+                                    })
+                            }
+                        }
+                        .id("text")
+                        .frame(minHeight: textHeight)
+                        .background(GeometryReader { scrollViewGeom in
+                            theme.colorBg
+                                .preference(
+                                    key: FrameKeySongText.self,
+                                    // See discussion!
+                                    value: scrollViewGeom.frame(in: .global)
+                                )
+                                .onPreferenceChange(FrameKeySongText.self) { frame in
+                                    let globalY = -frame.origin.y
+                                    if (minGlobalY == 0.0 && textHeight > 0.0) {
+                                        setMinGlobalY(globalY)
+                                    }
+                                    let localY = globalY - minGlobalY
+                                    let absDeltaY = abs(scrollY - localY)
+                                    if (absDeltaY > 3 * dY) {
+                                        print("updating scrollY: \(localY); absDeltaY: \(absDeltaY)")
+                                        setScrollY(localY)
+                                    }
+                                }
+                        })
+                        .onAppear(perform: {
+                            print("appear")
+                            setEditorText(song.text)
+                            setScrollY(0.0)
+                            setIsScreenActive(true)
+                            sp.scrollTo("text", anchor: .topLeading)
+                            Task.detached {
+                                try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                await MainActor.run {
+                                    launchAutoScroll(sp)
+                                }
+                            }
+                        })
+                        .onDisappear(perform: {
+                            setIsAutoScroll(false)
+                            setIsScreenActive(false)
+                        })
+                        .onChange(of: ArtistWithTitle(artist: song.artist, title: song.title), perform: { artistWithTitle in
+                            print("song changed")
+                            setEditorText(song.text)
+                            setIsAutoScroll(false)
+                            setScrollY(0.0)
+                            setEditorMode(false)
+                            sp.scrollTo("text", anchor: .topLeading)
+                        })
+                        .onChange(of: isEditorMode, perform: { isEditorMode in
+                            print("editor mode: \(isEditorMode)")
+                            if #available(iOS 15, *) {
+                                Task.detached {
+                                    try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                    await MainActor.run {
+                                        performScrollToY(sp)
+                                    }
+                                }
+                            } else if isEditorMode {
+                                Task.detached {
+                                    try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                    await MainActor.run {
+                                        performScrollToY(sp)
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+                .onAppear(perform: {
+                    setScrollViewHeight(scrollViewGeometry.size.height)
+                    print(scrollViewGeometry.size.height)
+                })
+            }
+        }
+    }
 }
 
-struct SongTextPanel: View {
+struct HorizontalSongTextPanel: View {
     let W: CGFloat
     let theme: Theme
     let isEditorMode: Bool
@@ -464,6 +555,119 @@ struct SongTextPanel: View {
             }
         }
         .frame(width: W, height: A)
+    }
+}
+
+struct VerticalSongTextPanel: View {
+    let H: CGFloat
+    let theme: Theme
+    let isEditorMode: Bool
+    let onEdit: () -> ()
+    let onSave: () -> ()
+    let onDeleteToTrash: () -> ()
+    let onShowWarning: () -> ()
+    let onUploadToCloud: () -> ()
+    let onOpenYandexMusic: () -> ()
+    let onOpenYoutubeMusic: () -> ()
+    let onOpenVkMusic: () -> ()
+    
+    var body: some View {
+        let A = H / 7
+        
+        VStack(spacing: A / 5) {
+            if (Preferences.loadListenToMusicVariant().isYandex()) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onOpenYandexMusic()
+                    }
+                }) {
+                    Image("ic_yandex")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
+            }
+            if (Preferences.loadListenToMusicVariant().isVk()) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onOpenVkMusic()
+                    }
+                }) {
+                    Image("ic_vk")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
+            }
+            if (Preferences.loadListenToMusicVariant().isYoutube()) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onOpenYoutubeMusic()
+                    }
+                }) {
+                    Image("ic_youtube")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onUploadToCloud()
+                }
+            }) {
+                Image("ic_upload")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onShowWarning()
+                }
+            }) {
+                Image("ic_warning")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onDeleteToTrash()
+                }
+            }) {
+                Image("ic_trash")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+            if (self.isEditorMode) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onSave()
+                    }
+                }) {
+                    Image("ic_save")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                        .frame(width: A, height: A)
+                }
+            } else {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onEdit()
+                    }
+                }) {
+                    Image("ic_edit")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                        .frame(width: A, height: A)
+                }
+            }
+        }
+        .frame(width: A, height: H)
     }
 }
 

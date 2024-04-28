@@ -320,130 +320,131 @@ struct SongTextView: View {
         self.onPerformAction(OpenSongAtVkMusic(music: self.song))
     }
     
-    struct SongTextBody: View {
-        let geometry: GeometryProxy
-        let theme: Theme
-        let song: Song
-        let dY: CGFloat
-        
-        let isEditorMode: Bool
-        let setEditorMode: (Bool) -> ()
-        let minGlobalY: CGFloat
-        let setMinGlobalY: (CGFloat) -> ()
-        let scrollY: CGFloat
-        let setScrollY: (CGFloat) -> ()
-        let textHeight: CGFloat
-        let setTextHeight: (CGFloat) -> ()
-        let setEditorText: (String) -> ()
-        let setIsAutoScroll: (Bool) -> ()
-        let setIsScreenActive: (Bool) -> ()
-        let setScrollViewHeight: (CGFloat) -> ()
-        
-        let onChordTapped: (String) -> ()
-        let performScrollToY: (ScrollViewProxy) -> ()
-        let launchAutoScroll: (ScrollViewProxy) -> ()
-        
-        var body: some View {
-            GeometryReader { scrollViewGeometry in
-                ScrollViewReader { sp in
-                    ScrollView(.vertical) {
-                        ContainerView {
-                            if (isEditorMode) {
-                                TheTextEditor(theme: theme, text: song.text, width: geometry.size.width, height: textHeight, onTextChanged: setEditorText)
-                            } else {
-                                TheTextViewer(
-                                    theme: theme,
-                                    text: song.text,
-                                    width: geometry.size.width,
-                                    onChordTapped: onChordTapped,
-                                    onHeightChanged: { height in
-                                        if (height > 1) {
-                                            print("updating textHeight: \(height)")
-                                            setTextHeight(height)
-                                            Task.detached {
-                                                try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                                await MainActor.run {
-                                                    performScrollToY(sp)
-                                                }
+}
+
+struct SongTextBody: View {
+    let geometry: GeometryProxy
+    let theme: Theme
+    let song: Song
+    let dY: CGFloat
+    
+    let isEditorMode: Bool
+    let setEditorMode: (Bool) -> ()
+    let minGlobalY: CGFloat
+    let setMinGlobalY: (CGFloat) -> ()
+    let scrollY: CGFloat
+    let setScrollY: (CGFloat) -> ()
+    let textHeight: CGFloat
+    let setTextHeight: (CGFloat) -> ()
+    let setEditorText: (String) -> ()
+    let setIsAutoScroll: (Bool) -> ()
+    let setIsScreenActive: (Bool) -> ()
+    let setScrollViewHeight: (CGFloat) -> ()
+    
+    let onChordTapped: (String) -> ()
+    let performScrollToY: (ScrollViewProxy) -> ()
+    let launchAutoScroll: (ScrollViewProxy) -> ()
+    
+    var body: some View {
+        GeometryReader { scrollViewGeometry in
+            ScrollViewReader { sp in
+                ScrollView(.vertical) {
+                    ContainerView {
+                        if (isEditorMode) {
+                            TheTextEditor(theme: theme, text: song.text, width: geometry.size.width, height: textHeight, onTextChanged: setEditorText)
+                        } else {
+                            TheTextViewer(
+                                theme: theme,
+                                text: song.text,
+                                width: geometry.size.width,
+                                onChordTapped: onChordTapped,
+                                onHeightChanged: { height in
+                                    if (height > 1) {
+                                        print("updating textHeight: \(height)")
+                                        setTextHeight(height)
+                                        Task.detached {
+                                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                            await MainActor.run {
+                                                performScrollToY(sp)
                                             }
-                                        } else {
-                                            print("not updating textHeight: \(height)")
                                         }
-                                    })
+                                    } else {
+                                        print("not updating textHeight: \(height)")
+                                    }
+                                })
+                        }
+                    }
+                    .id("text")
+                    .frame(minHeight: textHeight)
+                    .background(GeometryReader { scrollViewGeom in
+                        theme.colorBg
+                            .preference(
+                                key: FrameKeySongText.self,
+                                // See discussion!
+                                value: scrollViewGeom.frame(in: .global)
+                            )
+                            .onPreferenceChange(FrameKeySongText.self) { frame in
+                                let globalY = -frame.origin.y
+                                if (minGlobalY == 0.0 && textHeight > 0.0) {
+                                    setMinGlobalY(globalY)
+                                }
+                                let localY = globalY - minGlobalY
+                                let absDeltaY = abs(scrollY - localY)
+                                if (absDeltaY > 3 * dY) {
+                                    print("updating scrollY: \(localY); absDeltaY: \(absDeltaY)")
+                                    setScrollY(localY)
+                                }
+                            }
+                    })
+                    .onAppear(perform: {
+                        print("appear")
+                        setEditorText(song.text)
+                        setScrollY(0.0)
+                        setIsScreenActive(true)
+                        sp.scrollTo("text", anchor: .topLeading)
+                        Task.detached {
+                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                            await MainActor.run {
+                                launchAutoScroll(sp)
                             }
                         }
-                        .id("text")
-                        .frame(minHeight: textHeight)
-                        .background(GeometryReader { scrollViewGeom in
-                            theme.colorBg
-                                .preference(
-                                    key: FrameKeySongText.self,
-                                    // See discussion!
-                                    value: scrollViewGeom.frame(in: .global)
-                                )
-                                .onPreferenceChange(FrameKeySongText.self) { frame in
-                                    let globalY = -frame.origin.y
-                                    if (minGlobalY == 0.0 && textHeight > 0.0) {
-                                        setMinGlobalY(globalY)
-                                    }
-                                    let localY = globalY - minGlobalY
-                                    let absDeltaY = abs(scrollY - localY)
-                                    if (absDeltaY > 3 * dY) {
-                                        print("updating scrollY: \(localY); absDeltaY: \(absDeltaY)")
-                                        setScrollY(localY)
-                                    }
-                                }
-                        })
-                        .onAppear(perform: {
-                            print("appear")
-                            setEditorText(song.text)
-                            setScrollY(0.0)
-                            setIsScreenActive(true)
-                            sp.scrollTo("text", anchor: .topLeading)
+                    })
+                    .onDisappear(perform: {
+                        setIsAutoScroll(false)
+                        setIsScreenActive(false)
+                    })
+                    .onChange(of: ArtistWithTitle(artist: song.artist, title: song.title), perform: { artistWithTitle in
+                        print("song changed")
+                        setEditorText(song.text)
+                        setIsAutoScroll(false)
+                        setScrollY(0.0)
+                        setEditorMode(false)
+                        sp.scrollTo("text", anchor: .topLeading)
+                    })
+                    .onChange(of: isEditorMode, perform: { isEditorMode in
+                        print("editor mode: \(isEditorMode)")
+                        if #available(iOS 15, *) {
                             Task.detached {
                                 try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
                                 await MainActor.run {
-                                    launchAutoScroll(sp)
+                                    performScrollToY(sp)
                                 }
                             }
-                        })
-                        .onDisappear(perform: {
-                            setIsAutoScroll(false)
-                            setIsScreenActive(false)
-                        })
-                        .onChange(of: ArtistWithTitle(artist: song.artist, title: song.title), perform: { artistWithTitle in
-                            print("song changed")
-                            setEditorText(song.text)
-                            setIsAutoScroll(false)
-                            setScrollY(0.0)
-                            setEditorMode(false)
-                            sp.scrollTo("text", anchor: .topLeading)
-                        })
-                        .onChange(of: isEditorMode, perform: { isEditorMode in
-                            print("editor mode: \(isEditorMode)")
-                            if #available(iOS 15, *) {
-                                Task.detached {
-                                    try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                    await MainActor.run {
-                                        performScrollToY(sp)
-                                    }
-                                }
-                            } else if isEditorMode {
-                                Task.detached {
-                                    try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
-                                    await MainActor.run {
-                                        performScrollToY(sp)
-                                    }
+                        } else if isEditorMode {
+                            Task.detached {
+                                try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                await MainActor.run {
+                                    performScrollToY(sp)
                                 }
                             }
-                        })
-                    }
+                        }
+                    })
                 }
-                .onAppear(perform: {
-                    setScrollViewHeight(scrollViewGeometry.size.height)
-                    print(scrollViewGeometry.size.height)
-                })
             }
+            .onAppear(perform: {
+                setScrollViewHeight(scrollViewGeometry.size.height)
+                print(scrollViewGeometry.size.height)
+            })
         }
     }
 }

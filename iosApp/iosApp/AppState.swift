@@ -10,11 +10,18 @@ import SwiftUI
 import shared
 
 struct AppState {
-    var theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
+    var themeVariant = Preferences.loadThemeVariant()
+    var fontScaleVariant = Preferences.loadFontScaleVariant()
     var currentScreenVariant: ScreenVariant = ScreenVariant.start
     var artists = AppStateMachine.songRepo.getArtists()
     var localState: LocalState = LocalState.companion.doNewInstance()
     var cloudState: CloudState = CloudState.companion.doNewInstance()
+}
+
+extension AppState {
+    var theme: Theme {
+        self.themeVariant.theme(fontScale: self.fontScaleVariant.fontScale())
+    }
 }
 
 enum ScreenVariant {
@@ -148,7 +155,8 @@ struct AppStateMachine {
     }
     
     private func reloadSettings(appState: inout AppState) {
-        appState.theme = Preferences.loadThemeVariant().theme(fontScale: Preferences.loadFontScaleVariant().fontScale())
+        appState.themeVariant = Preferences.loadThemeVariant()
+        appState.fontScaleVariant = Preferences.loadFontScaleVariant()
     }
     
     private func selectSong(appState: inout AppState, songIndex: Int) {

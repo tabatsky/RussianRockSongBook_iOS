@@ -29,37 +29,73 @@ struct CloudSongTextView: View {
             let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
             
             ZStack {
-                VStack {
-                    Text(visibleTitleWithArtistAndRaiting)
-                        .font(self.theme.fontTitle)
-                        .bold()
-                        .foregroundColor(self.theme.colorMain)
-                        .padding(24)
-                        .frame(maxWidth: geometry.size.width, alignment: .leading)
-                    
-                    GeometryReader { scrollViewGeometry in
-                        ScrollViewReader { sp in
-                            ScrollView(.vertical) {
-                                TheTextViewer(
-                                    theme: self.theme,
-                                    text: self.cloudState.currentCloudSong!.text,
-                                    width: geometry.size.width,
-                                    onChordTapped: onChordTapped,
-                                    onHeightChanged: { height in })
+                if (geometry.size.width < geometry.size.height) {
+                    VStack {
+                        Text(visibleTitleWithArtistAndRaiting)
+                            .font(self.theme.fontTitle)
+                            .bold()
+                            .foregroundColor(self.theme.colorMain)
+                            .padding(24)
+                            .frame(maxWidth: geometry.size.width, alignment: .leading)
+                        GeometryReader { scrollViewGeometry in
+                            ScrollViewReader { sp in
+                                ScrollView(.vertical) {
+                                    TheTextViewer(
+                                        theme: self.theme,
+                                        text: self.cloudState.currentCloudSong!.text,
+                                        width: geometry.size.width,
+                                        onChordTapped: onChordTapped,
+                                        onHeightChanged: { height in })
+                                }
                             }
                         }
+                        HorizontalCloudSongTextPanel(
+                            W: geometry.size.width,
+                            theme: self.theme,
+                            onOpenYandexMusic: onOpenYandexMusic,
+                            onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                            onOpenVkMusic: onOpenVkMusuc,
+                            onDownloadFromCloud: onDownloadFromCloud,
+                            onShowWarning: onShowWarning,
+                            onLike: onLike,
+                            onDislike: onDislike
+                        )
                     }
-                    CloudSongTextPanel(
-                        W: geometry.size.width,
-                        theme: self.theme,
-                        onOpenYandexMusic: onOpenYandexMusic,
-                        onOpenYoutubeMusic: onOpenYoutubeMusuc,
-                        onOpenVkMusic: onOpenVkMusuc,
-                        onDownloadFromCloud: onDownloadFromCloud,
-                        onShowWarning: onShowWarning,
-                        onLike: onLike,
-                        onDislike: onDislike
-                    )
+                } else {
+                    HStack {
+                        VStack {
+                            Text(visibleTitleWithArtistAndRaiting)
+                                .font(self.theme.fontTitle)
+                                .bold()
+                                .foregroundColor(self.theme.colorMain)
+                                .padding(24)
+                                .frame(maxWidth: geometry.size.width, alignment: .leading)
+                            
+                            GeometryReader { scrollViewGeometry in
+                                ScrollViewReader { sp in
+                                    ScrollView(.vertical) {
+                                        TheTextViewer(
+                                            theme: self.theme,
+                                            text: self.cloudState.currentCloudSong!.text,
+                                            width: geometry.size.width,
+                                            onChordTapped: onChordTapped,
+                                            onHeightChanged: { height in })
+                                    }
+                                }
+                            }
+                        }
+                        VerticalCloudSongTextPanel(
+                            H: geometry.size.height,
+                            theme: self.theme,
+                            onOpenYandexMusic: onOpenYandexMusic,
+                            onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                            onOpenVkMusic: onOpenVkMusuc,
+                            onDownloadFromCloud: onDownloadFromCloud,
+                            onShowWarning: onShowWarning,
+                            onLike: onLike,
+                            onDislike: onDislike
+                        )
+                    }
                 }
                 if let chord = self.currentChord {
                     ChordViewer(theme: self.theme, chord: chord, onDismiss: {
@@ -162,7 +198,7 @@ struct CloudSongTextView: View {
     }
 }
 
-struct CloudSongTextPanel: View {
+struct HorizontalCloudSongTextPanel: View {
     let W: CGFloat
     let theme: Theme
     let onOpenYandexMusic: () -> ()
@@ -255,5 +291,101 @@ struct CloudSongTextPanel: View {
             }
         }
         .frame(width: W, height: A)
+    }
+}
+
+struct VerticalCloudSongTextPanel: View {
+    let H: CGFloat
+    let theme: Theme
+    let onOpenYandexMusic: () -> ()
+    let onOpenYoutubeMusic: () -> ()
+    let onOpenVkMusic: () -> ()
+    let onDownloadFromCloud: () -> ()
+    let onShowWarning: () -> ()
+    let onLike: () -> ()
+    let onDislike: () -> ()
+    
+    var body: some View {
+        let A = H / 7
+        
+        VStack(spacing: A / 5) {
+            if (Preferences.loadListenToMusicVariant().isYandex()) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onOpenYandexMusic()
+                    }
+                }) {
+                    Image("ic_yandex")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
+            }
+            if (Preferences.loadListenToMusicVariant().isVk()) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onOpenVkMusic()
+                    }
+                }) {
+                    Image("ic_vk")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
+            }
+            if (Preferences.loadListenToMusicVariant().isYoutube()) {
+                Button(action: {
+                    Task.detached { @MainActor in
+                        onOpenYoutubeMusic()
+                    }
+                }) {
+                    Image("ic_youtube")
+                        .resizable()
+                        .padding(A / 6)
+                        .background(self.theme.colorCommon)
+                }
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onDownloadFromCloud()
+                }
+            }) {
+                Image("ic_download")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onShowWarning()
+                }
+            }) {
+                Image("ic_warning")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onLike()
+                }
+            }) {
+                Image("ic_like")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+            Button(action: {
+                Task.detached { @MainActor in
+                    onDislike()
+                }
+            }) {
+                Image("ic_dislike")
+                    .resizable()
+                    .padding(A / 6)
+                    .background(self.theme.colorCommon)
+            }
+        }
+        .frame(width: A, height: H)
     }
 }

@@ -14,20 +14,7 @@ struct AppState {
     var currentScreenVariant: ScreenVariant = ScreenVariant.start
     var artists = AppStateMachine.songRepo.getArtists()
     var localState: LocalState = LocalState.companion.doNewInstance()
-    var cloudState: CloudState = CloudState()
-}
-
-
-struct CloudState {
-    var currentSearchState: SearchState = .loading
-    var currentCloudSongList: [CloudSong]? = nil
-    var currentCloudSongCount: Int = 0
-    var currentCloudSongIndex: Int = 0
-    var currentCloudSong: CloudSong? = nil
-    var currentCloudOrderBy: OrderBy = OrderBy.byIdDesc
-    var searchForBackup: String = ""
-    var allLikes: Dictionary<CloudSong, Int> = [:]
-    var allDislikes: Dictionary<CloudSong, Int> = [:]
+    var cloudState: CloudState = CloudState.companion.doNewInstance()
 }
 
 enum ScreenVariant {
@@ -37,13 +24,6 @@ enum ScreenVariant {
     case cloudSearch
     case cloudSongText
     case settings
-}
-
-enum SearchState {
-    case loading
-    case loadSuccess
-    case loadError
-    case emptyList
 }
 
 struct AppStateMachine {
@@ -142,10 +122,11 @@ struct AppStateMachine {
         print("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
-                appState.cloudState.searchForBackup = ""
-                appState.cloudState.currentCloudSongIndex = 0
-                appState.cloudState.currentCloudOrderBy = OrderBy.byIdDesc
-                appState.cloudState.currentCloudSongList = nil
+                appState.cloudState = appState.cloudState
+                    .changeSearchForBackup(backup: "")
+                    .changeCloudSongIndex(index: 0)
+                    .changeOrderBy(orderBy: OrderBy.byIdDesc)
+                    .changeCloudSongList(cloudSongList: nil)
                 appState.currentScreenVariant = ScreenVariant.cloudSearch
             }
         } else if (appState.localState.currentArtist != artist || appState.localState.currentCount == 0) {
@@ -219,7 +200,7 @@ struct AppStateMachine {
         if (appState.currentScreenVariant == .songText) {
             appState.currentScreenVariant = .songList
         } else if (appState.currentScreenVariant == .cloudSearch) {
-            appState.cloudState.currentCloudSongList = nil
+            appState.cloudState = appState.cloudState.changeCloudSongList(cloudSongList: nil)
             appState.currentScreenVariant = .songList
         } else if (appState.currentScreenVariant == .cloudSongText) {
             appState.currentScreenVariant = .cloudSearch
@@ -340,7 +321,7 @@ struct AppStateMachine {
     
     private func searchSongs(changeState: @escaping (AppState) -> Void, appState: AppState, searchFor: String, orderBy: OrderBy) {
         var newState = appState
-        newState.cloudState.currentSearchState = SearchState.loading
+        newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.loading)
         changeState(newState)
         CloudRepository.shared.searchSongsAsync(
             searchFor: searchFor,
@@ -348,14 +329,14 @@ struct AppStateMachine {
             onSuccess: { data in
                 self.refreshCloudSongList(appState: &newState, cloudSongList: data)
                 if (data.isEmpty) {
-                    newState.cloudState.currentSearchState = .emptyList
+                    newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.emptyList)
                } else {
-                   newState.cloudState.currentSearchState = .loadSuccess
+                   newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.loadSuccess)
                }
                 changeState(newState)
             },onError: { t in
                 t.printStackTrace()
-                newState.cloudState.currentSearchState = SearchState.loadError
+                newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.loadError)
                 changeState(newState)
             }
         )
@@ -364,41 +345,44 @@ struct AppStateMachine {
     private func refreshCloudSongList(appState: inout AppState, cloudSongList: [CloudSong]) {
         print(cloudSongList.count)
         
-        appState.cloudState.allLikes = [:]
-        appState.cloudState.allDislikes = [:]
-        appState.cloudState.currentCloudSongList = cloudSongList
-        appState.cloudState.currentCloudSongCount = cloudSongList.count
-        appState.cloudState.currentCloudSongIndex = 0
-        appState.cloudState.currentCloudSong = nil
+        appState.cloudState = appState.cloudState
+            .resetLikes()
+            .resetDislikes()
+            .changeCloudSongList(cloudSongList: cloudSongList)
+            .changeCount(count: Int32(cloudSongList.count))
+            .changeCloudSongIndex(index: 0)
+            .changeCloudSong(cloudSong: nil)
     }
     
     private func selectOrderBy(appState: inout AppState, orderBy: OrderBy) {
-        appState.cloudState.currentCloudSongIndex = 0
-        appState.cloudState.currentCloudSong = nil
-        appState.cloudState.currentCloudOrderBy = orderBy
+        appState.cloudState = appState.cloudState
+            .changeCloudSongIndex(index: 0)
+            .changeCloudSong(cloudSong: nil)
+            .changeOrderBy(orderBy: orderBy)
     }
     
     
     private func backupSearchFor(appState: inout AppState, searchFor: String) {
-        appState.cloudState.searchForBackup = searchFor
+        appState.cloudState = appState.cloudState.changeSearchForBackup(backup: searchFor)
     }
     
     private func selectCloudSong(appState: inout AppState, index: Int) {
         print("select cloud song: \(index)")
-        appState.cloudState.currentCloudSongIndex = index
-        appState.cloudState.currentCloudSong = appState.cloudState.currentCloudSongList![index]
+        appState.cloudState = appState.cloudState
+            .changeCloudSongIndex(index: Int32(index))
+            .changeCloudSong(cloudSong: appState.cloudState.currentCloudSongList![index])
         appState.currentScreenVariant = .cloudSongText
     }
     
     private func prevCloudSong(appState: inout AppState) {
         if (appState.cloudState.currentCloudSongIndex - 1 >= 0) {
-            self.selectCloudSong(appState: &appState, index: appState.cloudState.currentCloudSongIndex - 1)
+            self.selectCloudSong(appState: &appState, index: Int(appState.cloudState.currentCloudSongIndex - 1))
         }
     }
     
     private func nextCloudSong(appState: inout AppState) {
         if (appState.cloudState.currentCloudSongIndex + 1 < appState.cloudState.currentCloudSongCount) {
-            self.selectCloudSong(appState: &appState, index: appState.cloudState.currentCloudSongIndex + 1)
+            self.selectCloudSong(appState: &appState, index: Int(appState.cloudState.currentCloudSongIndex + 1))
         }
     }
     
@@ -408,8 +392,7 @@ struct AppStateMachine {
             onSuccess: {
                 var newState = appState
                 print($0)
-                let oldCount = newState.cloudState.allLikes[cloudSong] ?? 0
-                newState.cloudState.allLikes[cloudSong] = oldCount + 1
+                newState.cloudState = newState.cloudState.addLike(cloudSong: cloudSong)
                 changeState(newState)
                 self.showToast("Ваш голос засчитан")
             }, onServerMessage: {
@@ -426,8 +409,7 @@ struct AppStateMachine {
             onSuccess: {
                 var newState = appState
                 print($0)
-                let oldCount = newState.cloudState.allDislikes[cloudSong] ?? 0
-                newState.cloudState.allDislikes[cloudSong] = oldCount + 1
+                newState.cloudState = newState.cloudState.addDislike(cloudSong: cloudSong)
                 changeState(newState)
                 self.showToast("Ваш голос засчитан")
             }, onServerMessage: {

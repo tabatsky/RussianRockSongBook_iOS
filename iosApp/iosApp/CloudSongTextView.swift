@@ -23,8 +23,8 @@ struct CloudSongTextView: View {
             let artist = self.cloudState.currentCloudSong!.artist
             let title = self.cloudState.currentCloudSong!.visibleTitle
             
-            let likeCount = Int(self.cloudState.currentCloudSong!.likeCount) + (self.cloudState.allLikes[self.cloudState.currentCloudSong!] ?? 0)
-            let dislikeCount = Int(self.cloudState.currentCloudSong!.dislikeCount) + (self.cloudState.allDislikes[self.cloudState.currentCloudSong!] ?? 0)
+            let likeCount = Int(self.cloudState.currentCloudSong!.likeCount) + Int((self.cloudState.allLikes[self.cloudState.currentCloudSong!] ?? 0))
+            let dislikeCount = Int(self.cloudState.currentCloudSong!.dislikeCount) + Int((self.cloudState.allDislikes[self.cloudState.currentCloudSong!] ?? 0))
             
             let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
             

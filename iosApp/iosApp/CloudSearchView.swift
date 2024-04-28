@@ -65,7 +65,7 @@ struct CloudSearchView: View {
                             .frame(width: 120.0, height: 120.0)
                     }
                 }
-                if (self.cloudState.currentSearchState == .loading) {
+                if (self.cloudState.currentSearchState == SearchState.loading) {
                     Spacer()
                     HStack {
                         Spacer()
@@ -75,11 +75,11 @@ struct CloudSearchView: View {
                         Spacer()
                     }
                     Spacer()
-                } else if (self.cloudState.currentSearchState == .emptyList) {
+                } else if (self.cloudState.currentSearchState == SearchState.emptyList) {
                     Text("Список пуст")
                         .foregroundColor(self.theme.colorMain)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                } else if (self.cloudState.currentSearchState == .loadSuccess) {
+                } else if (self.cloudState.currentSearchState == SearchState.loadSuccess) {
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {
                             let columns = [
@@ -91,8 +91,8 @@ struct CloudSearchView: View {
                                     let cloudSong = currentList[index]
                                     let title = cloudSong.visibleTitle
                                     let artist = cloudSong.artist
-                                    let likeCount = Int(cloudSong.likeCount) + (self.cloudState.allLikes[cloudSong] ?? 0)
-                                    let dislikeCount = Int(cloudSong.dislikeCount) + (self.cloudState.allDislikes[cloudSong] ?? 0)
+                                    let likeCount = Int(cloudSong.likeCount) + Int(self.cloudState.allLikes[cloudSong] ?? 0)
+                                    let dislikeCount = Int(cloudSong.dislikeCount) + Int(self.cloudState.allDislikes[cloudSong] ?? 0)
                                     let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
                                     VStack {
                                         Text(visibleTitleWithRaiting)
@@ -145,7 +145,7 @@ struct CloudSearchView: View {
                             }
                             .onAppear(perform: {
                                 if (self.cloudState.currentCloudSongList != nil && self.cloudState.currentCloudSongList!.count > self.cloudState.currentCloudSongIndex) {
-                                    sp.scrollTo(self.cloudState.currentCloudSongList![self.cloudState.currentCloudSongIndex], anchor: .top)
+                                    sp.scrollTo(self.cloudState.currentCloudSongList![Int(self.cloudState.currentCloudSongIndex)], anchor: .top)
                                 }
                                 Task.detached {
                                     try await Task.sleep(nanoseconds: 200 * 1000 * 1000)

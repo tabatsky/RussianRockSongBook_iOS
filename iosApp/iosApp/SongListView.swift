@@ -81,9 +81,9 @@ struct SongListView: View {
                         }
                     }
                     .onAppear(perform: {
-                        self.scrollPosition = localState.currentSongIndex
+                        self.scrollPosition = Int(localState.currentSongIndex)
                         if (!localState.currentSongList.isEmpty) {
-                            sp.scrollTo(localState.currentSongList[localState.currentSongIndex], anchor: .top)
+                            sp.scrollTo(localState.currentSongList[Int(localState.currentSongIndex)], anchor: .top)
                         }
                         Task.detached {
                             try await Task.sleep(nanoseconds: 200 * 1000 * 1000)

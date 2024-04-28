@@ -6,12 +6,12 @@ import jatx.russianrocksongbook.common.domain.models.Song
 const val defaultArtist = "Кино"
 
 data class LocalState(
-    var isDrawerOpen: Boolean = false,
-    var currentArtist: String = defaultArtist,
-    var currentSongList: List<Song> = Injector.songRepo.getSongsByArtist(defaultArtist),
-    var currentCount: Int = Injector.songRepo.getCountByArtist(defaultArtist),
-    var currentSongIndex: Int = 0,
-    var currentSong: Song? = null
+    val isDrawerOpen: Boolean = false,
+    val currentArtist: String = defaultArtist,
+    val currentSongList: List<Song> = Injector.songRepo.getSongsByArtist(defaultArtist),
+    val currentCount: Int = Injector.songRepo.getCountByArtist(defaultArtist),
+    val currentSongIndex: Int = 0,
+    val currentSong: Song? = null
 ) {
     companion object {
         fun newInstance() = LocalState()

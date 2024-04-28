@@ -97,7 +97,7 @@ struct RootView: View {
         .background(self.appState.theme.colorCommon)
         .onTapGesture {
             if self.appState.localState.isDrawerOpen {
-                self.appState.localState.isDrawerOpen.toggle()
+                self.performAction(DrawerClick())
             }
         }
         .onReceive(self.orientationChanged) { _ in

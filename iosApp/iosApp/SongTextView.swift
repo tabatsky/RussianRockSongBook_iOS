@@ -35,90 +35,93 @@ struct SongTextView: View {
             let title = song.title
             
             ZStack {
-                VStack {
-                    Text(title)
-                        .font(self.theme.fontTitle)
-                        .bold()
-                        .foregroundColor(self.theme.colorMain)
-                        .padding(24)
-                        .frame(maxWidth: geometry.size.width, alignment: .leading)
-                    
-                    GeometryReader { bodyWrapperGeometry in
-                        if (bodyWrapperGeometry.size.width < bodyWrapperGeometry.size.height) {
-                            VStack {
-                                SongTextBody(
-                                    geometry: bodyWrapperGeometry,
-                                    theme: self.theme,
-                                    song: self.song,
-                                    dY: self.dY,
-                                    isEditorMode: self.isEditorMode,
-                                    setEditorMode: { self.isEditorMode = $0 },
-                                    minGlobalY: self.minGlobalY,
-                                    setMinGlobalY: { self.minGlobalY = $0 },
-                                    scrollY: self.scrollY,
-                                    setScrollY: { self.scrollY = $0 },
-                                    textHeight: self.textHeight,
-                                    setTextHeight: { self.textHeight = $0 },
-                                    setEditorText: { self.editorText = $0 },
-                                    setIsAutoScroll: { self.isAutoScroll = $0 },
-                                    setIsScreenActive: { self.isScreenActive = $0 },
-                                    setScrollViewHeight: { self.scrollViewHeight = $0},
-                                    onChordTapped: self.onChordTapped,
-                                    performScrollToY: self.performScrollToY,
-                                    launchAutoScroll: self.autoScroll
-                                )
-                                HorizontalSongTextPanel(
-                                    W: bodyWrapperGeometry.size.width,
-                                    theme: self.theme,
-                                    isEditorMode: self.isEditorMode,
-                                    onEdit: onEdit,
-                                    onSave: onSave,
-                                    onDeleteToTrash: onDeleteToTrash,
-                                    onShowWarning: onShowWarning,
-                                    onUploadToCloud: onUploadToCloud,
-                                    onOpenYandexMusic: onOpenYandexMusic,
-                                    onOpenYoutubeMusic: onOpenYoutubeMusuc,
-                                    onOpenVkMusic: onOpenVkMusuc
-                                )
-                            }
-                        } else {
-                            HStack {
-                                SongTextBody(
-                                    geometry: bodyWrapperGeometry,
-                                    theme: self.theme,
-                                    song: self.song,
-                                    dY: self.dY,
-                                    isEditorMode: self.isEditorMode,
-                                    setEditorMode: { self.isEditorMode = $0 },
-                                    minGlobalY: self.minGlobalY,
-                                    setMinGlobalY: { self.minGlobalY = $0 },
-                                    scrollY: self.scrollY,
-                                    setScrollY: { self.scrollY = $0 },
-                                    textHeight: self.textHeight,
-                                    setTextHeight: { self.textHeight = $0 },
-                                    setEditorText: { self.editorText = $0 },
-                                    setIsAutoScroll: { self.isAutoScroll = $0 },
-                                    setIsScreenActive: { self.isScreenActive = $0 },
-                                    setScrollViewHeight: { self.scrollViewHeight = $0},
-                                    onChordTapped: self.onChordTapped,
-                                    performScrollToY: self.performScrollToY,
-                                    launchAutoScroll: self.autoScroll
-                                )
-                                VerticalSongTextPanel(
-                                    H: bodyWrapperGeometry.size.height,
-                                    theme: self.theme,
-                                    isEditorMode: self.isEditorMode,
-                                    onEdit: onEdit,
-                                    onSave: onSave,
-                                    onDeleteToTrash: onDeleteToTrash,
-                                    onShowWarning: onShowWarning,
-                                    onUploadToCloud: onUploadToCloud,
-                                    onOpenYandexMusic: onOpenYandexMusic,
-                                    onOpenYoutubeMusic: onOpenYoutubeMusuc,
-                                    onOpenVkMusic: onOpenVkMusuc
-                                )
-                            }
+                if (geometry.size.width < geometry.size.height) {
+                    VStack {
+                        Text(title)
+                            .font(self.theme.fontTitle)
+                            .bold()
+                            .foregroundColor(self.theme.colorMain)
+                            .padding(24)
+                            .frame(maxWidth: geometry.size.width, alignment: .leading)
+                        SongTextBody(
+                            geometry: geometry,
+                            theme: self.theme,
+                            song: self.song,
+                            dY: self.dY,
+                            isEditorMode: self.isEditorMode,
+                            setEditorMode: { self.isEditorMode = $0 },
+                            minGlobalY: self.minGlobalY,
+                            setMinGlobalY: { self.minGlobalY = $0 },
+                            scrollY: self.scrollY,
+                            setScrollY: { self.scrollY = $0 },
+                            textHeight: self.textHeight,
+                            setTextHeight: { self.textHeight = $0 },
+                            setEditorText: { self.editorText = $0 },
+                            setIsAutoScroll: { self.isAutoScroll = $0 },
+                            setIsScreenActive: { self.isScreenActive = $0 },
+                            setScrollViewHeight: { self.scrollViewHeight = $0},
+                            onChordTapped: self.onChordTapped,
+                            performScrollToY: self.performScrollToY,
+                            launchAutoScroll: self.autoScroll
+                        )
+                        HorizontalSongTextPanel(
+                            W: geometry.size.width,
+                            theme: self.theme,
+                            isEditorMode: self.isEditorMode,
+                            onEdit: onEdit,
+                            onSave: onSave,
+                            onDeleteToTrash: onDeleteToTrash,
+                            onShowWarning: onShowWarning,
+                            onUploadToCloud: onUploadToCloud,
+                            onOpenYandexMusic: onOpenYandexMusic,
+                            onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                            onOpenVkMusic: onOpenVkMusuc
+                        )
+                    }
+                } else {
+                    HStack {
+                        VStack {
+                            Text(title)
+                                .font(self.theme.fontTitle)
+                                .bold()
+                                .foregroundColor(self.theme.colorMain)
+                                .padding(24)
+                                .frame(maxWidth: geometry.size.width, alignment: .leading)
+                            SongTextBody(
+                                geometry: geometry,
+                                theme: self.theme,
+                                song: self.song,
+                                dY: self.dY,
+                                isEditorMode: self.isEditorMode,
+                                setEditorMode: { self.isEditorMode = $0 },
+                                minGlobalY: self.minGlobalY,
+                                setMinGlobalY: { self.minGlobalY = $0 },
+                                scrollY: self.scrollY,
+                                setScrollY: { self.scrollY = $0 },
+                                textHeight: self.textHeight,
+                                setTextHeight: { self.textHeight = $0 },
+                                setEditorText: { self.editorText = $0 },
+                                setIsAutoScroll: { self.isAutoScroll = $0 },
+                                setIsScreenActive: { self.isScreenActive = $0 },
+                                setScrollViewHeight: { self.scrollViewHeight = $0},
+                                onChordTapped: self.onChordTapped,
+                                performScrollToY: self.performScrollToY,
+                                launchAutoScroll: self.autoScroll
+                            )
                         }
+                        VerticalSongTextPanel(
+                            H: geometry.size.height,
+                            theme: self.theme,
+                            isEditorMode: self.isEditorMode,
+                            onEdit: onEdit,
+                            onSave: onSave,
+                            onDeleteToTrash: onDeleteToTrash,
+                            onShowWarning: onShowWarning,
+                            onUploadToCloud: onUploadToCloud,
+                            onOpenYandexMusic: onOpenYandexMusic,
+                            onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                            onOpenVkMusic: onOpenVkMusuc
+                        )
                     }
                 }
                 if let chord = self.currentChord {

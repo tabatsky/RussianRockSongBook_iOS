@@ -11,7 +11,10 @@ struct ContentView: View {
         AppStateMachine(showToast: showToast)
     }
     
-    @State var appState: AppState = AppState()
+    @State var appState: AppState = AppState.companion.doNewInstance(
+        themeVariant: Preferences.loadThemeVariant(),
+        fontScaleVariant: Preferences.loadFontScaleVariant()
+    )
     
     @State var needShowToast = false
     @State var toastText = ""

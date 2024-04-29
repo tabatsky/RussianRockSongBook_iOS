@@ -9,29 +9,29 @@
 import SwiftUI
 import shared
 
-struct AppState {
-    var themeVariant = Preferences.loadThemeVariant()
-    var fontScaleVariant = Preferences.loadFontScaleVariant()
-    var currentScreenVariant: ScreenVariant = ScreenVariant.start
-    var artists = AppStateMachine.songRepo.getArtists()
-    var localState: LocalState = LocalState.companion.doNewInstance()
-    var cloudState: CloudState = CloudState.companion.doNewInstance()
-}
+//struct AppState {
+//    var themeVariant = Preferences.loadThemeVariant()
+//    var fontScaleVariant = Preferences.loadFontScaleVariant()
+//    var currentScreenVariant: ScreenVariant = ScreenVariant.start
+//    var artists = AppStateMachine.songRepo.getArtists()
+//    var localState: LocalState = LocalState.companion.doNewInstance()
+//    var cloudState: CloudState = CloudState.companion.doNewInstance()
+//}
 
 extension AppState {
     var theme: Theme {
         self.themeVariant.theme(fontScale: self.fontScaleVariant.fontScale())
     }
 }
-
-enum ScreenVariant {
-    case start
-    case songList
-    case songText
-    case cloudSearch
-    case cloudSongText
-    case settings
-}
+//
+//enum ScreenVariant {
+//    case start
+//    case songList
+//    case songText
+//    case cloudSearch
+//    case cloudSongText
+//    case settings
+//}
 
 struct AppStateMachine {
     static let songRepo: SongRepository = {
@@ -129,41 +129,42 @@ struct AppStateMachine {
         print("select artist: \(artist)")
         if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
             if (artist == Self.ARTIST_CLOUD_SONGS) {
-                appState.cloudState = appState.cloudState
+                appState = appState.changeCloudState(cloudState: appState.cloudState
                     .changeSearchForBackup(backup: "")
                     .changeCloudSongIndex(index: 0)
                     .changeOrderBy(orderBy: OrderBy.byIdDesc)
-                    .changeCloudSongList(cloudSongList: nil)
-                appState.currentScreenVariant = ScreenVariant.cloudSearch
+                    .changeCloudSongList(cloudSongList: nil))
+                    .changeScreenVariant(screenVariant: ScreenVariant.cloudSearch)
             }
         } else if (appState.localState.currentArtist != artist || appState.localState.currentCount == 0) {
             print("artist changed")
-            appState.localState = appState.localState
-                .changeArtist(artist: artist)
             let count = Self.songRepo.getCountByArtist(artist: artist)
-            appState.localState = appState.localState.changeCount(count: count)
-            appState.localState = appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: artist))
-            appState.localState = appState.localState.changeSongIndex(index: 0)
+            appState = appState.changeLocalState(localState: appState.localState
+                .changeArtist(artist: artist)
+                .changeCount(count: count)
+                .changeSongList(songList: Self.songRepo.getSongsByArtist(artist: artist))
+                .changeSongIndex(index: 0))
         }
-        appState.localState = appState.localState.changeDrawerState(isOpen: false)
+        appState = appState.changeLocalState(localState: appState.localState.changeDrawerState(isOpen: false))
         callback()
     }
     
     private func openSettings(appState: inout AppState) {
         print("opening settings")
-        appState.currentScreenVariant = .settings
+        appState = appState.changeScreenVariant(screenVariant: .settings)
     }
     
     private func reloadSettings(appState: inout AppState) {
-        appState.themeVariant = Preferences.loadThemeVariant()
-        appState.fontScaleVariant = Preferences.loadFontScaleVariant()
+        appState = appState
+            .changeThemeVariant(themeVariant: Preferences.loadThemeVariant())
+            .changeFontScaleVariant(fontScaleVariant: Preferences.loadFontScaleVariant())
     }
     
     private func selectSong(appState: inout AppState, songIndex: Int) {
         print("select song with index: \(songIndex)")
-        appState.localState = appState.localState.changeSongIndex(index: Int32(songIndex))
+        appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: Int32(songIndex)))
         self.refreshCurrentSong(appState: &appState)
-        appState.currentScreenVariant = ScreenVariant.songText
+        appState = appState.changeScreenVariant(screenVariant: ScreenVariant.songText)
     }
     
     private func prevSong(appState: inout AppState) {
@@ -172,10 +173,10 @@ struct AppStateMachine {
         }
         if (appState.localState.currentSongIndex > 0) {
             let newIndex = appState.localState.currentSongIndex - 1
-            appState.localState = appState.localState.changeSongIndex(index: newIndex)
+            appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
         } else {
             let newIndex = appState.localState.currentCount - 1
-            appState.localState = appState.localState.changeSongIndex(index: newIndex)
+            appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
         }
         self.refreshCurrentSong(appState: &appState)
     }
@@ -185,36 +186,38 @@ struct AppStateMachine {
             return
         }
         let newIndex = (appState.localState.currentSongIndex + 1) % appState.localState.currentCount
-        appState.localState = appState.localState.changeSongIndex(index: newIndex)
+        appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
         self.refreshCurrentSong(appState: &appState)
     }
     
     private func refreshCurrentSong(appState: inout AppState) {
         let newSong = Self.songRepo
             .getSongByArtistAndPosition(artist: appState.localState.currentArtist, position: Int32(appState.localState.currentSongIndex))
-        appState.localState = appState.localState.changeSong(song: newSong)
+        appState = appState.changeLocalState(localState: appState.localState.changeSong(song: newSong))
     }
     
     private func updateSongIndexByScroll(appState: inout AppState, songIndex: Int) {
-        appState.localState = appState.localState.changeSongIndex(index: Int32(songIndex))
+        appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: Int32(songIndex)))
     }
     
     private func toggleDrawer(appState: inout AppState) {
-        appState.localState = appState.localState.toggleDrawer()
+        appState = appState.changeLocalState(localState: appState.localState.toggleDrawer())
     }
     
     
     private func back(appState: inout AppState) {
+        var newScreenVariant: ScreenVariant!
         if (appState.currentScreenVariant == .songText) {
-            appState.currentScreenVariant = .songList
+            newScreenVariant = .songList
         } else if (appState.currentScreenVariant == .cloudSearch) {
-            appState.cloudState = appState.cloudState.changeCloudSongList(cloudSongList: nil)
-            appState.currentScreenVariant = .songList
+            appState = appState.changeCloudState(cloudState: appState.cloudState.changeCloudSongList(cloudSongList: nil))
+            newScreenVariant = .songList
         } else if (appState.currentScreenVariant == .cloudSongText) {
-            appState.currentScreenVariant = .cloudSearch
+            newScreenVariant = .cloudSearch
         } else if (appState.currentScreenVariant == .settings) {
-            appState.currentScreenVariant = .songList
+            newScreenVariant = .songList
         }
+        appState = appState.changeScreenVariant(screenVariant: newScreenVariant)
     }
     
     private func toggleFavorite(appState: inout AppState, emptyListCallback: () -> ()) {
@@ -224,18 +227,18 @@ struct AppStateMachine {
         Self.songRepo.updateSong(song: song)
         if (!becomeFavorite && appState.localState.currentArtist == Self.ARTIST_FAVORITE) {
             let count = Self.songRepo.getCountByArtist(artist: Self.ARTIST_FAVORITE)
-            appState.localState = appState.localState.changeCount(count: count)
+            appState = appState.changeLocalState(localState: appState.localState.changeCount(count: count))
             if (appState.localState.currentCount > 0) {
                 if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
                     let newIndex = appState.localState.currentCount - 1
-                    appState.localState = appState.localState.changeSongIndex(index: newIndex)
+                    appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
                 }
                 self.refreshCurrentSong(appState: &appState)
             } else {
                 self.back(appState: &appState)
                 emptyListCallback()
             }
-            appState.localState = appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: Self.ARTIST_FAVORITE))
+            appState = appState.changeLocalState(localState: appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: Self.ARTIST_FAVORITE)))
         } else {
             self.refreshCurrentSong(appState: &appState)
         }
@@ -259,19 +262,20 @@ struct AppStateMachine {
         song.deleted = true
         Self.songRepo.updateSong(song: song)
         let count = Self.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
-        appState.localState = appState.localState.changeCount(count: count)
-        appState.artists = Self.songRepo.getArtists()
+        appState = appState
+            .changeLocalState(localState: appState.localState.changeCount(count: count))
+            .changeArtists(artists: Self.songRepo.getArtists())
         if (appState.localState.currentCount > 0) {
             if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
                 let newIndex = appState.localState.currentSongIndex - 1
-                appState.localState = appState.localState.changeSongIndex(index: newIndex)
+                appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
             }
             refreshCurrentSong(appState: &appState)
         } else {
             back(appState: &appState)
             emptyListCallback()
         }
-        appState.localState = appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist))
+        appState = appState.changeLocalState(localState: appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)))
         showToast("Удалено")
     }
 
@@ -329,7 +333,7 @@ struct AppStateMachine {
     
     private func searchSongs(changeState: @escaping (AppState) -> Void, appState: AppState, searchFor: String, orderBy: OrderBy) {
         var newState = appState
-        newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.loading)
+        newState = newState.changeCloudState(cloudState: newState.cloudState.changeSearchState(searchState: SearchState.loading))
         changeState(newState)
         CloudRepository.shared.searchSongsAsync(
             searchFor: searchFor,
@@ -337,14 +341,14 @@ struct AppStateMachine {
             onSuccess: { data in
                 self.refreshCloudSongList(appState: &newState, cloudSongList: data)
                 if (data.isEmpty) {
-                    newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.emptyList)
+                    newState = newState.changeCloudState(cloudState: newState.cloudState.changeSearchState(searchState: SearchState.emptyList))
                } else {
-                   newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.loadSuccess)
+                   newState = newState.changeCloudState(cloudState: newState.cloudState.changeSearchState(searchState: SearchState.loadSuccess))
                }
                 changeState(newState)
             },onError: { t in
                 t.printStackTrace()
-                newState.cloudState = newState.cloudState.changeSearchState(searchState: SearchState.loadError)
+                newState = newState.changeCloudState(cloudState: newState.cloudState.changeSearchState(searchState: SearchState.loadError))
                 changeState(newState)
             }
         )
@@ -353,33 +357,33 @@ struct AppStateMachine {
     private func refreshCloudSongList(appState: inout AppState, cloudSongList: [CloudSong]) {
         print(cloudSongList.count)
         
-        appState.cloudState = appState.cloudState
+        appState = appState.changeCloudState(cloudState: appState.cloudState
             .resetLikes()
             .resetDislikes()
             .changeCloudSongList(cloudSongList: cloudSongList)
             .changeCount(count: Int32(cloudSongList.count))
             .changeCloudSongIndex(index: 0)
-            .changeCloudSong(cloudSong: nil)
+            .changeCloudSong(cloudSong: nil))
     }
     
     private func selectOrderBy(appState: inout AppState, orderBy: OrderBy) {
-        appState.cloudState = appState.cloudState
+        appState = appState.changeCloudState(cloudState: appState.cloudState
             .changeCloudSongIndex(index: 0)
             .changeCloudSong(cloudSong: nil)
-            .changeOrderBy(orderBy: orderBy)
+            .changeOrderBy(orderBy: orderBy))
     }
     
     
     private func backupSearchFor(appState: inout AppState, searchFor: String) {
-        appState.cloudState = appState.cloudState.changeSearchForBackup(backup: searchFor)
+        appState = appState.changeCloudState(cloudState: appState.cloudState.changeSearchForBackup(backup: searchFor))
     }
     
     private func selectCloudSong(appState: inout AppState, index: Int) {
         print("select cloud song: \(index)")
-        appState.cloudState = appState.cloudState
+        appState = appState.changeCloudState(cloudState: appState.cloudState
             .changeCloudSongIndex(index: Int32(index))
-            .changeCloudSong(cloudSong: appState.cloudState.currentCloudSongList![index])
-        appState.currentScreenVariant = .cloudSongText
+            .changeCloudSong(cloudSong: appState.cloudState.currentCloudSongList![index]))
+            .changeScreenVariant(screenVariant: .cloudSongText)
     }
     
     private func prevCloudSong(appState: inout AppState) {
@@ -400,7 +404,7 @@ struct AppStateMachine {
             onSuccess: {
                 var newState = appState
                 print($0)
-                newState.cloudState = newState.cloudState.addLike(cloudSong: cloudSong)
+                newState = newState.changeCloudState(cloudState: newState.cloudState.addLike(cloudSong: cloudSong))
                 changeState(newState)
                 self.showToast("Ваш голос засчитан")
             }, onServerMessage: {
@@ -417,7 +421,7 @@ struct AppStateMachine {
             onSuccess: {
                 var newState = appState
                 print($0)
-                newState.cloudState = newState.cloudState.addDislike(cloudSong: cloudSong)
+                newState = newState.changeCloudState(cloudState: newState.cloudState.addDislike(cloudSong: cloudSong))
                 changeState(newState)
                 self.showToast("Ваш голос засчитан")
             }, onServerMessage: {
@@ -430,15 +434,16 @@ struct AppStateMachine {
     
     private func downloadCurrent(appState: inout AppState, cloudSong: CloudSong) {
         Self.songRepo.addSongFromCloud(song: cloudSong.asSong())
-        appState.artists = Self.songRepo.getArtists()
+        appState = appState.changeArtists(artists: Self.songRepo.getArtists())
         let count = Self.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
-        appState.localState = appState.localState.changeCount(count: count)
-        appState.localState = appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist))
+        appState = appState.changeLocalState(localState: appState.localState
+            .changeCount(count: count)
+            .changeSongList(songList: Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)))
         self.showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     
     func onUpdateDone(appState: inout AppState) {
         self.selectArtist(appState: &appState, artist: Self.defaultArtist, callback: {})
-        appState.currentScreenVariant = .songList
+        appState.changeScreenVariant(screenVariant: .songList)
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 let colorLightYellow = Color(hex: 0xFFFFBB)
 let colorBlack = Color(hex: 0x000000)
@@ -65,10 +66,7 @@ extension Color {
     }
 }
 
-enum ThemeVariant: Int {
-    case dark = 0
-    case light = 1
-    
+extension ThemeVariant {
     func themeName() -> String {
         if (self == .dark) {
             return "Темная"
@@ -86,13 +84,7 @@ enum ThemeVariant: Int {
     }
 }
 
-enum FontScaleVariant: Int {
-    case xs = -2
-    case s = -1
-    case m = 0
-    case l = 1
-    case xl = 2
-    
+extension FontScaleVariant {
     func fontScaleName() -> String {
         switch(self) {
         case .xs:
@@ -105,6 +97,8 @@ enum FontScaleVariant: Int {
             return "Крупный"
         case .xl:
             return "Очень крупный"
+        default:
+            return ""
         }
     }
     
@@ -120,6 +114,8 @@ enum FontScaleVariant: Int {
             return 1.5
         case .xl:
             return 2.0
+        default:
+            return 1.0
         }
     }
 }

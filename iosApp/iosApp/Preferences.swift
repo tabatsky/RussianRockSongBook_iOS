@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import shared
 
 struct Preferences {
     static let appVersion = 38
@@ -28,24 +29,24 @@ struct Preferences {
     static func loadThemeVariant() -> ThemeVariant {
         let preferences = UserDefaults.standard
         let themeVariantValue = preferences.integer(forKey: "theme_variant")
-        return ThemeVariant(rawValue: themeVariantValue)!
+        return ThemeVariant.companion.getByIndex(index: Int32(themeVariantValue))
     }
     
     static func saveThemeVariant(themeVariant: ThemeVariant) {
         let preferences = UserDefaults.standard
-        preferences.set(themeVariant.rawValue, forKey: "theme_variant")
+        preferences.set(Int(themeVariant.index), forKey: "theme_variant")
         didSave(preferences: preferences)
     }
     
     static func loadFontScaleVariant() -> FontScaleVariant {
         let preferences = UserDefaults.standard
         let fontScaleVariantValue = preferences.integer(forKey: "font_scale_variant")
-        return FontScaleVariant(rawValue: fontScaleVariantValue)!
+        return FontScaleVariant.companion.getByIndex(index: Int32(fontScaleVariantValue))
     }
     
     static func saveFontScaleVariant(fontScaleVariant: FontScaleVariant) {
         let preferences = UserDefaults.standard
-        preferences.set(fontScaleVariant.rawValue, forKey: "font_scale_variant")
+        preferences.set(Int(fontScaleVariant.index), forKey: "font_scale_variant")
         didSave(preferences: preferences)
     }
     

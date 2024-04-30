@@ -9,30 +9,11 @@
 import SwiftUI
 import shared
 
-//struct AppState {
-//    var themeVariant = Preferences.loadThemeVariant()
-//    var fontScaleVariant = Preferences.loadFontScaleVariant()
-//    var currentScreenVariant: ScreenVariant = ScreenVariant.start
-//    var artists = AppStateMachine.songRepo.getArtists()
-//    var localState: LocalState = LocalState.companion.doNewInstance()
-//    var cloudState: CloudState = CloudState.companion.doNewInstance()
-//}
-
 extension AppState {
     var theme: Theme {
         self.themeVariant.theme(fontScale: self.fontScaleVariant.fontScale())
     }
 }
-//
-//enum ScreenVariant {
-//    case start
-//    case songList
-//    case songText
-//    case cloudSearch
-//    case cloudSongText
-//    case settings
-//}
-
 struct AppStateMachine {
     static let songRepo: SongRepository = {
         let factory = DatabaseDriverFactory()
@@ -47,13 +28,17 @@ struct AppStateMachine {
     
     let showToast: (String) -> ()
     
+    let kotlinStateMachine = KotlinStateMachine()
+    
     func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
+        if (kotlinStateMachine.canPerformAction(action: action)) {
+            kotlinStateMachine.performAction(appState: appState, action: action, changeState: changeState)
+            return
+        }
+        
         var newState = appState
         var asyncMode = false
-        if (action is SelectArtist) {
-            let selectArtistAction = action as! SelectArtist
-            self.selectArtist(appState: &newState, artist: selectArtistAction.artist, callback: selectArtistAction.callback)
-        } else if (action is OpenSettings) {
+        if (action is OpenSettings) {
             self.openSettings(appState: &newState)
         } else if (action is ReloadSettings) {
             self.reloadSettings(appState: &newState)
@@ -117,36 +102,12 @@ struct AppStateMachine {
         } else if (action is DownloadClick) {
             self.downloadCurrent(appState: &newState, cloudSong: (action as! DownloadClick).cloudSong)
         } else if (action is UpdateDone) {
-            self.onUpdateDone(appState: &newState)
+            self.onUpdateDone(appState: newState, changeState: changeState)
         }
         
         if (!asyncMode) {
             changeState(newState)
         }
-    }
-    
-    func selectArtist(appState: inout AppState, artist: String, callback: () -> ()) {
-        print("select artist: \(artist)")
-        if (Self.predefinedList.contains(artist) && artist != Self.ARTIST_FAVORITE) {
-            if (artist == Self.ARTIST_CLOUD_SONGS) {
-                appState = appState.changeCloudState(cloudState: appState.cloudState
-                    .changeSearchForBackup(backup: "")
-                    .changeCloudSongIndex(index: 0)
-                    .changeOrderBy(orderBy: OrderBy.byIdDesc)
-                    .changeCloudSongList(cloudSongList: nil))
-                    .changeScreenVariant(screenVariant: ScreenVariant.cloudSearch)
-            }
-        } else if (appState.localState.currentArtist != artist || appState.localState.currentCount == 0) {
-            print("artist changed")
-            let count = Self.songRepo.getCountByArtist(artist: artist)
-            appState = appState.changeLocalState(localState: appState.localState
-                .changeArtist(artist: artist)
-                .changeCount(count: count)
-                .changeSongList(songList: Self.songRepo.getSongsByArtist(artist: artist))
-                .changeSongIndex(index: 0))
-        }
-        appState = appState.changeLocalState(localState: appState.localState.changeDrawerState(isOpen: false))
-        callback()
     }
     
     private func openSettings(appState: inout AppState) {
@@ -442,8 +403,9 @@ struct AppStateMachine {
         self.showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
     }
     
-    func onUpdateDone(appState: inout AppState) {
-        self.selectArtist(appState: &appState, artist: Self.defaultArtist, callback: {})
-        appState.changeScreenVariant(screenVariant: .songList)
+    func onUpdateDone(appState: AppState, changeState: @escaping (AppState) -> ()) {
+        self.performAction(changeState: { newState in
+            changeState(newState.changeScreenVariant(screenVariant: .songList))
+        }, appState: appState, action: SelectArtist(artist: Self.defaultArtist, callback: {}))
     }
 }

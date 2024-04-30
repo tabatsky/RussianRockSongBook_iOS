@@ -9,91 +9,153 @@
 import Foundation
 import shared
 
-protocol AppUIAction {}
+class OpenSettings: AppUIAction {}
+class ReloadSettings: AppUIAction {}
 
-struct SelectArtist: AppUIAction {
-    let artist: String
-    let callback: () -> ()
-}
-
-struct OpenSettings: AppUIAction {}
-struct ReloadSettings: AppUIAction {}
-
-struct SongClick: AppUIAction {
+class SongClick: AppUIAction {
     let songIndex: Int
+    
+    init(songIndex: Int) {
+        self.songIndex = songIndex
+    }
 }
 
-struct LocalScroll: AppUIAction {
+class LocalScroll: AppUIAction {
     let songIndex: Int
+    
+    init(songIndex: Int) {
+        self.songIndex = songIndex
+    }
 }
 
-struct DrawerClick: AppUIAction {}
-struct BackClick: AppUIAction {}
-struct LocalPrevClick: AppUIAction {}
-struct LocalNextClick: AppUIAction {}
-struct FavoriteToggle: AppUIAction {
+class DrawerClick: AppUIAction {}
+class BackClick: AppUIAction {}
+class LocalPrevClick: AppUIAction {}
+class LocalNextClick: AppUIAction {}
+class FavoriteToggle: AppUIAction {
     let emptyListCallback: () -> ()
+    
+    init(emptyListCallback: @escaping () -> Void) {
+        self.emptyListCallback = emptyListCallback
+    }
 }
 
-struct SaveSongText: AppUIAction {
+class SaveSongText: AppUIAction {
     let newText: String
+    
+    init(newText: String) {
+        self.newText = newText
+    }
 }
 
-struct ConfirmDeleteToTrash: AppUIAction {
+class ConfirmDeleteToTrash: AppUIAction {
     let emptyListCallback: () -> ()
+    
+    init(emptyListCallback: @escaping () -> Void) {
+        self.emptyListCallback = emptyListCallback
+    }
 }
-struct UploadCurrentToCloud: AppUIAction {}
+class UploadCurrentToCloud: AppUIAction {}
 
-struct ShowToast: AppUIAction {
+class ShowToast: AppUIAction {
     let text: String
+    
+    init(text: String) {
+        self.text = text
+    }
 }
 
-struct OpenSongAtVkMusic: AppUIAction {
+class OpenSongAtVkMusic: AppUIAction {
     let music: Music
+    
+    init(music: Music) {
+        self.music = music
+    }
 }
 
-struct OpenSongAtYandexMusic: AppUIAction {
+class OpenSongAtYandexMusic: AppUIAction {
     let music: Music
+    
+    init(music: Music) {
+        self.music = music
+    }
 }
 
-struct OpenSongAtYoutubeMusic: AppUIAction {
+class OpenSongAtYoutubeMusic: AppUIAction {
     let music: Music
+    
+    init(music: Music) {
+        self.music = music
+    }
 }
 
-struct SendWarning: AppUIAction {
+class SendWarning: AppUIAction {
     let warning: Warning
+    
+    init(warning: Warning) {
+        self.warning = warning
+    }
 }
 
-struct CloudSearch: AppUIAction {
+class CloudSearch: AppUIAction {
     let searchFor: String
     let orderBy: OrderBy
+    
+    init(searchFor: String, orderBy: OrderBy) {
+        self.searchFor = searchFor
+        self.orderBy = orderBy
+    }
 }
 
-struct CloudSongClick: AppUIAction {
+class CloudSongClick: AppUIAction {
     let index: Int
+    
+    init(index: Int) {
+        self.index = index
+    }
 }
 
-struct SelectOrderBy: AppUIAction {
+class SelectOrderBy: AppUIAction {
     let orderBy: OrderBy
+    
+    init(orderBy: OrderBy) {
+        self.orderBy = orderBy
+    }
 }
 
-struct BackupSearchFor: AppUIAction {
+class BackupSearchFor: AppUIAction {
     let searchFor: String
+    
+    init(searchFor: String) {
+        self.searchFor = searchFor
+    }
 }
 
-struct CloudPrevClick: AppUIAction {}
-struct CloudNextClick: AppUIAction {}
+class CloudPrevClick: AppUIAction {}
+class CloudNextClick: AppUIAction {}
 
-struct LikeClick: AppUIAction {
+class LikeClick: AppUIAction {
     let cloudSong: CloudSong
+    
+    init(cloudSong: CloudSong) {
+        self.cloudSong = cloudSong
+    }
 }
 
-struct DislikeClick: AppUIAction {
+class DislikeClick: AppUIAction {
     let cloudSong: CloudSong
+    
+    init(cloudSong: CloudSong) {
+        self.cloudSong = cloudSong
+    }
 }
 
-struct DownloadClick: AppUIAction {
+class DownloadClick: AppUIAction {
     let cloudSong: CloudSong
+    
+    init(cloudSong: CloudSong) {
+        self.cloudSong = cloudSong
+    }
 }
 
-struct UpdateDone: AppUIAction {}
+class UpdateDone: AppUIAction {}

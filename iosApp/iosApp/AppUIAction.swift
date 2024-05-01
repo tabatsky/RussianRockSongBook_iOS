@@ -9,16 +9,7 @@
 import Foundation
 import shared
 
-class OpenSettings: AppUIAction {}
 class ReloadSettings: AppUIAction {}
-
-class SongClick: AppUIAction {
-    let songIndex: Int
-    
-    init(songIndex: Int) {
-        self.songIndex = songIndex
-    }
-}
 
 class LocalScroll: AppUIAction {
     let songIndex: Int

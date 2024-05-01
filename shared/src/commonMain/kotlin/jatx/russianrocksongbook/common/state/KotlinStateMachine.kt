@@ -14,6 +14,12 @@ class KotlinStateMachine {
             is SelectArtist -> {
                 selectArtist(appState, changeState, action.artist, action.callback)
             }
+            is OpenSettings -> {
+                openSettings(appState, changeState)
+            }
+            is SongClick -> {
+                selectSong(appState, changeState, action.songIndex)
+            }
         }
     }
 }
@@ -49,5 +55,31 @@ private fun selectArtist(appState: AppState, changeState: (AppState) -> Unit, ar
             .changeDrawerState(false)
     )
     callback()
+    changeState(newState)
+}
+
+private fun openSettings(appState: AppState, changeState: (AppState) -> Unit) {
+    println("opening settings")
+    val newState = appState.changeScreenVariant(ScreenVariant.SETTINGS)
+    changeState(newState)
+}
+
+private fun selectSong(appState: AppState, changeState: (AppState) -> Unit, songIndex: Int) {
+    println("select song with index: $songIndex")
+    var newState = appState
+    val newLocalState = newState.localState.changeSongIndex(songIndex)
+    newState = newState.changeLocalState(newLocalState)
+    refreshCurrentSong(newState) { newState = it }
+    newState = newState.changeScreenVariant(ScreenVariant.SONG_TEXT)
+    changeState(newState)
+}
+
+private fun refreshCurrentSong(appState: AppState, changeState: (AppState) -> Unit) {
+    val newSong = Injector.songRepo.getSongByArtistAndPosition(
+        appState.localState.currentArtist,
+        appState.localState.currentSongIndex
+    )
+    val newLocalState = appState.localState.changeSong(newSong)
+    val newState = appState.changeLocalState(newLocalState)
     changeState(newState)
 }

@@ -8,3 +8,9 @@ data class SelectArtist(
     val artist: String,
     val callback: () -> Unit
 ): KotlinUIAction
+
+object OpenSettings: KotlinUIAction
+
+data class SongClick(
+    val songIndex: Int
+): KotlinUIAction

@@ -38,12 +38,8 @@ struct AppStateMachine {
         
         var newState = appState
         var asyncMode = false
-        if (action is OpenSettings) {
-            self.openSettings(appState: &newState)
-        } else if (action is ReloadSettings) {
+        if (action is ReloadSettings) {
             self.reloadSettings(appState: &newState)
-        } else if (action is SongClick) {
-            self.selectSong(appState: &newState, songIndex: (action as! SongClick).songIndex)
         } else if (action is LocalScroll) {
             self.updateSongIndexByScroll(appState: &newState, songIndex: (action as! LocalScroll).songIndex)
         } else if (action is DrawerClick) {
@@ -110,22 +106,10 @@ struct AppStateMachine {
         }
     }
     
-    private func openSettings(appState: inout AppState) {
-        print("opening settings")
-        appState = appState.changeScreenVariant(screenVariant: .settings)
-    }
-    
     private func reloadSettings(appState: inout AppState) {
         appState = appState
             .changeThemeVariant(themeVariant: Preferences.loadThemeVariant())
             .changeFontScaleVariant(fontScaleVariant: Preferences.loadFontScaleVariant())
-    }
-    
-    private func selectSong(appState: inout AppState, songIndex: Int) {
-        print("select song with index: \(songIndex)")
-        appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: Int32(songIndex)))
-        self.refreshCurrentSong(appState: &appState)
-        appState = appState.changeScreenVariant(screenVariant: ScreenVariant.songText)
     }
     
     private func prevSong(appState: inout AppState) {

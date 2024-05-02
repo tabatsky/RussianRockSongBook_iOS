@@ -13,6 +13,7 @@ struct SettingsView: View {
     let settingsComponent: SettingsComponent?
     let theme: Theme
     let onPerformAction: (AppUIAction) -> ()
+    let forceReload: () -> ()
     
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -155,5 +156,6 @@ struct SettingsView: View {
             themeVariant: self.themeVariant,
             fontScaleVariant: self.fontScaleVariant
         ))
+        self.forceReload()
     }
  }

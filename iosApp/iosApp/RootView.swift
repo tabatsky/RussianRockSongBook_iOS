@@ -86,7 +86,8 @@ struct RootView: View {
                         case let child as RootComponentChild.SettingsChild: SettingsView(
                             settingsComponent: child.component,
                             theme: self.appState.theme,
-                            onPerformAction: self.performAction
+                            onPerformAction: self.performAction,
+                            forceReload: self.forceReload
                         ).navigationBarBackButtonHidden(true)
                         default: EmptyView()
                         }

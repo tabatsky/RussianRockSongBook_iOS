@@ -83,7 +83,8 @@ struct ContentView: View {
                         SettingsView(
                             settingsComponent: nil,
                             theme: self.appState.theme,
-                            onPerformAction: self.performAction
+                            onPerformAction: self.performAction,
+                            forceReload: self.forceReload
                         )
                     }
                 }

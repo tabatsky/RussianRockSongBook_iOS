@@ -13,13 +13,17 @@ struct NavigationBarModifier: ViewModifier {
     var backgroundColor: UIColor?
     var titleColor: UIColor?
     
-    init(backgroundColor: UIColor?, titleColor: UIColor?) {
+    init(backgroundColor: UIColor?, titleColor: UIColor?, fontSize: CGFloat) {
         self.backgroundColor = backgroundColor
         let coloredAppearance = UINavigationBarAppearance()
         coloredAppearance.configureWithTransparentBackground()
         coloredAppearance.backgroundColor = backgroundColor
-        coloredAppearance.titleTextAttributes = [.foregroundColor: titleColor ?? .white]
-        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: titleColor ?? .white]
+        coloredAppearance.titleTextAttributes = [
+            .foregroundColor: titleColor ?? .white,
+            .font: UIFont.systemFont(ofSize: fontSize)]
+        coloredAppearance.largeTitleTextAttributes = [
+            .foregroundColor: titleColor ?? .white,
+            .font: UIFont.systemFont(ofSize: fontSize)]
         
         UINavigationBar.appearance().standardAppearance = coloredAppearance
         UINavigationBar.appearance().compactAppearance = coloredAppearance
@@ -43,8 +47,8 @@ struct NavigationBarModifier: ViewModifier {
 
 extension View {
     
-    func navigationBarColor(backgroundColor: Color, titleColor: Color) -> some View {
-        self.modifier(NavigationBarModifier(backgroundColor: UIColor(backgroundColor), titleColor: UIColor(titleColor)))
+    func navigationBarColorAndFontSize(backgroundColor: Color, titleColor: Color, fontSize: CGFloat) -> some View {
+        self.modifier(NavigationBarModifier(backgroundColor: UIColor(backgroundColor), titleColor: UIColor(titleColor), fontSize: fontSize))
     }
     
 }

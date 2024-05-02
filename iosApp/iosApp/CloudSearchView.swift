@@ -203,7 +203,11 @@ struct CloudSearchView: View {
                 }, trailing: Spacer())
         .navigationTitle(AppStateMachine.ARTIST_CLOUD_SONGS)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColorAndFontSize(
+            backgroundColor: self.theme.colorCommon,
+            titleColor: colorBlack,
+            fontSize: self.theme.fontSizeNavTitle
+        )
     }
     
     

@@ -18,6 +18,7 @@ protocol Theme {
     var colorBg: Color { get }
     var colorCommon: Color { get }
     var fontTitle: Font { get }
+    var fontSizeNavTitle: CGFloat { get }
     var fontText: Font { get }
     var fontCommon: Font { get }
 }
@@ -29,6 +30,9 @@ struct DarkTheme: Theme {
     let colorCommon = colorDarkYellow
     var fontTitle: Font {
         Font.system(size: 32 * fontScale)
+    }
+    var fontSizeNavTitle: CGFloat {
+        20 * fontScale
     }
     var fontText: Font {
         Font.system(size: 20 * fontScale, design: .monospaced)
@@ -45,6 +49,9 @@ struct LightTheme: Theme {
     let colorCommon = colorDarkYellow
     var fontTitle: Font {
         Font.system(size: 32 * fontScale)
+    }
+    var fontSizeNavTitle: CGFloat {
+        20 * fontScale
     }
     var fontText: Font {
         Font.system(size: 20 * fontScale, design: .monospaced)

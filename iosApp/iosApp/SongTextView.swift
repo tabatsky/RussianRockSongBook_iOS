@@ -171,7 +171,11 @@ struct SongTextView: View {
             }
         })
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColorAndFontSize(
+            backgroundColor: self.theme.colorCommon,
+            titleColor: colorBlack,
+            fontSize: self.theme.fontSizeNavTitle
+        )
         .customDialog(isShowing: self.$isPresentingDeleteConfirm, dialogContent: {
             VStack(spacing: 0.0) {
                 VStack {

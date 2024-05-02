@@ -138,7 +138,11 @@ struct CloudSongTextView: View {
             }
         })
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColorAndFontSize(
+            backgroundColor: self.theme.colorCommon,
+            titleColor: colorBlack,
+            fontSize: self.theme.fontSizeNavTitle
+        )
         .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {
             WarningDialog(
                 theme: self.theme, 

@@ -139,7 +139,11 @@ struct SettingsView: View {
                 }, trailing: Spacer())
         .navigationTitle("Настройки")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
+        .navigationBarColorAndFontSize(
+            backgroundColor: self.theme.colorCommon,
+            titleColor: colorBlack,
+            fontSize: self.theme.fontSizeNavTitle
+        )
     }
     
     private func saveSettings() {

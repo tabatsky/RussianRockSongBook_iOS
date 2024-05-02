@@ -121,7 +121,9 @@ struct SongListView: View {
                                 .resizable()
                                 .frame(width: 32.0, height: 32.0)
                         }, trailing: Spacer())
-                .navigationTitle(self.localState.currentArtist)
+                .navigationTitle(
+                    Text(self.localState.currentArtist)
+                )
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(action: {
                     Task.detached { @MainActor in
@@ -132,7 +134,11 @@ struct SongListView: View {
                         .resizable()
                         .frame(width: 32.0, height: 32.0)
                 })
-                .navigationBarColor(backgroundColor: self.theme.colorCommon, titleColor: colorBlack)
+                .navigationBarColorAndFontSize(
+                    backgroundColor: self.theme.colorCommon,
+                    titleColor: colorBlack,
+                    fontSize: self.theme.fontSizeNavTitle
+                )
             }
         }
     }

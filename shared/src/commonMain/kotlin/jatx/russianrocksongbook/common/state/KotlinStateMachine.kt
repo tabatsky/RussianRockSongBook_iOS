@@ -17,8 +17,14 @@ class KotlinStateMachine {
             is OpenSettings -> {
                 openSettings(appState, changeState)
             }
+            is ReloadSettings -> {
+                reloadSettings(appState, changeState, action.themeVariant, action.fontScaleVariant)
+            }
             is SongClick -> {
                 selectSong(appState, changeState, action.songIndex)
+            }
+            is LocalScroll -> {
+                updateSongIndexByScroll(appState, changeState, action.songIndex)
             }
         }
     }
@@ -64,6 +70,14 @@ private fun openSettings(appState: AppState, changeState: (AppState) -> Unit) {
     changeState(newState)
 }
 
+private fun reloadSettings(appState: AppState, changeState: (AppState) -> Unit,
+                           themeVariant: ThemeVariant, fontScaleVariant: FontScaleVariant) {
+    val newState = appState
+        .changeThemeVariant(themeVariant)
+        .changeFontScaleVariant(fontScaleVariant)
+    changeState(newState)
+}
+
 private fun selectSong(appState: AppState, changeState: (AppState) -> Unit, songIndex: Int) {
     println("select song with index: $songIndex")
     var newState = appState
@@ -83,3 +97,10 @@ private fun refreshCurrentSong(appState: AppState, changeState: (AppState) -> Un
     val newState = appState.changeLocalState(newLocalState)
     changeState(newState)
 }
+
+private fun updateSongIndexByScroll(appState: AppState, changeState: (AppState) -> Unit, songIndex: Int) {
+    val newLocalState = appState.localState.changeSongIndex(songIndex)
+    val newState = appState.changeLocalState(newLocalState)
+    changeState(newState)
+}
+

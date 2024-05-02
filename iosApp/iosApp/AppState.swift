@@ -38,11 +38,7 @@ struct AppStateMachine {
         
         var newState = appState
         var asyncMode = false
-        if (action is ReloadSettings) {
-            self.reloadSettings(appState: &newState)
-        } else if (action is LocalScroll) {
-            self.updateSongIndexByScroll(appState: &newState, songIndex: (action as! LocalScroll).songIndex)
-        } else if (action is DrawerClick) {
+        if (action is DrawerClick) {
             self.toggleDrawer(appState: &newState)
         } else if (action is BackClick) {
             self.back(appState: &newState)
@@ -106,12 +102,6 @@ struct AppStateMachine {
         }
     }
     
-    private func reloadSettings(appState: inout AppState) {
-        appState = appState
-            .changeThemeVariant(themeVariant: Preferences.loadThemeVariant())
-            .changeFontScaleVariant(fontScaleVariant: Preferences.loadFontScaleVariant())
-    }
-    
     private func prevSong(appState: inout AppState) {
         if (appState.localState.currentCount == 0) {
             return
@@ -139,10 +129,6 @@ struct AppStateMachine {
         let newSong = Self.songRepo
             .getSongByArtistAndPosition(artist: appState.localState.currentArtist, position: Int32(appState.localState.currentSongIndex))
         appState = appState.changeLocalState(localState: appState.localState.changeSong(song: newSong))
-    }
-    
-    private func updateSongIndexByScroll(appState: inout AppState, songIndex: Int) {
-        appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: Int32(songIndex)))
     }
     
     private func toggleDrawer(appState: inout AppState) {

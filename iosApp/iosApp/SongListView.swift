@@ -108,7 +108,7 @@ struct SongListView: View {
                 .onChange(of: self.scrollPosition, perform: { [scrollPosition] position in
                     //print("\(self.scrollPosition), \(position)")
                     if (scrollPosition >= 0) {
-                        self.onPerformAction(LocalScroll(songIndex: position))
+                        self.onPerformAction(LocalScroll(songIndex: Int32(position)))
                     }
                 })
                 .navigationBarItems(leading:

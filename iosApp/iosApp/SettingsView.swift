@@ -147,6 +147,9 @@ struct SettingsView: View {
         Preferences.saveFontScaleVariant(fontScaleVariant: self.fontScaleVariant)
         Preferences.saveListenToMusicVariant(listenToMusicVariant: self.listenToMusicVariant)
         Preferences.saveScrollSpeed(scrollSpeed: self.scrollSpeed)
-        self.onPerformAction(ReloadSettings())
+        self.onPerformAction(ReloadSettings(
+            themeVariant: self.themeVariant,
+            fontScaleVariant: self.fontScaleVariant
+        ))
     }
  }

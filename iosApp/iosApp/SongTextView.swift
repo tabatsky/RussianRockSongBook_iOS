@@ -30,7 +30,7 @@ struct SongTextView: View {
             let title = song.title
             
             ZStack {
-                if (geometry.size.width < geometry.size.height) {
+                if (UIScreen.main.bounds.width < UIScreen.main.bounds.height) {
                     VStack {
                         Text(title)
                             .font(self.theme.fontTitle)

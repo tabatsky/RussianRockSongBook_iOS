@@ -73,7 +73,7 @@ struct DrawerContent: View {
                                 .frame(width: 32.0, height: 32.0)
                         }
                         Text("Меню")
-                            .bold()
+                            .font(Font.system(size: self.theme.fontSizeNavTitle, weight: Font.Weight.bold))
                             .foregroundColor(colorBlack)
                     }
                         .padding(16)

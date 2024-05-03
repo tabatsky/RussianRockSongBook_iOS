@@ -32,7 +32,7 @@ struct DarkTheme: Theme {
         Font.system(size: 32 * fontScale)
     }
     var fontSizeNavTitle: CGFloat {
-        20 * fontScale
+        24 * fontScale
     }
     var fontText: Font {
         Font.system(size: 20 * fontScale, design: .monospaced)
@@ -51,7 +51,7 @@ struct LightTheme: Theme {
         Font.system(size: 32 * fontScale)
     }
     var fontSizeNavTitle: CGFloat {
-        20 * fontScale
+        24 * fontScale
     }
     var fontText: Font {
         Font.system(size: 20 * fontScale, design: .monospaced)

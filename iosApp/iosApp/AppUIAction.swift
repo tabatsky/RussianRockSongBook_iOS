@@ -9,10 +9,6 @@
 import Foundation
 import shared
 
-class DrawerClick: AppUIAction {}
-class BackClick: AppUIAction {}
-class LocalPrevClick: AppUIAction {}
-class LocalNextClick: AppUIAction {}
 class FavoriteToggle: AppUIAction {
     let emptyListCallback: () -> ()
     

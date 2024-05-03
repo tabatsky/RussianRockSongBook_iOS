@@ -26,6 +26,18 @@ class KotlinStateMachine {
             is LocalScroll -> {
                 updateSongIndexByScroll(appState, changeState, action.songIndex)
             }
+            is DrawerClick -> {
+                toggleDrawer(appState, changeState)
+            }
+            is BackClick -> {
+                back(appState, changeState)
+            }
+            is LocalPrevClick -> {
+                prevSong(appState, changeState)
+            }
+            is LocalNextClick -> {
+                nextSong(appState, changeState)
+            }
         }
     }
 }
@@ -88,6 +100,32 @@ private fun selectSong(appState: AppState, changeState: (AppState) -> Unit, song
     changeState(newState)
 }
 
+private fun prevSong(appState: AppState, changeState: (AppState) -> Unit) {
+    val currentCount = appState.localState.currentCount
+    if (currentCount == 0) return
+    val currentIndex = appState.localState.currentSongIndex
+    val newIndex = if (currentIndex > 0) {
+        currentIndex - 1
+    } else {
+        currentCount - 1
+    }
+    val newLocalState = appState.localState.changeSongIndex(newIndex)
+    var newState = appState.changeLocalState(newLocalState)
+    refreshCurrentSong(newState) { newState = it }
+    changeState(newState)
+}
+
+private fun nextSong(appState: AppState, changeState: (AppState) -> Unit) {
+    val currentCount = appState.localState.currentCount
+    if (currentCount == 0) return
+    val currentIndex = appState.localState.currentSongIndex
+    val newIndex = (currentIndex + 1) % currentCount
+    val newLocalState = appState.localState.changeSongIndex(newIndex)
+    var newState = appState.changeLocalState(newLocalState)
+    refreshCurrentSong(newState) { newState = it }
+    changeState(newState)
+}
+
 private fun refreshCurrentSong(appState: AppState, changeState: (AppState) -> Unit) {
     val newSong = Injector.songRepo.getSongByArtistAndPosition(
         appState.localState.currentArtist,
@@ -101,6 +139,30 @@ private fun refreshCurrentSong(appState: AppState, changeState: (AppState) -> Un
 private fun updateSongIndexByScroll(appState: AppState, changeState: (AppState) -> Unit, songIndex: Int) {
     val newLocalState = appState.localState.changeSongIndex(songIndex)
     val newState = appState.changeLocalState(newLocalState)
+    changeState(newState)
+}
+
+private fun toggleDrawer(appState: AppState, changeState: (AppState) -> Unit) {
+    val newLocalState = appState.localState.toggleDrawer()
+    val newState = appState.changeLocalState(newLocalState)
+    changeState(newState)
+}
+
+private fun back(appState: AppState, changeState: (AppState) -> Unit) {
+    var newState = appState
+    val newScreenVariant = when (newState.currentScreenVariant) {
+        ScreenVariant.SONG_TEXT -> ScreenVariant.SONG_LIST
+        ScreenVariant.CLOUD_SEARCH -> {
+            val newCloudState = newState.cloudState.changeCloudSongList(null)
+            newState = newState.changeCloudState(newCloudState)
+            ScreenVariant.SONG_LIST
+        }
+        ScreenVariant.CLOUD_SONG_TEXT -> ScreenVariant.CLOUD_SEARCH
+        ScreenVariant.SETTINGS -> ScreenVariant.SONG_LIST
+        else -> throw IllegalStateException("Impossible variant")
+    }
+    println("back: ${newState.currentScreenVariant} -> $newScreenVariant")
+    newState = newState.changeScreenVariant(newScreenVariant)
     changeState(newState)
 }
 

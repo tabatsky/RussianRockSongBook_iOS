@@ -38,15 +38,7 @@ struct AppStateMachine {
         
         var newState = appState
         var asyncMode = false
-        if (action is DrawerClick) {
-            self.toggleDrawer(appState: &newState)
-        } else if (action is BackClick) {
-            self.back(appState: &newState)
-        } else if (action is LocalPrevClick) {
-            self.prevSong(appState: &newState)
-        } else if (action is LocalNextClick) {
-            self.nextSong(appState: &newState)
-        } else if (action is FavoriteToggle) {
+        if (action is FavoriteToggle) {
             self.toggleFavorite(appState: &newState, emptyListCallback: (action as! FavoriteToggle).emptyListCallback)
         } else if (action is SaveSongText) {
             self.saveSongText(appState: &newState, newText: (action as! SaveSongText).newText)
@@ -102,39 +94,11 @@ struct AppStateMachine {
         }
     }
     
-    private func prevSong(appState: inout AppState) {
-        if (appState.localState.currentCount == 0) {
-            return
-        }
-        if (appState.localState.currentSongIndex > 0) {
-            let newIndex = appState.localState.currentSongIndex - 1
-            appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
-        } else {
-            let newIndex = appState.localState.currentCount - 1
-            appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
-        }
-        self.refreshCurrentSong(appState: &appState)
-    }
-    
-    private func nextSong(appState: inout AppState) {
-        if (appState.localState.currentCount == 0) {
-            return
-        }
-        let newIndex = (appState.localState.currentSongIndex + 1) % appState.localState.currentCount
-        appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
-        self.refreshCurrentSong(appState: &appState)
-    }
-    
     private func refreshCurrentSong(appState: inout AppState) {
         let newSong = Self.songRepo
             .getSongByArtistAndPosition(artist: appState.localState.currentArtist, position: Int32(appState.localState.currentSongIndex))
         appState = appState.changeLocalState(localState: appState.localState.changeSong(song: newSong))
     }
-    
-    private func toggleDrawer(appState: inout AppState) {
-        appState = appState.changeLocalState(localState: appState.localState.toggleDrawer())
-    }
-    
     
     private func back(appState: inout AppState) {
         var newScreenVariant: ScreenVariant!

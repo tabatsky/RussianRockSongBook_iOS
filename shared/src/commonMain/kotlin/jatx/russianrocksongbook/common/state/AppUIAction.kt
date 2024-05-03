@@ -23,3 +23,11 @@ data class SongClick(
 data class LocalScroll(
     val songIndex: Int
 ): KotlinUIAction
+
+object DrawerClick: KotlinUIAction
+
+object BackClick: KotlinUIAction
+
+object LocalPrevClick: KotlinUIAction
+
+object LocalNextClick: KotlinUIAction

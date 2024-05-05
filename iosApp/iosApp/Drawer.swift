@@ -101,11 +101,12 @@ struct DrawerContent: View {
                                     onArtistClick: onArtistClick
                                 )
                             }
-                            
-                        }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                     }
                     Spacer()
                 }
+                .accessibilityLabel("menuScrollView")
                 .background(self.theme.colorMain)
             }
         }

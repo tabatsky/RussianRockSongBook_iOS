@@ -9,8 +9,30 @@
 import XCTest
 import shared
 
+let ARTIST_1 = "Немного Нервно"
+let ARTIST_2 = "Чайф"
+let ARTIST_3 = "ДДТ"
+
+let TITLE_1_1 = "Santa Maria"
+let TITLE_1_2 = "Яблочный остров"
+let TITLE_1_3 = "Над мертвым городом сон"
+let TITLE_1_4 = "Atlantica"
+let TITLE_2_1 = "17 лет"
+let TITLE_2_2 = "Поплачь о нем"
+let TITLE_3_1 = "Белая ночь"
+
 final class RussianRockSongBookUITests: XCTestCase {
     var app: XCUIApplication!
+    
+    static let songRepo: SongRepository = {
+        let factory = DatabaseDriverFactory()
+        Injector.companion.initiate(databaseDriverFactory: factory)
+        let repo = Injector.Companion.shared.songRepo
+        JsonLoaderKt.fillDbFromJSON(songRepo: repo, onProgressChanged: { done, total in
+            print("\(done) of \(total)")
+        })
+        return repo
+    }()
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -39,6 +61,29 @@ final class RussianRockSongBookUITests: XCTestCase {
             sleep(1)
         }
         XCTAssertTrue(app.staticTexts["Меню"].isHittable)
+        while(!app.buttons["drawerButton2"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.buttons["drawerButton2"].isHittable)
+        app.buttons["drawerButton2"].tap()
+        sleep(1)
+        while(!app.staticTexts["Кино"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.staticTexts["Кино"].isHittable)
+    }
+    
+    func test0102_menuPredefinedArtistsAreDisplayingCorrectly() throws {
+        while(!app.buttons["drawerButton"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.buttons["drawerButton"].isHittable)
+        app.buttons["drawerButton"].tap()
+        sleep(1)
+        while(!app.staticTexts["Меню"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.staticTexts["Меню"].isHittable)
         SongRepositoryImplKt.predefinedList.forEach { label in
             while(!app.staticTexts[label].isHittable) {
                 sleep(1)
@@ -46,7 +91,57 @@ final class RussianRockSongBookUITests: XCTestCase {
             XCTAssertTrue(app.staticTexts[label].isHittable)
         }
     }
+    
+    func test0103_menuIsScrollingCorrectly() throws {
+        while(!app.buttons["drawerButton"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.buttons["drawerButton"].isHittable)
+        app.buttons["drawerButton"].tap()
+        sleep(1)
+        while (!app.scrollViews["menuScrollView"].isHittable) {
+            sleep(1)
+        }
+        while (!app.staticTexts["Т"].isHittable) {
+            app.scrollViews["menuScrollView"].swipeUp()
+        }
+        XCTAssertTrue(app.staticTexts["Т"].isHittable)
+    }
 
+    func test0104_songListForArtistIsOpeningFromMenuCorrectly() throws {
+        let artists = Self.songRepo.getArtists()
+        XCTAssertTrue(artists.contains(ARTIST_1))
+        let songs = Self.songRepo.getSongsByArtist(artist: ARTIST_1)
+        
+        while(!app.buttons["drawerButton"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.buttons["drawerButton"].isHittable)
+        app.buttons["drawerButton"].tap()
+        sleep(1)
+        while (!app.scrollViews["menuScrollView"].isHittable) {
+            sleep(1)
+        }
+        while (!app.staticTexts[ARTIST_1.artistGroup()].isHittable) {
+            app.scrollViews["menuScrollView"].swipeUp()
+        }
+        XCTAssertTrue(app.staticTexts[ARTIST_1.artistGroup()].isHittable)
+        app.staticTexts[ARTIST_1.artistGroup()].tap()
+        sleep(1)
+        while (!app.staticTexts[ARTIST_1].isHittable) {
+            app.scrollViews["menuScrollView"].swipeUp()
+        }
+        XCTAssertTrue(app.staticTexts[ARTIST_1].isHittable)
+        app.staticTexts[ARTIST_1].tap()
+        while (!app.staticTexts[songs[0].title].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.staticTexts[songs[0].title].isHittable)
+        XCTAssertTrue(app.staticTexts[songs[1].title].isHittable)
+        XCTAssertTrue(app.staticTexts[songs[2].title].isHittable)
+        sleep(5)
+    }
+    
 //    func testLaunchPerformance() throws {
 //        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
 //            // This measures how long it takes to launch your application.
@@ -57,3 +152,8 @@ final class RussianRockSongBookUITests: XCTestCase {
 //    }
 }
 
+extension String {
+    func artistGroup() -> String {
+        return self.prefix(1).uppercased()
+    }
+}

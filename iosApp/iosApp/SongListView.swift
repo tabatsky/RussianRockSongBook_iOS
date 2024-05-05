@@ -72,7 +72,8 @@ struct SongListView: View {
                                         .fill(self.theme.colorCommon)
                                         .frame(height: 3)
                                         .edgesIgnoringSafeArea(.horizontal)
-                                }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: geometry.size.height)
                             }
                         } else {
                             Text("Список пуст")
@@ -80,6 +81,7 @@ struct SongListView: View {
                                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
                         }
                     }
+                    .accessibilityLabel("songListScrollView")
                     .onAppear(perform: {
                         self.scrollPosition = Int(localState.currentSongIndex)
                         if (!localState.currentSongList.isEmpty) {

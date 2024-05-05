@@ -31,3 +31,7 @@ object BackClick: KotlinUIAction
 object LocalPrevClick: KotlinUIAction
 
 object LocalNextClick: KotlinUIAction
+
+data class FavoriteToggle(
+    val emptyListCallback: () -> Unit
+): KotlinUIAction

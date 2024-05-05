@@ -9,14 +9,6 @@
 import Foundation
 import shared
 
-class FavoriteToggle: AppUIAction {
-    let emptyListCallback: () -> ()
-    
-    init(emptyListCallback: @escaping () -> Void) {
-        self.emptyListCallback = emptyListCallback
-    }
-}
-
 class SaveSongText: AppUIAction {
     let newText: String
     

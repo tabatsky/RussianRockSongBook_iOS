@@ -28,7 +28,9 @@ struct AppStateMachine {
     
     let showToast: (String) -> ()
     
-    let kotlinStateMachine = KotlinStateMachine()
+    private var kotlinStateMachine: KotlinStateMachine {
+        KotlinStateMachine(showToast: showToast)
+    }
     
     func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
         if (kotlinStateMachine.canPerformAction(action: action)) {
@@ -38,9 +40,7 @@ struct AppStateMachine {
         
         var newState = appState
         var asyncMode = false
-        if (action is FavoriteToggle) {
-            self.toggleFavorite(appState: &newState, emptyListCallback: (action as! FavoriteToggle).emptyListCallback)
-        } else if (action is SaveSongText) {
+        if (action is SaveSongText) {
             self.saveSongText(appState: &newState, newText: (action as! SaveSongText).newText)
         } else if (action is ConfirmDeleteToTrash) {
             self.deleteCurrentToTrash(appState: &newState, emptyListCallback: (action as! ConfirmDeleteToTrash).emptyListCallback)
@@ -113,35 +113,6 @@ struct AppStateMachine {
             newScreenVariant = .songList
         }
         appState = appState.changeScreenVariant(screenVariant: newScreenVariant)
-    }
-    
-    private func toggleFavorite(appState: inout AppState, emptyListCallback: () -> ()) {
-        let song = appState.localState.currentSong!.copy() as! Song
-        let becomeFavorite = !song.favorite
-        song.favorite = becomeFavorite
-        Self.songRepo.updateSong(song: song)
-        if (!becomeFavorite && appState.localState.currentArtist == Self.ARTIST_FAVORITE) {
-            let count = Self.songRepo.getCountByArtist(artist: Self.ARTIST_FAVORITE)
-            appState = appState.changeLocalState(localState: appState.localState.changeCount(count: count))
-            if (appState.localState.currentCount > 0) {
-                if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
-                    let newIndex = appState.localState.currentCount - 1
-                    appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
-                }
-                self.refreshCurrentSong(appState: &appState)
-            } else {
-                self.back(appState: &appState)
-                emptyListCallback()
-            }
-            appState = appState.changeLocalState(localState: appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: Self.ARTIST_FAVORITE)))
-        } else {
-            self.refreshCurrentSong(appState: &appState)
-        }
-        if (becomeFavorite) {
-            self.showToast("Добавлено в избранное")
-        } else {
-            self.showToast("Удалено из избранного")
-        }
     }
     
     private func saveSongText(appState: inout AppState, newText: String) {

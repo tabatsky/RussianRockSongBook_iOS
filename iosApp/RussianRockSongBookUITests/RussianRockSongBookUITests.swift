@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import shared
 
 final class RussianRockSongBookUITests: XCTestCase {
     var app: XCUIApplication!
@@ -27,15 +28,23 @@ final class RussianRockSongBookUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        while(!app.staticTexts["Кино"].exists) {
+    func test0101_menuIsOpeningAndClosingWithDrawerButtonCorrectly() throws {
+        while(!app.buttons["drawerButton"].isHittable) {
             sleep(1)
         }
-        XCTAssertTrue(app.staticTexts["Кино"].exists)
-        while(!app.staticTexts["Алюминиевые огурцы"].exists) {
+        XCTAssertTrue(app.buttons["drawerButton"].isHittable)
+        app.buttons["drawerButton"].tap()
+        sleep(1)
+        while(!app.staticTexts["Меню"].isHittable) {
             sleep(1)
         }
-        XCTAssertTrue(app.staticTexts["Алюминиевые огурцы"].exists)
+        XCTAssertTrue(app.staticTexts["Меню"].isHittable)
+        SongRepositoryImplKt.predefinedList.forEach { label in
+            while(!app.staticTexts[label].isHittable) {
+                sleep(1)
+            }
+            XCTAssertTrue(app.staticTexts[label].isHittable)
+        }
     }
 
 //    func testLaunchPerformance() throws {
@@ -47,3 +56,4 @@ final class RussianRockSongBookUITests: XCTestCase {
 //        }
 //    }
 }
+

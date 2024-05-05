@@ -120,6 +120,7 @@ struct SongListView: View {
                             Image("ic_drawer")
                                 .resizable()
                                 .frame(width: 32.0, height: 32.0)
+                                .accessibilityLabel("drawerButton")
                         }, trailing: Spacer())
                 .navigationTitle(
                     Text(self.localState.currentArtist)

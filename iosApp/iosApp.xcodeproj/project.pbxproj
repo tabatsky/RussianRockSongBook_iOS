@@ -28,6 +28,7 @@
 		CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */; };
 		CE3CC61C2AF87D3B00B5A0D7 /* CustomDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */; };
 		CE3CC61E2AF87E6000B5A0D7 /* WarningDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */; };
+		CE44305A2BE6DC9A008CEDD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		CE46D4D22ADC920700582136 /* TheTextViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46D4D12ADC920600582136 /* TheTextViewer.swift */; };
 		CE50C4EF2AFAE3A300A11916 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50C4EE2AFAE3A300A11916 /* SettingsView.swift */; };
 		CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */; };
@@ -39,6 +40,8 @@
 		CE5C0D9A2BD9A48100A8E1BE /* MutableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D992BD9A48100A8E1BE /* MutableValue.swift */; };
 		CE5C0D9C2BD9A4B700A8E1BE /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */; };
 		CE5C0D9E2BD9A4F600A8E1BE /* SimpleChildStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */; };
+		CE5E8B0E2BE7173500205BBC /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; };
+		CE5E8B0F2BE7173500205BBC /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE6EC64A2B72CE28005101E8 /* AppUIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6EC6492B72CE28005101E8 /* AppUIAction.swift */; };
 		CE82A5442B6DBAE200DE4D2B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82A5432B6DBAE200DE4D2B /* AppState.swift */; };
 		CE9F04D32BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */; };
@@ -58,6 +61,20 @@
 			remoteInfo = iosApp;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CE5E8B102BE7173500205BBC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CE5E8B0F2BE7173500205BBC /* shared.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -96,11 +113,16 @@
 		CE5C0D992BD9A48100A8E1BE /* MutableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableValue.swift; sourceTree = "<group>"; };
 		CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
 		CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleChildStack.swift; sourceTree = "<group>"; };
+		CE5E8B0C2BE7171800205BBC /* shared */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = shared; path = "../shared/build/XCFrameworks/debug/shared.xcframework/ios-arm64/shared.framework/shared"; sourceTree = "<group>"; };
+		CE5E8B0D2BE7173500205BBC /* shared.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = shared.xcframework; path = ../shared/build/XCFrameworks/debug/shared.xcframework; sourceTree = "<group>"; };
+		CE5E8B332BE719EC00205BBC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
+		CE5E8B352BE71A2C00205BBC /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/lib/libsqlite3.0.tbd; sourceTree = DEVELOPER_DIR; };
 		CE6EC6492B72CE28005101E8 /* AppUIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIAction.swift; sourceTree = "<group>"; };
 		CE82A5432B6DBAE200DE4D2B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		CE9F04D02BE5ECBD007DFA5F /* RussianRockSongBookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RussianRockSongBookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RussianRockSongBookUITests.swift; sourceTree = "<group>"; };
 		CE9F04D42BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RussianRockSongBookUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CEA4D0332BE7216D00713C2F /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSongTextView.swift; sourceTree = "<group>"; };
@@ -122,6 +144,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE5E8B0E2BE7173500205BBC /* shared.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +162,11 @@
 		2D95E7B038BB6F6DABC9275A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEA4D0332BE7216D00713C2F /* SwiftUI_SimpleToast.framework */,
+				CE5E8B352BE71A2C00205BBC /* libsqlite3.0.tbd */,
+				CE5E8B332BE719EC00205BBC /* libsqlite3.tbd */,
+				CE5E8B0D2BE7173500205BBC /* shared.xcframework */,
+				CE5E8B0C2BE7171800205BBC /* shared */,
 				CE2BAC292AF59774003D3E05 /* SwiftUI_SimpleToast.framework */,
 				CE2BAC262AF595E7003D3E05 /* SwiftUI_SimpleToast.framework */,
 				F1617CA67D67BEB4D571D4C9 /* Pods_iosApp.framework */,
@@ -274,6 +302,7 @@
 				CE9F04CC2BE5ECBD007DFA5F /* Sources */,
 				CE9F04CD2BE5ECBD007DFA5F /* Frameworks */,
 				CE9F04CE2BE5ECBD007DFA5F /* Resources */,
+				CE5E8B102BE7173500205BBC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -340,6 +369,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE44305A2BE6DC9A008CEDD9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,11 +688,17 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = XJV93C8ZJ5;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"-framework",
+					shared,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = homewrk.RussianRockSongBookUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -682,11 +718,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XJV93C8ZJ5;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"-framework",
+					shared,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = homewrk.RussianRockSongBookUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;

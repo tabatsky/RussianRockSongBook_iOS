@@ -71,6 +71,7 @@ struct DrawerContent: View {
                             Image("ic_drawer")
                                 .resizable()
                                 .frame(width: 32.0, height: 32.0)
+                                .accessibilityLabel("drawerButton2")
                         }
                         Text("Меню")
                             .font(Font.system(size: self.theme.fontSizeNavTitle, weight: Font.Weight.bold))

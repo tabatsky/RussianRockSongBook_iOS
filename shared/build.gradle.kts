@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -17,15 +19,16 @@ kotlin {
             }
         }
     }
-    
+
+    val xcframeworkName = "shared"
+    val xcf = XCFramework(xcframeworkName)
+
     listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
-
             export("com.arkivanov.decompose:decompose:2.2.2")
             export("com.arkivanov.essenty:lifecycle:1.3.0")
 
@@ -34,6 +37,13 @@ kotlin {
             export("com.arkivanov.essenty:back-handler:1.3.0")
 
             export("com.arkivanov.parcelize.darwin:runtime:0.2.4")
+
+            baseName = xcframeworkName
+
+            // Specify CFBundleIdentifier to uniquely identify the framework
+            binaryOption("bundleId", "org.example.${xcframeworkName}")
+            xcf.add(this)
+            isStatic = false
         }
     }
 
@@ -79,6 +89,8 @@ kotlin {
             }
         }
         val iosMain by getting {
+            dependsOn(commonMain)
+
             dependencies {
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
                 implementation(platform("io.ktor:ktor-bom:2.3.4"))

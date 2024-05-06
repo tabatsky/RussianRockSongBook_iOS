@@ -9,21 +9,6 @@
 import Foundation
 import shared
 
-class SaveSongText: AppUIAction {
-    let newText: String
-    
-    init(newText: String) {
-        self.newText = newText
-    }
-}
-
-class ConfirmDeleteToTrash: AppUIAction {
-    let emptyListCallback: () -> ()
-    
-    init(emptyListCallback: @escaping () -> Void) {
-        self.emptyListCallback = emptyListCallback
-    }
-}
 class UploadCurrentToCloud: AppUIAction {}
 
 class ShowToast: AppUIAction {

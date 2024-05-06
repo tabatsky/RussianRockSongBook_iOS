@@ -43,6 +43,12 @@ class KotlinStateMachine(
             is FavoriteToggle -> {
                 toggleFavorite(appState, changeState, action.emptyListCallback)
             }
+            is ConfirmDeleteToTrash -> {
+                deleteCurrentToTrash(appState, changeState, action.emptyListCallback)
+            }
+            is SaveSongText -> {
+                saveSongText(appState, changeState, action.newText)
+            }
         }
     }
 
@@ -172,7 +178,7 @@ class KotlinStateMachine(
 
     private fun toggleFavorite(appState: AppState, changeState: (AppState) -> Unit, emptyListCallback: () -> Unit) {
         var newState = appState
-        var song = newState.localState.currentSong!!.copy()
+        val song = newState.localState.currentSong!!.copy()
         val becomeFavorite = !song.favorite
         song.favorite = becomeFavorite
         Injector.songRepo.updateSong(song)
@@ -181,7 +187,7 @@ class KotlinStateMachine(
             var newLocalState = newState.localState.changeCount(count)
             newState = newState.changeLocalState(newLocalState)
             if (count > 0) {
-                if (appState.localState.currentSongIndex >= count) {
+                if (newState.localState.currentSongIndex >= count) {
                     val newIndex = count - 1
                     newLocalState = newLocalState.changeSongIndex(newIndex)
                     newState = newState.changeLocalState(newLocalState)
@@ -203,5 +209,41 @@ class KotlinStateMachine(
         } else {
             showToast("Удалено из избранного")
         }
+    }
+
+    private fun deleteCurrentToTrash(appState: AppState, changeState: (AppState) -> Unit, emptyListCallback: () -> Unit) {
+        var newState = appState
+        val song = newState.localState.currentSong!!.copy()
+        println("deleting to trash: ${song.artist} - ${song.title}")
+        song.deleted = true
+        Injector.songRepo.updateSong(song)
+        val count = Injector.songRepo.getCountByArtist(newState.localState.currentArtist)
+        var newLocalState = newState.localState.changeCount(count)
+        newState = newState
+            .changeLocalState(newLocalState)
+            .changeArtists(Injector.songRepo.getArtists())
+        if (count > 0) {
+            if (newState.localState.currentSongIndex >= count) {
+                val newIndex = count - 1
+                newLocalState = newLocalState.changeSongIndex(newIndex)
+                newState = newState.changeLocalState(newLocalState)
+            }
+            refreshCurrentSong(newState) { newState = it }
+        } else {
+            back(appState, changeState)
+            emptyListCallback()
+        }
+        val newSongList = Injector.songRepo.getSongsByArtist(newState.localState.currentArtist)
+        newLocalState = newState.localState.changeSongList(newSongList)
+        newState = newState.changeLocalState(newLocalState)
+        changeState(newState)
+        showToast("Удалено")
+    }
+
+    private fun saveSongText(appState: AppState, changeState: (AppState) -> Unit, newText: String) {
+        val song = appState.localState.currentSong!!.copy()
+        song.text = newText
+        Injector.songRepo.updateSong(song)
+        refreshCurrentSong(appState, changeState)
     }
 }

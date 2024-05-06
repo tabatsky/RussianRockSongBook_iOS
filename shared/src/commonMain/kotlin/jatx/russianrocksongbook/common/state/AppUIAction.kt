@@ -35,3 +35,11 @@ object LocalNextClick: KotlinUIAction
 data class FavoriteToggle(
     val emptyListCallback: () -> Unit
 ): KotlinUIAction
+
+data class ConfirmDeleteToTrash(
+    val emptyListCallback: () -> Unit
+): KotlinUIAction
+
+data class SaveSongText(
+    val newText: String
+): KotlinUIAction

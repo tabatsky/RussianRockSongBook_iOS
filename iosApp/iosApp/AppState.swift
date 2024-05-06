@@ -28,8 +28,11 @@ struct AppStateMachine {
     
     let showToast: (String) -> ()
     
-    private var kotlinStateMachine: KotlinStateMachine {
-        KotlinStateMachine(showToast: showToast)
+    let kotlinStateMachine: KotlinStateMachine
+    
+    init(showToast: @escaping (String) -> Void) {
+        self.showToast = showToast
+        self.kotlinStateMachine = KotlinStateMachine(showToast: showToast)
     }
     
     func performAction(changeState: @escaping (AppState) -> (), appState: AppState, action: AppUIAction) {
@@ -40,11 +43,7 @@ struct AppStateMachine {
         
         var newState = appState
         var asyncMode = false
-        if (action is SaveSongText) {
-            self.saveSongText(appState: &newState, newText: (action as! SaveSongText).newText)
-        } else if (action is ConfirmDeleteToTrash) {
-            self.deleteCurrentToTrash(appState: &newState, emptyListCallback: (action as! ConfirmDeleteToTrash).emptyListCallback)
-        } else if (action is UploadCurrentToCloud) {
+        if (action is UploadCurrentToCloud) {
             self.uploadCurrentToCloud(appState: newState)
         } else if (action is ShowToast) {
             self.showToast((action as! ShowToast).text)
@@ -92,57 +91,6 @@ struct AppStateMachine {
         if (!asyncMode) {
             changeState(newState)
         }
-    }
-    
-    private func refreshCurrentSong(appState: inout AppState) {
-        let newSong = Self.songRepo
-            .getSongByArtistAndPosition(artist: appState.localState.currentArtist, position: Int32(appState.localState.currentSongIndex))
-        appState = appState.changeLocalState(localState: appState.localState.changeSong(song: newSong))
-    }
-    
-    private func back(appState: inout AppState) {
-        var newScreenVariant: ScreenVariant!
-        if (appState.currentScreenVariant == .songText) {
-            newScreenVariant = .songList
-        } else if (appState.currentScreenVariant == .cloudSearch) {
-            appState = appState.changeCloudState(cloudState: appState.cloudState.changeCloudSongList(cloudSongList: nil))
-            newScreenVariant = .songList
-        } else if (appState.currentScreenVariant == .cloudSongText) {
-            newScreenVariant = .cloudSearch
-        } else if (appState.currentScreenVariant == .settings) {
-            newScreenVariant = .songList
-        }
-        appState = appState.changeScreenVariant(screenVariant: newScreenVariant)
-    }
-    
-    private func saveSongText(appState: inout AppState, newText: String) {
-        let song = appState.localState.currentSong!.copy() as! Song
-        song.text = newText
-        Self.songRepo.updateSong(song: song)
-        self.refreshCurrentSong(appState: &appState)
-    }
-    
-    private func deleteCurrentToTrash(appState: inout AppState, emptyListCallback: () -> ()) {
-        print("deleting to trash: \(appState.localState.currentSong!.artist) - \(appState.localState.currentSong!.title)")
-        let song = appState.localState.currentSong!.copy() as! Song
-        song.deleted = true
-        Self.songRepo.updateSong(song: song)
-        let count = Self.songRepo.getCountByArtist(artist: appState.localState.currentArtist)
-        appState = appState
-            .changeLocalState(localState: appState.localState.changeCount(count: count))
-            .changeArtists(artists: Self.songRepo.getArtists())
-        if (appState.localState.currentCount > 0) {
-            if (appState.localState.currentSongIndex >= appState.localState.currentCount) {
-                let newIndex = appState.localState.currentSongIndex - 1
-                appState = appState.changeLocalState(localState: appState.localState.changeSongIndex(index: newIndex))
-            }
-            refreshCurrentSong(appState: &appState)
-        } else {
-            back(appState: &appState)
-            emptyListCallback()
-        }
-        appState = appState.changeLocalState(localState: appState.localState.changeSongList(songList: Self.songRepo.getSongsByArtist(artist: appState.localState.currentArtist)))
-        showToast("Удалено")
     }
 
     private func uploadCurrentToCloud(appState: AppState) {

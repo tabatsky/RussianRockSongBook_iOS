@@ -40,12 +40,12 @@
 		CE5C0D9A2BD9A48100A8E1BE /* MutableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D992BD9A48100A8E1BE /* MutableValue.swift */; };
 		CE5C0D9C2BD9A4B700A8E1BE /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */; };
 		CE5C0D9E2BD9A4F600A8E1BE /* SimpleChildStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */; };
-		CE5E8B0E2BE7173500205BBC /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; };
 		CE5E8B0F2BE7173500205BBC /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE6EC64A2B72CE28005101E8 /* AppUIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6EC6492B72CE28005101E8 /* AppUIAction.swift */; };
 		CE82A5442B6DBAE200DE4D2B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82A5432B6DBAE200DE4D2B /* AppState.swift */; };
 		CE9F04D32BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */; };
 		CE9F04D52BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D42BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift */; };
+		CEAB18702BEC005000903082 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
 		CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */; };
 		CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */; };
@@ -123,6 +123,7 @@
 		CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RussianRockSongBookUITests.swift; sourceTree = "<group>"; };
 		CE9F04D42BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RussianRockSongBookUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CEA4D0332BE7216D00713C2F /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEAB186E2BEC003C00903082 /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../shared/build/XCFrameworks/debug; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSongTextView.swift; sourceTree = "<group>"; };
@@ -144,7 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE5E8B0E2BE7173500205BBC /* shared.xcframework in Frameworks */,
+				CEAB18702BEC005000903082 /* shared.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +163,7 @@
 		2D95E7B038BB6F6DABC9275A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEAB186E2BEC003C00903082 /* debug */,
 				CEA4D0332BE7216D00713C2F /* SwiftUI_SimpleToast.framework */,
 				CE5E8B352BE71A2C00205BBC /* libsqlite3.0.tbd */,
 				CE5E8B332BE719EC00205BBC /* libsqlite3.tbd */,

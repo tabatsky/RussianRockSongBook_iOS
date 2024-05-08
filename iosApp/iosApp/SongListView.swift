@@ -81,7 +81,6 @@ struct SongListView: View {
                                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
                         }
                     }
-                    .accessibilityLabel("songListScrollView")
                     .onAppear(perform: {
                         self.scrollPosition = Int(localState.currentSongIndex)
                         if (!localState.currentSongList.isEmpty) {
@@ -96,6 +95,7 @@ struct SongListView: View {
                     })
                     Spacer()
                 }
+                .accessibilityLabel("songListScrollView")
                 .background(GeometryReader { scrollViewGeom in
                     self.theme.colorBg
                         .preference(

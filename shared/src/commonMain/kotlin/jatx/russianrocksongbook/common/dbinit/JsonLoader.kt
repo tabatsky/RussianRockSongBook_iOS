@@ -6,6 +6,15 @@ import jatx.russianrocksongbook.common.res.Resource
 import jatx.russianrocksongbook.MR
 import kotlinx.serialization.json.Json
 
+fun testFillDbFromJSON(artists: List<String>, songRepo: SongRepository, onProgressChanged: (Int, Int) -> Unit) {
+    val jsonLoader = JsonLoader(artists)
+    while (jsonLoader.hasNext()) {
+        onProgressChanged(jsonLoader.current + 1, jsonLoader.total)
+        val songs = jsonLoader.loadNext()
+        songRepo.insertIgnoreSongs(songs)
+    }
+}
+
 fun fillDbFromJSON(songRepo: SongRepository, onProgressChanged: (Int, Int) -> Unit) {
     val jsonLoader = JsonLoader()
     while (jsonLoader.hasNext()) {
@@ -15,7 +24,9 @@ fun fillDbFromJSON(songRepo: SongRepository, onProgressChanged: (Int, Int) -> Un
     }
 }
 
-class JsonLoader {
+class JsonLoader(
+    val artists: List<String> = artistMap.keys.toList()
+) {
     var current = 0
     val total: Int
         get() = artists.size
@@ -140,5 +151,3 @@ val artistMap = mapOf(
     "Янка Дягилева" to MR.files.yanka,
     "Ясвена" to MR.files.yasvena
 )
-
-val artists = artistMap.keys.toTypedArray()

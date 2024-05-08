@@ -41,9 +41,9 @@ kotlin {
             baseName = xcframeworkName
 
             // Specify CFBundleIdentifier to uniquely identify the framework
-            //binaryOption("bundleId", "org.example.${xcframeworkName}")
-            //xcf.add(this)
-            //isStatic = false
+            binaryOption("bundleId", "org.example.${xcframeworkName}")
+            xcf.add(this)
+            isStatic = false
         }
     }
 

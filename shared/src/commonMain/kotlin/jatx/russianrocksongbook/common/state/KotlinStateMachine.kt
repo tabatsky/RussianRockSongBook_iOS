@@ -2,9 +2,12 @@ package jatx.russianrocksongbook.common.state
 
 import jatx.russianrocksongbook.common.data.repository.impl.predefinedList
 import jatx.russianrocksongbook.common.di.Injector
+import jatx.russianrocksongbook.common.domain.models.Warning
 import jatx.russianrocksongbook.common.domain.repository.ARTIST_CLOUD_SONGS
 import jatx.russianrocksongbook.common.domain.repository.ARTIST_FAVORITE
+import jatx.russianrocksongbook.common.networking.CloudRepository
 import jatx.russianrocksongbook.common.networking.OrderBy
+import jatx.russianrocksongbook.common.networking.asCloudSong
 
 class KotlinStateMachine(
     val showToast: (String) -> Unit
@@ -48,6 +51,12 @@ class KotlinStateMachine(
             }
             is SaveSongText -> {
                 saveSongText(appState, changeState, action.newText)
+            }
+            is UploadCurrentToCloud -> {
+                uploadCurrentToCloud(appState)
+            }
+            is SendWarning -> {
+                sendWarning(action.warning)
             }
         }
     }
@@ -245,5 +254,41 @@ class KotlinStateMachine(
         song.text = newText
         Injector.songRepo.updateSong(song)
         refreshCurrentSong(appState, changeState)
+    }
+
+    private fun uploadCurrentToCloud(appState: AppState) {
+        println("upload to cloud")
+        val song = appState.localState.currentSong!!
+        val textWasChanged = song.textWasChanged
+        if (!textWasChanged) {
+            showToast("Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака")
+        } else {
+            CloudRepository.addCloudSongAsync(
+                cloudSong = song.asCloudSong(),
+                onSuccess = {
+                    showToast("Успешно добавлено в облако")
+                },
+                onServerMessage = {
+                    showToast(it)
+                }, onError = {
+                    it.printStackTrace()
+                    showToast("Ошибка в приложении")
+                }
+            )
+        }
+    }
+
+    private fun sendWarning(warning: Warning) {
+        CloudRepository.addWarningAsync(
+            warning = warning,
+            onSuccess = {
+                showToast("Уведомление отправлено")
+            }, onServerMessage = {
+                showToast(it)
+            }, onError = {
+                it.printStackTrace()
+                showToast("Ошибка в приложении")
+            }
+        )
     }
 }

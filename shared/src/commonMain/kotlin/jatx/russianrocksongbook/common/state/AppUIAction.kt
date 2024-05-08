@@ -1,5 +1,7 @@
 package jatx.russianrocksongbook.common.state
 
+import jatx.russianrocksongbook.common.domain.models.Warning
+
 interface AppUIAction
 
 interface KotlinUIAction: AppUIAction
@@ -42,4 +44,10 @@ data class ConfirmDeleteToTrash(
 
 data class SaveSongText(
     val newText: String
+): KotlinUIAction
+
+object UploadCurrentToCloud: KotlinUIAction
+
+data class SendWarning(
+    val warning: Warning
 ): KotlinUIAction

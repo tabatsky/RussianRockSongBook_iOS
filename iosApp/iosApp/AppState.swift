@@ -43,9 +43,7 @@ struct AppStateMachine {
         
         var newState = appState
         var asyncMode = false
-        if (action is UploadCurrentToCloud) {
-            self.uploadCurrentToCloud(appState: newState)
-        } else if (action is ShowToast) {
+        if (action is ShowToast) {
             self.showToast((action as! ShowToast).text)
         } else if (action is OpenSongAtVkMusic) {
             self.openSongAtVkMusic((action as! OpenSongAtVkMusic).music)
@@ -53,8 +51,6 @@ struct AppStateMachine {
             self.openSongAtYandexMusic((action as! OpenSongAtYandexMusic).music)
         } else if (action is OpenSongAtYoutubeMusic) {
             self.openSongAtYoutubeMusic((action as! OpenSongAtYoutubeMusic).music)
-        } else if (action is SendWarning) {
-            self.sendWarning((action as! SendWarning).warning)
         } else if (action is CloudSearch) {
             asyncMode = true
             let cloudSearchAction = action as! CloudSearch
@@ -93,27 +89,6 @@ struct AppStateMachine {
         }
     }
 
-    private func uploadCurrentToCloud(appState: AppState) {
-        print("upload to cloud")
-        let song = appState.localState.currentSong!
-        let textWasChanged = song.textWasChanged
-        if (!textWasChanged) {
-            showToast("Нельзя залить в облако: данный вариант аккордов поставляется вместе с приложением либо был сохранен из облака")
-        } else {
-            CloudRepository.shared.addCloudSongAsync(
-                cloudSong: song.asCloudSong(),
-                onSuccess: {
-                    showToast("Успешно добавлено в облако")
-                },
-                onServerMessage: {
-                    showToast($0)
-                }, onError: {
-                    $0.printStackTrace()
-                    showToast("Ошибка в приложении")
-                })
-        }
-    }
-
     private func openSongAtYandexMusic(_ music: Music) {
         if let url = URL(string: music.yandexMusicUrl) {
             UIApplication.shared.open(url)
@@ -130,19 +105,6 @@ struct AppStateMachine {
         if let url = URL(string: music.vkMusicUrl) {
             UIApplication.shared.open(url)
         }
-    }
-    
-    private func sendWarning(_ warning: Warning) {
-        CloudRepository.shared.addWarningAsync(
-            warning: warning,
-            onSuccess: {
-                self.showToast("Уведомление отправлено")
-            }, onServerMessage: {
-                self.showToast($0)
-            }, onError: {
-                $0.printStackTrace()
-                self.showToast("Ошибка в приложении")
-            })
     }
     
     private func searchSongs(changeState: @escaping (AppState) -> Void, appState: AppState, searchFor: String, orderBy: OrderBy) {

@@ -9,8 +9,6 @@
 import Foundation
 import shared
 
-class UploadCurrentToCloud: AppUIAction {}
-
 class ShowToast: AppUIAction {
     let text: String
     
@@ -40,14 +38,6 @@ class OpenSongAtYoutubeMusic: AppUIAction {
     
     init(music: Music) {
         self.music = music
-    }
-}
-
-class SendWarning: AppUIAction {
-    let warning: Warning
-    
-    init(warning: Warning) {
-        self.warning = warning
     }
 }
 

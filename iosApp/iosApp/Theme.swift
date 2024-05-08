@@ -13,6 +13,8 @@ let colorLightYellow = Color(hex: 0xFFFFBB)
 let colorBlack = Color(hex: 0x000000)
 let colorDarkYellow = Color(hex: 0x777755)
 
+let scalePowNavTitle = 0.6
+
 protocol Theme {
     var colorMain: Color { get }
     var colorBg: Color { get }
@@ -21,6 +23,7 @@ protocol Theme {
     var fontSizeNavTitle: CGFloat { get }
     var fontText: Font { get }
     var fontCommon: Font { get }
+    var sizeScale: CGFloat { get }
 }
 
 struct DarkTheme: Theme {
@@ -32,13 +35,16 @@ struct DarkTheme: Theme {
         Font.system(size: 32 * fontScale)
     }
     var fontSizeNavTitle: CGFloat {
-        24 * fontScale
+        24 * pow(fontScale, scalePowNavTitle)
     }
     var fontText: Font {
         Font.system(size: 20 * fontScale, design: .monospaced)
     }
     var fontCommon: Font {
         Font.system(size: 20 * fontScale)
+    }
+    var sizeScale: CGFloat {
+        fontScale
     }
 }
 
@@ -51,13 +57,16 @@ struct LightTheme: Theme {
         Font.system(size: 32 * fontScale)
     }
     var fontSizeNavTitle: CGFloat {
-        24 * fontScale
+        24 * pow(fontScale, scalePowNavTitle)
     }
     var fontText: Font {
         Font.system(size: 20 * fontScale, design: .monospaced)
     }
     var fontCommon: Font {
         Font.system(size: 20 * fontScale)
+    }
+    var sizeScale: CGFloat {
+        fontScale
     }
 }
 

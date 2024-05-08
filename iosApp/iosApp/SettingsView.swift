@@ -43,10 +43,11 @@ struct SettingsView: View {
                         }
                     } label: {
                         Text(self.themeVariant.themeName())
+                            .font(self.theme.fontCommon)
                     }
                         .foregroundColor(colorBlack)
                         .frame(width: (geometry.size.width - 20) / 2)
-                        .frame(height: 36.0)
+                        .frame(height: 36.0 * self.theme.sizeScale)
                         .background(self.theme.colorCommon)
                 }
                 HStack(spacing: 0) {
@@ -72,10 +73,11 @@ struct SettingsView: View {
                         }
                     } label: {
                         Text(self.fontScaleVariant.fontScaleName())
+                            .font(self.theme.fontCommon)
                     }
                     .foregroundColor(colorBlack)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 36.0)
+                    .frame(height: 36.0 * self.theme.sizeScale)
                     .background(self.theme.colorCommon)
                 }
                 HStack(spacing: 0) {
@@ -95,10 +97,11 @@ struct SettingsView: View {
                         }
                     } label: {
                         Text(self.listenToMusicVariant.listenToMusicName())
+                            .font(self.theme.fontCommon)
                     }
                     .foregroundColor(colorBlack)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 36.0)
+                    .frame(height: 36.0 * self.theme.sizeScale)
                     .background(self.theme.colorCommon)
                 }
                 HStack(spacing: 0) {
@@ -110,7 +113,7 @@ struct SettingsView: View {
                         .foregroundColor(self.theme.colorBg)
                         .font(self.theme.fontCommon)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 36.0)
+                        .frame(height: 36.0 * self.theme.sizeScale)
                         .background(self.theme.colorMain)
                 }
                 Spacer()
@@ -118,9 +121,10 @@ struct SettingsView: View {
                     self.saveSettings()
                 }, label: {
                     Text("Применить")
+                        .font(self.theme.fontCommon)
                         .foregroundColor(colorBlack)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 45.0)
+                        .frame(height: 45.0 * self.theme.sizeScale)
                 })
                 .background(self.theme.colorCommon)
             }

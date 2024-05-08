@@ -152,6 +152,7 @@ struct ArtistGroupItem: View {
     
     var body: some View {
         Text(self.artistGroup)
+            .font(self.theme.fontCommon.weight(Font.Weight.semibold))
             .foregroundColor(self.theme.colorBg)
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)

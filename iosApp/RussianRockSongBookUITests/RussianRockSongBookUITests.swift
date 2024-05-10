@@ -143,7 +143,6 @@ final class RussianRockSongBookUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts[songs[0].title].isHittable)
         XCTAssertTrue(app.staticTexts[songs[1].title].isHittable)
         XCTAssertTrue(app.staticTexts[songs[2].title].isHittable)
-        sleep(5)
     }
     
     func test0105_songListIsScrollingCorrectly() throws {
@@ -184,6 +183,46 @@ final class RussianRockSongBookUITests: XCTestCase {
             app.scrollViews["songListScrollView"].swipeDown()
         }
         XCTAssertTrue(app.staticTexts[TITLE_1_4].isHittable)
+    }
+    
+    func test0201_songTextIsOpeningFromSongListCorrectly() throws {
+        let songs = Self.songRepo.getSongsByArtist(artist: ARTIST_1)
+        let song = songs.first(where: {
+            $0.title == TITLE_1_3
+        })
+        
+        while(!app.buttons["drawerButton"].isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.buttons["drawerButton"].isHittable)
+        app.buttons["drawerButton"].tap()
+        sleep(1)
+        while (!app.scrollViews["menuScrollView"].isHittable) {
+            sleep(1)
+        }
+        while (!app.staticTexts[ARTIST_1.artistGroup()].isHittable) {
+            app.scrollViews["menuScrollView"].swipeUp()
+        }
+        XCTAssertTrue(app.staticTexts[ARTIST_1.artistGroup()].isHittable)
+        app.staticTexts[ARTIST_1.artistGroup()].tap()
+        sleep(1)
+        while (!app.staticTexts[ARTIST_1].isHittable) {
+            app.scrollViews["menuScrollView"].swipeUp()
+        }
+        XCTAssertTrue(app.staticTexts[ARTIST_1].isHittable)
+        app.staticTexts[ARTIST_1].tap()
+        sleep(1)
+        while (!app.staticTexts[TITLE_1_3].isHittable) {
+            app.scrollViews["songListScrollView"].swipeUp()
+        }
+        XCTAssertTrue(app.staticTexts[TITLE_1_3].isHittable)
+        app.staticTexts[TITLE_1_3].tap()
+        sleep(1)
+        while (!app.staticTexts.containing(NSPredicate(format: "label == %@", song!.text)).firstMatch.isHittable) {
+            sleep(1)
+        }
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label == %@", song!.text)).firstMatch.isHittable)
+        XCTAssertTrue(app.staticTexts[TITLE_1_3].isHittable)
     }
     
 //    func testLaunchPerformance() throws {

@@ -475,95 +475,53 @@ struct HorizontalSongTextPanel: View {
         
         HStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYandexMusic()
-                    }
-                }) {
-                    Image("ic_yandex")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_yandex",
+                    buttonSize: A,
+                    onClick: self.onOpenYandexMusic)
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenVkMusic()
-                    }
-                }) {
-                    Image("ic_vk")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_vk",
+                    buttonSize: A,
+                    onClick: self.onOpenVkMusic)
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYoutubeMusic()
-                    }
-                }) {
-                    Image("ic_youtube")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_youtube",
+                    buttonSize: A,
+                    onClick: self.onOpenYoutubeMusic)
             }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onUploadToCloud()
-                }
-            }) {
-                Image("ic_upload")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onShowWarning()
-                }
-            }) {
-                Image("ic_warning")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onDeleteToTrash()
-                }
-            }) {
-                Image("ic_trash")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_upload",
+                buttonSize: A,
+                onClick: self.onUploadToCloud)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_warning",
+                buttonSize: A,
+                onClick: self.onShowWarning)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_trash",
+                buttonSize: A,
+                onClick: self.onDeleteToTrash)
             if (self.isEditorMode) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onSave()
-                    }
-                }) {
-                    Image("ic_save")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                        .frame(width: A, height: A)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_save",
+                    buttonSize: A,
+                    onClick: self.onSave)
             } else {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onEdit()
-                    }
-                }) {
-                    Image("ic_edit")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                        .frame(width: A, height: A)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_edit",
+                    buttonSize: A,
+                    onClick: self.onEdit)
             }
         }
         .frame(width: W, height: A)
@@ -588,95 +546,53 @@ struct VerticalSongTextPanel: View {
         
         VStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYandexMusic()
-                    }
-                }) {
-                    Image("ic_yandex")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_yandex",
+                    buttonSize: A,
+                    onClick: self.onOpenYandexMusic)
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenVkMusic()
-                    }
-                }) {
-                    Image("ic_vk")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_vk",
+                    buttonSize: A,
+                    onClick: self.onOpenVkMusic)
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYoutubeMusic()
-                    }
-                }) {
-                    Image("ic_youtube")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_youtube",
+                    buttonSize: A,
+                    onClick: self.onOpenYoutubeMusic)
             }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onUploadToCloud()
-                }
-            }) {
-                Image("ic_upload")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onShowWarning()
-                }
-            }) {
-                Image("ic_warning")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onDeleteToTrash()
-                }
-            }) {
-                Image("ic_trash")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_upload",
+                buttonSize: A,
+                onClick: self.onUploadToCloud)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_warning",
+                buttonSize: A,
+                onClick: self.onShowWarning)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_trash",
+                buttonSize: A,
+                onClick: self.onDeleteToTrash)
             if (self.isEditorMode) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onSave()
-                    }
-                }) {
-                    Image("ic_save")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                        .frame(width: A, height: A)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_save",
+                    buttonSize: A,
+                    onClick: self.onSave)
             } else {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onEdit()
-                    }
-                }) {
-                    Image("ic_edit")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                        .frame(width: A, height: A)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_edit",
+                    buttonSize: A,
+                    onClick: self.onEdit)
             }
         }
         .frame(width: A, height: H)

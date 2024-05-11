@@ -46,6 +46,7 @@
 		CE9F04D32BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */; };
 		CE9F04D52BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D42BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift */; };
 		CEAB18702BEC005000903082 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; };
+		CEB7E0502BEFF55000DB3C55 /* PanelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB7E04F2BEFF55000DB3C55 /* PanelButton.swift */; };
 		CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3B2A9425CF00A82218 /* Theme.swift */; };
 		CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */; };
 		CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */; };
@@ -124,6 +125,7 @@
 		CE9F04D42BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RussianRockSongBookUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CEA4D0332BE7216D00713C2F /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEAB186E2BEC003C00903082 /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../shared/build/XCFrameworks/debug; sourceTree = "<group>"; };
+		CEB7E04F2BEFF55000DB3C55 /* PanelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelButton.swift; sourceTree = "<group>"; };
 		CEF7EE3B2A9425CF00A82218 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CEF7EE3D2A942E6700A82218 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		CEFB94562AB51C2800C7AAA7 /* CloudSongTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSongTextView.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				CE548EFE2ADE1DC8007D0BE4 /* TheTextEditor.swift */,
 				CE46D4D12ADC920600582136 /* TheTextViewer.swift */,
 				CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */,
+				CEB7E04F2BEFF55000DB3C55 /* PanelButton.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -442,6 +445,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEFB94572AB51C2800C7AAA7 /* CloudSongTextView.swift in Sources */,
+				CEB7E0502BEFF55000DB3C55 /* PanelButton.swift in Sources */,
 				CE0F57442AD9253D0080E6B1 /* ChordViewer.swift in Sources */,
 				CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */,
 				CEF7EE3C2A9425CF00A82218 /* Theme.swift in Sources */,

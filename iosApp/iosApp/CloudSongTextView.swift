@@ -218,81 +218,46 @@ struct HorizontalCloudSongTextPanel: View {
         
         HStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYandexMusic()
-                    }
-                }) {
-                    Image("ic_yandex")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_yandex",
+                    buttonSize: A,
+                    onClick: self.onOpenYandexMusic)
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenVkMusic()
-                    }
-                }) {
-                    Image("ic_vk")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_vk",
+                    buttonSize: A,
+                    onClick: self.onOpenVkMusic)
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYoutubeMusic()
-                    }
-                }) {
-                    Image("ic_youtube")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_youtube",
+                    buttonSize: A,
+                    onClick: self.onOpenYoutubeMusic)
             }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onDownloadFromCloud()
-                }
-            }) {
-                Image("ic_download")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onShowWarning()
-                }
-            }) {
-                Image("ic_warning")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onLike()
-                }
-            }) {
-                Image("ic_like")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onDislike()
-                }
-            }) {
-                Image("ic_dislike")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_download",
+                buttonSize: A,
+                onClick: self.onDownloadFromCloud)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_warning",
+                buttonSize: A,
+                onClick: self.onShowWarning)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_like",
+                buttonSize: A,
+                onClick: self.onLike)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_dislike",
+                buttonSize: A,
+                onClick: self.onDislike)
         }
         .frame(width: W, height: A)
     }
@@ -314,81 +279,46 @@ struct VerticalCloudSongTextPanel: View {
         
         VStack(spacing: A / 5) {
             if (Preferences.loadListenToMusicVariant().isYandex()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYandexMusic()
-                    }
-                }) {
-                    Image("ic_yandex")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_yandex",
+                    buttonSize: A,
+                    onClick: self.onOpenYandexMusic)
             }
             if (Preferences.loadListenToMusicVariant().isVk()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenVkMusic()
-                    }
-                }) {
-                    Image("ic_vk")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_vk",
+                    buttonSize: A,
+                    onClick: self.onOpenVkMusic)
             }
             if (Preferences.loadListenToMusicVariant().isYoutube()) {
-                Button(action: {
-                    Task.detached { @MainActor in
-                        onOpenYoutubeMusic()
-                    }
-                }) {
-                    Image("ic_youtube")
-                        .resizable()
-                        .padding(A / 6)
-                        .background(self.theme.colorCommon)
-                }
+                PanelButton(
+                    theme: self.theme,
+                    imgName: "ic_youtube",
+                    buttonSize: A,
+                    onClick: self.onOpenYoutubeMusic)
             }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onDownloadFromCloud()
-                }
-            }) {
-                Image("ic_download")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onShowWarning()
-                }
-            }) {
-                Image("ic_warning")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onLike()
-                }
-            }) {
-                Image("ic_like")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
-            Button(action: {
-                Task.detached { @MainActor in
-                    onDislike()
-                }
-            }) {
-                Image("ic_dislike")
-                    .resizable()
-                    .padding(A / 6)
-                    .background(self.theme.colorCommon)
-            }
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_download",
+                buttonSize: A,
+                onClick: self.onDownloadFromCloud)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_warning",
+                buttonSize: A,
+                onClick: self.onShowWarning)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_like",
+                buttonSize: A,
+                onClick: self.onLike)
+            PanelButton(
+                theme: self.theme,
+                imgName: "ic_dislike",
+                buttonSize: A,
+                onClick: self.onDislike)
         }
         .frame(width: A, height: H)
     }

@@ -77,19 +77,19 @@ struct AppStateMachine {
     }
 
     private func openSongAtYandexMusic(_ music: Music) {
-        if let url = URL(string: music.yandexMusicUrl) {
-            UIApplication.shared.open(url)
-        }
+        openUrl(music.yandexMusicUrl)
     }
     
     private func openSongAtYoutubeMusic(_ music: Music) {
-        if let url = URL(string: music.youtubeMusicUrl) {
-            UIApplication.shared.open(url)
-        }
+        openUrl(music.youtubeMusicUrl)
     }
     
     private func openSongAtVkMusic(_ music: Music) {
-        if let url = URL(string: music.vkMusicUrl) {
+        openUrl(music.vkMusicUrl)
+    }
+    
+    private func openUrl(_ urlString: String) {
+        if let url = URL(string: urlString) {
             UIApplication.shared.open(url)
         }
     }

@@ -1,6 +1,7 @@
 package jatx.russianrocksongbook.common.state
 
 import jatx.russianrocksongbook.common.domain.models.Warning
+import jatx.russianrocksongbook.common.networking.OrderBy
 
 interface AppUIAction
 
@@ -51,3 +52,15 @@ object UploadCurrentToCloud: KotlinUIAction
 data class SendWarning(
     val warning: Warning
 ): KotlinUIAction
+
+data class CloudSearch(
+    val searchFor: String,
+    val orderBy: OrderBy
+): KotlinUIAction
+
+data class CloudSongClick(
+    val index: Int
+): KotlinUIAction
+
+object CloudPrevClick: KotlinUIAction
+object CloudNextClick: KotlinUIAction

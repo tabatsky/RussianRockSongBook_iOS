@@ -41,24 +41,6 @@ class OpenSongAtYoutubeMusic: AppUIAction {
     }
 }
 
-class CloudSearch: AppUIAction {
-    let searchFor: String
-    let orderBy: OrderBy
-    
-    init(searchFor: String, orderBy: OrderBy) {
-        self.searchFor = searchFor
-        self.orderBy = orderBy
-    }
-}
-
-class CloudSongClick: AppUIAction {
-    let index: Int
-    
-    init(index: Int) {
-        self.index = index
-    }
-}
-
 class SelectOrderBy: AppUIAction {
     let orderBy: OrderBy
     
@@ -75,8 +57,6 @@ class BackupSearchFor: AppUIAction {
     }
 }
 
-class CloudPrevClick: AppUIAction {}
-class CloudNextClick: AppUIAction {}
 
 class LikeClick: AppUIAction {
     let cloudSong: CloudSong

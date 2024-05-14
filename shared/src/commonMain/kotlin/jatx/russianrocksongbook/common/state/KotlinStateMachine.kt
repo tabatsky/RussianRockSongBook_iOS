@@ -6,6 +6,7 @@ import jatx.russianrocksongbook.common.domain.models.Warning
 import jatx.russianrocksongbook.common.domain.repository.ARTIST_CLOUD_SONGS
 import jatx.russianrocksongbook.common.domain.repository.ARTIST_FAVORITE
 import jatx.russianrocksongbook.common.networking.CloudRepository
+import jatx.russianrocksongbook.common.networking.CloudSong
 import jatx.russianrocksongbook.common.networking.OrderBy
 import jatx.russianrocksongbook.common.networking.asCloudSong
 
@@ -57,6 +58,18 @@ class KotlinStateMachine(
             }
             is SendWarning -> {
                 sendWarning(action.warning)
+            }
+            is CloudSearch -> {
+                searchSongs(appState, changeState, action.searchFor, action.orderBy)
+            }
+            is CloudSongClick -> {
+                selectCloudSong(appState, changeState, action.index)
+            }
+            is CloudPrevClick -> {
+                prevCloudSong(appState, changeState)
+            }
+            is CloudNextClick -> {
+                nextCloudSong(appState, changeState)
             }
         }
     }
@@ -290,5 +303,72 @@ class KotlinStateMachine(
                 showToast("Ошибка в приложении")
             }
         )
+    }
+
+    private fun searchSongs(appState: AppState, changeState: (AppState) -> Unit, searchFor: String, orderBy: OrderBy) {
+        val newCloudState = appState.cloudState.changeSearchState(SearchState.LOADING)
+        val newState = appState.changeCloudState(newCloudState)
+        changeState(newState)
+        CloudRepository.searchSongsAsync(
+            searchFor = searchFor,
+            orderBy = orderBy,
+            onSuccess = { data ->
+                var _newState = newState
+                refreshCloudSongList(_newState, { _newState = it }, data)
+                _newState = if (data.isEmpty()) {
+                    val _newCloudState = _newState.cloudState.changeSearchState(SearchState.EMPTY_LIST)
+                    _newState.changeCloudState(_newCloudState)
+                } else {
+                    val _newCloudState = _newState.cloudState.changeSearchState(SearchState.LOAD_SUCCESS)
+                    _newState.changeCloudState(_newCloudState)
+                }
+                changeState(_newState)
+            }, onError = { t ->
+                t.printStackTrace()
+                val _newCloudState = newState.cloudState.changeSearchState(SearchState.LOAD_ERROR)
+                val _newState = newState.changeCloudState(_newCloudState)
+                changeState(_newState)
+            }
+        )
+    }
+
+    private fun refreshCloudSongList(appState: AppState, changeState: (AppState) -> Unit, cloudSongList: List<CloudSong>) {
+        println(cloudSongList.size)
+
+        val newCloudState = appState.cloudState
+            .resetLikes()
+            .resetDislikes()
+            .changeCloudSongList(cloudSongList)
+            .changeCount(cloudSongList.size)
+            .changeCloudSongIndex(0)
+            .changeCloudSong(null)
+        val newState = appState.changeCloudState(newCloudState)
+
+        changeState(newState)
+    }
+
+    private fun selectCloudSong(appState: AppState, changeState: (AppState) -> Unit, index: Int) {
+        println("select cloud song: $index")
+        val newCloudState = appState.cloudState
+            .changeCloudSongIndex(index)
+            .changeCloudSong(appState.cloudState.currentCloudSongList!![index])
+        val newState = appState.changeCloudState(newCloudState)
+            .changeScreenVariant(ScreenVariant.CLOUD_SONG_TEXT)
+        changeState(newState)
+    }
+
+    private fun prevCloudSong(appState: AppState, changeState: (AppState) -> Unit) {
+        val currentIndex = appState.cloudState.currentCloudSongIndex
+        if (currentIndex - 1 >= 0) {
+            selectCloudSong(appState, changeState, currentIndex - 1)
+        }
+    }
+
+    private fun nextCloudSong(appState: AppState, changeState: (AppState) -> Unit) {
+        val currentIndex = appState.cloudState.currentCloudSongIndex
+        val count = appState.cloudState.currentCloudSongCount
+        if (currentIndex + 1 < count) {
+            selectCloudSong(appState, changeState, currentIndex + 1)
+        }
     }
 }

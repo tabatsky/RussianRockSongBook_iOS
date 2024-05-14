@@ -137,7 +137,7 @@ struct CloudSearchView: View {
                                         .highPriorityGesture(
                                              TapGesture()
                                                  .onEnded { _ in
-                                                     self.onPerformAction(CloudSongClick(index: index))
+                                                     self.onPerformAction(CloudSongClick(index: Int32(index)))
                                                      self.cloudSearchComponent?.onCloudSongClicked(position: Int32(index))
                                                  }
                                         )

@@ -2,6 +2,7 @@ package jatx.russianrocksongbook.common.state
 
 import jatx.russianrocksongbook.common.data.repository.impl.predefinedList
 import jatx.russianrocksongbook.common.di.Injector
+import jatx.russianrocksongbook.common.domain.models.Music
 import jatx.russianrocksongbook.common.domain.models.Warning
 import jatx.russianrocksongbook.common.domain.repository.ARTIST_CLOUD_SONGS
 import jatx.russianrocksongbook.common.domain.repository.ARTIST_FAVORITE
@@ -9,9 +10,11 @@ import jatx.russianrocksongbook.common.networking.CloudRepository
 import jatx.russianrocksongbook.common.networking.CloudSong
 import jatx.russianrocksongbook.common.networking.OrderBy
 import jatx.russianrocksongbook.common.networking.asCloudSong
+import jatx.russianrocksongbook.common.networking.asSong
 
 class KotlinStateMachine(
-    val showToast: (String) -> Unit
+    val showToast: (String) -> Unit,
+    val openUrl: (String) -> Unit
 ) {
     fun canPerformAction(action: AppUIAction) = action is KotlinUIAction
 
@@ -70,6 +73,36 @@ class KotlinStateMachine(
             }
             is CloudNextClick -> {
                 nextCloudSong(appState, changeState)
+            }
+            is SelectOrderBy -> {
+                selectOrderBy(appState, changeState, action.orderBy)
+            }
+            is BackupSearchFor -> {
+                backupSearchFor(appState, changeState, action.searchFor)
+            }
+            is LikeClick -> {
+                performLike(appState, changeState, action.cloudSong)
+            }
+            is DislikeClick -> {
+                performDislike(appState, changeState, action.cloudSong)
+            }
+            is DownloadClick -> {
+                downloadCurrent(appState, changeState, action.cloudSong)
+            }
+            is UpdateDone -> {
+                onUpdateDone(appState, changeState)
+            }
+            is OpenSongAtVkMusic -> {
+                openSongAtVkMusic(action.music)
+            }
+            is OpenSongAtYandexMusic -> {
+                openSongAtYandexMusic(action.music)
+            }
+            is OpenSongAtYoutubeMusic -> {
+                openSongAtYoutubeMusic(action.music)
+            }
+            is ShowToast -> {
+                showToast(action.text)
             }
         }
     }
@@ -370,5 +403,94 @@ class KotlinStateMachine(
         if (currentIndex + 1 < count) {
             selectCloudSong(appState, changeState, currentIndex + 1)
         }
+    }
+
+    private fun selectOrderBy(appState: AppState, changeState: (AppState) -> Unit, orderBy: OrderBy) {
+        val newCloudState = appState.cloudState
+                                .changeCloudSongIndex(0)
+                                .changeCloudSong(null)
+                                .changeOrderBy(orderBy)
+        val newState = appState.changeCloudState(newCloudState)
+        changeState(newState)
+    }
+
+    private fun backupSearchFor(appState: AppState, changeState: (AppState) -> Unit, searchFor: String) {
+        val newCloudState = appState.cloudState.changeSearchForBackup(searchFor)
+        val newState = appState.changeCloudState(newCloudState)
+        changeState(newState)
+    }
+
+    private fun performLike(appState: AppState, changeState: (AppState) -> Unit, cloudSong: CloudSong) {
+        CloudRepository.voteAsync(
+            cloudSong = cloudSong,
+            voteValue = 1,
+            onSuccess = {
+                println(it)
+                val newCloudState = appState.cloudState.addLike(cloudSong)
+                val newState = appState.changeCloudState(newCloudState)
+                changeState(newState)
+                showToast("Ваш голос засчитан")
+            }, onServerMessage = {
+                showToast(it)
+            }, onError = {
+                it.printStackTrace()
+                showToast("Ошибка в приложении")
+            }
+        )
+    }
+
+    private fun performDislike(appState: AppState, changeState: (AppState) -> Unit, cloudSong: CloudSong) {
+        CloudRepository.voteAsync(
+            cloudSong = cloudSong,
+            voteValue = -1,
+            onSuccess = {
+                println(it)
+                val newCloudState = appState.cloudState.addDislike(cloudSong)
+                val newState = appState.changeCloudState(newCloudState)
+                changeState(newState)
+                showToast("Ваш голос засчитан")
+            }, onServerMessage = {
+                showToast(it)
+            }, onError = {
+                it.printStackTrace()
+                showToast("Ошибка в приложении")
+            }
+        )
+    }
+
+    private fun downloadCurrent(appState: AppState, changeState: (AppState) -> Unit, cloudSong: CloudSong) {
+        Injector.songRepo.addSongFromCloud(cloudSong.asSong())
+        var newState = appState
+        newState = newState.changeArtists(Injector.songRepo.getArtists())
+        val count = Injector.songRepo.getCountByArtist(newState.localState.currentArtist)
+        val newLocalState = newState.localState
+            .changeCount(count)
+            .changeSongList(Injector.songRepo.getSongsByArtist(newState.localState.currentArtist))
+        newState = newState.changeLocalState(newLocalState)
+        changeState(newState)
+        showToast("Аккорды сохранены в локальной базе данных и добавлены в избранное")
+    }
+
+    private fun onUpdateDone(appState: AppState, changeState: (AppState) -> Unit) {
+        performAction(
+            appState = appState,
+            action = SelectArtist(defaultArtist, {}),
+            changeState = {
+                val newState = it.changeScreenVariant(ScreenVariant.SONG_LIST)
+                changeState(newState)
+            }
+        )
+    }
+
+    private fun openSongAtVkMusic(music: Music) {
+        openUrl(music.vkMusicUrl)
+    }
+
+    private fun openSongAtYandexMusic(music: Music) {
+        openUrl(music.yandexMusicUrl)
+    }
+
+    private fun openSongAtYoutubeMusic(music: Music) {
+        openUrl(music.youtubeMusicUrl)
     }
 }

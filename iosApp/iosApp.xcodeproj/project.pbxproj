@@ -41,7 +41,6 @@
 		CE5C0D9C2BD9A4B700A8E1BE /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9B2BD9A4B700A8E1BE /* StackView.swift */; };
 		CE5C0D9E2BD9A4F600A8E1BE /* SimpleChildStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5C0D9D2BD9A4F600A8E1BE /* SimpleChildStack.swift */; };
 		CE5E8B0F2BE7173500205BBC /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E8B0D2BE7173500205BBC /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE6EC64A2B72CE28005101E8 /* AppUIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6EC6492B72CE28005101E8 /* AppUIAction.swift */; };
 		CE82A5442B6DBAE200DE4D2B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82A5432B6DBAE200DE4D2B /* AppState.swift */; };
 		CE9F04D32BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */; };
 		CE9F04D52BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9F04D42BE5ECBD007DFA5F /* RussianRockSongBookUITestsLaunchTests.swift */; };
@@ -118,7 +117,6 @@
 		CE5E8B0D2BE7173500205BBC /* shared.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = shared.xcframework; path = ../shared/build/XCFrameworks/debug/shared.xcframework; sourceTree = "<group>"; };
 		CE5E8B332BE719EC00205BBC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		CE5E8B352BE71A2C00205BBC /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/lib/libsqlite3.0.tbd; sourceTree = DEVELOPER_DIR; };
-		CE6EC6492B72CE28005101E8 /* AppUIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIAction.swift; sourceTree = "<group>"; };
 		CE82A5432B6DBAE200DE4D2B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		CE9F04D02BE5ECBD007DFA5F /* RussianRockSongBookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RussianRockSongBookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9F04D22BE5ECBD007DFA5F /* RussianRockSongBookUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RussianRockSongBookUITests.swift; sourceTree = "<group>"; };
@@ -203,7 +201,6 @@
 			children = (
 				CE11C7D52AE0B06D00A7716C /* AllChords.swift */,
 				CE82A5432B6DBAE200DE4D2B /* AppState.swift */,
-				CE6EC6492B72CE28005101E8 /* AppUIAction.swift */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */,
 				CE4A45C92B6ED30700083889 /* chords */,
@@ -455,7 +452,6 @@
 				CE548EFF2ADE1DC8007D0BE4 /* TheTextEditor.swift in Sources */,
 				CE5C0D952BD9A37100A8E1BE /* StateValue.swift in Sources */,
 				CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */,
-				CE6EC64A2B72CE28005101E8 /* AppUIAction.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				CE50C4EF2AFAE3A300A11916 /* SettingsView.swift in Sources */,
 				CE0F57652AD930590080E6B1 /* Chord.swift in Sources */,

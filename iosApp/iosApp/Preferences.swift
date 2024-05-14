@@ -10,7 +10,7 @@ import Foundation
 import shared
 
 struct Preferences {
-    static let appVersion = 39
+    static let appVersion = 40
     
     static func appWasUpdated() -> Bool {
         let preferences = UserDefaults.standard

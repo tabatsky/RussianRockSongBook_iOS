@@ -1,6 +1,8 @@
 package jatx.russianrocksongbook.common.state
 
+import jatx.russianrocksongbook.common.domain.models.Music
 import jatx.russianrocksongbook.common.domain.models.Warning
+import jatx.russianrocksongbook.common.networking.CloudSong
 import jatx.russianrocksongbook.common.networking.OrderBy
 
 interface AppUIAction
@@ -64,3 +66,41 @@ data class CloudSongClick(
 
 object CloudPrevClick: KotlinUIAction
 object CloudNextClick: KotlinUIAction
+
+data class SelectOrderBy(
+    val orderBy: OrderBy
+): KotlinUIAction
+
+data class BackupSearchFor(
+    val searchFor: String
+): KotlinUIAction
+
+data class LikeClick(
+    val cloudSong: CloudSong
+): KotlinUIAction
+
+data class DislikeClick(
+    val cloudSong: CloudSong
+): KotlinUIAction
+
+data class DownloadClick(
+    val cloudSong: CloudSong
+): KotlinUIAction
+
+object UpdateDone: KotlinUIAction
+
+data class OpenSongAtVkMusic(
+    val music: Music
+): KotlinUIAction
+
+data class OpenSongAtYandexMusic(
+    val music: Music
+): KotlinUIAction
+
+data class OpenSongAtYoutubeMusic(
+    val music: Music
+): KotlinUIAction
+
+data class ShowToast(
+    val text: String
+): KotlinUIAction

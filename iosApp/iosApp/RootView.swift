@@ -4,6 +4,17 @@ import SwiftUI_SimpleToast
 
 struct RootView: View {
     let root: RootComponent
+    
+    init(root: RootComponent) {
+        self.root = root
+        let _ = AppStateMachine.songRepo
+        _appState = StateValue(root.appState)
+        let newState = AppState.companion.doNewInstance(
+            themeVariant: Preferences.loadThemeVariant(),
+            fontScaleVariant: Preferences.loadFontScaleVariant()
+        )
+        root.updateState(newState: newState)
+    }
 
     private let toastOptions = SimpleToastOptions(
         hideAfter: 2
@@ -12,14 +23,9 @@ struct RootView: View {
     private var appStateMachine: AppStateMachine {
         AppStateMachine(showToast: showToast)
    }
-
-    @State var appState: AppState = {
-        let _ = AppStateMachine.songRepo
-        return AppState.companion.doNewInstance(
-            themeVariant: Preferences.loadThemeVariant(),
-            fontScaleVariant: Preferences.loadFontScaleVariant()
-        )
-    }()
+    
+    @StateValue
+    var appState: AppState
     
     @State var needShowToast = false
     @State var toastText = ""
@@ -121,7 +127,7 @@ struct RootView: View {
     }
 
     func performAction(_ action: AppUIAction) {
-        self.appStateMachine.performAction(changeState: { self.appState = $0 },
+        self.appStateMachine.performAction(changeState: { root.updateState(newState: $0) },
                                                appState: self.appState,
                                                action: action)
     }

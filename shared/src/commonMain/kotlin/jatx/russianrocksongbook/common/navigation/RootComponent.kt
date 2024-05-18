@@ -8,11 +8,18 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import jatx.russianrocksongbook.common.state.AppState
+import jatx.russianrocksongbook.common.state.FontScaleVariant
+import jatx.russianrocksongbook.common.state.ThemeVariant
 import kotlinx.serialization.Serializable
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
+    val appState: Value<AppState>
+
+    fun updateState(newState: AppState)
 
     // It's possible to pop multiple screens at a time on iOS
     fun onBackClicked(toIndex: Int)
@@ -43,6 +50,19 @@ class DefaultRootComponent(
             handleBackButton = true, // Automatically pop from the stack on back button presses
             childFactory = ::child,
         )
+
+    override val appState by lazy {
+        MutableValue(
+            AppState.newInstance(
+                ThemeVariant.DARK,
+                FontScaleVariant.M
+            )
+        )
+    }
+
+    override fun updateState(newState: AppState) {
+        appState.value = newState
+    }
 
     override fun onCloudSearchClicked() {
         navigation.push(Config.CloudSearch)

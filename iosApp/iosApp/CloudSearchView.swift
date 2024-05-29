@@ -79,6 +79,10 @@ struct CloudSearchView: View {
                     Text("Список пуст")
                         .foregroundColor(self.theme.colorMain)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else if (self.cloudState.currentSearchState == SearchState.loadError) {
+                    Text("Возникла ошибка")
+                        .foregroundColor(self.theme.colorMain)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else if (self.cloudState.currentSearchState == SearchState.loadSuccess) {
                     ScrollViewReader { sp in
                         ScrollView(.vertical) {

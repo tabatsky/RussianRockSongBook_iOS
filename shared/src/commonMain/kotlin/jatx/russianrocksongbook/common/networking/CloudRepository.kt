@@ -33,6 +33,7 @@ object CloudRepository {
         searchFor: String,
         orderBy: OrderBy,
         onSuccess: (List<CloudSong>) -> Unit,
+        onServerMessage: (String) -> Unit,
         onError: (Throwable) -> Unit
     ) = GlobalScope.launch {
         try {
@@ -42,6 +43,7 @@ object CloudRepository {
                 onSuccess(it)
             } ?: run {
                 println(result.message)
+                onServerMessage(result.message ?: "")
             }
         } catch (t: Throwable) {
             onError(t)

@@ -349,12 +349,18 @@ class KotlinStateMachine(
                 var _newState = newState
                 refreshCloudSongList(_newState, { _newState = it }, data)
                 _newState = if (data.isEmpty()) {
-                    val _newCloudState = _newState.cloudState.changeSearchState(SearchState.EMPTY_LIST)
+                    val _newCloudState =
+                        _newState.cloudState.changeSearchState(SearchState.EMPTY_LIST)
                     _newState.changeCloudState(_newCloudState)
                 } else {
-                    val _newCloudState = _newState.cloudState.changeSearchState(SearchState.LOAD_SUCCESS)
+                    val _newCloudState =
+                        _newState.cloudState.changeSearchState(SearchState.LOAD_SUCCESS)
                     _newState.changeCloudState(_newCloudState)
                 }
+                changeState(_newState)
+            }, onServerMessage = {
+                val _newCloudState = newState.cloudState.changeSearchState(SearchState.LOAD_ERROR)
+                val _newState = newState.changeCloudState(_newCloudState)
                 changeState(_newState)
             }, onError = { t ->
                 t.printStackTrace()

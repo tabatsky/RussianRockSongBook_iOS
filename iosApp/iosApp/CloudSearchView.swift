@@ -86,11 +86,11 @@ struct CloudSearchView: View {
                             } else if (self.cloudState.currentSearchState == SearchState.emptyList) {
                                 Text("Список пуст")
                                     .foregroundColor(self.theme.colorMain)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                    .frame(width: geometry.size.width, height: geometry.size.height - 120.0, alignment: .center)
                             } else if (self.cloudState.currentSearchState == SearchState.loadError) {
                                 Text("Возникла ошибка")
                                     .foregroundColor(self.theme.colorMain)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                    .frame(width: geometry.size.width, height: geometry.size.height - 120.0, alignment: .center)
                             } else if (self.cloudState.currentSearchState == SearchState.loadSuccess) {
                                 let columns = [
                                     GridItem(.flexible())

@@ -64,6 +64,10 @@ data class CloudSongClick(
     val index: Int
 ): KotlinUIAction
 
+data class CloudScroll(
+    val index: Int
+): KotlinUIAction
+
 object CloudPrevClick: KotlinUIAction
 object CloudNextClick: KotlinUIAction
 

@@ -17,7 +17,7 @@ struct CloudSearchView: View {
     
     @State var searchFor: String = ""
     
-    @State var scrollPosition: Int = 0
+    @State var scrollPosition: Int = -1
     @State var initialScrollDone: Bool = false
     @State var scrollViewFrame: CGRect = CGRect()
     
@@ -65,55 +65,61 @@ struct CloudSearchView: View {
                             .frame(width: 120.0, height: 120.0)
                     }
                 }
-                if (self.cloudState.currentSearchState == SearchState.loading) {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: self.theme.colorMain))
-                            .scaleEffect(5.0)
-                        Spacer()
-                    }
-                    Spacer()
-                } else if (self.cloudState.currentSearchState == SearchState.emptyList) {
-                    Text("Список пуст")
-                        .foregroundColor(self.theme.colorMain)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                } else if (self.cloudState.currentSearchState == SearchState.loadError) {
-                    Text("Возникла ошибка")
-                        .foregroundColor(self.theme.colorMain)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                } else if (self.cloudState.currentSearchState == SearchState.loadSuccess) {
-                    ScrollViewReader { sp in
-                        ScrollView(.vertical) {
-                            let columns = [
-                                GridItem(.flexible())
-                            ]
-                            let currentList = self.cloudState.currentCloudSongList ?? [CloudSong]()
-                            LazyVGrid(columns: columns, spacing: 0) {
-                                ForEach(0 ..< currentList.count, id: \.self) { index in
-                                    let cloudSong = currentList[index]
-                                    let title = cloudSong.visibleTitle
-                                    let artist = cloudSong.artist
-                                    let likeCount = Int(cloudSong.likeCount) + Int(self.cloudState.allLikes[cloudSong] ?? 0)
-                                    let dislikeCount = Int(cloudSong.dislikeCount) + Int(self.cloudState.allDislikes[cloudSong] ?? 0)
-                                    let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
-                                    VStack {
-                                        Text(visibleTitleWithRaiting)
-                                            .font(self.theme.fontCommon)
-                                            .foregroundColor(self.theme.colorMain)
-                                            .padding(8)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        Text(artist)
-                                            .font(self.theme.fontCommon)
-                                            .foregroundColor(self.theme.colorMain)
-                                            .padding(8)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        Rectangle()
-                                            .fill(self.theme.colorCommon)
-                                            .frame(height: 3)
-                                            .edgesIgnoringSafeArea(.horizontal)
+                .frame(width: geometry.size.width, height: 120.0)
+
+                ScrollViewReader { sp in
+                    ScrollView(.vertical) {
+                        ContainerView {
+                            if (self.cloudState.currentSearchState == SearchState.loading) {
+                                VStack {
+                                    Spacer()
+                                    HStack {
+                                        Spacer()
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: self.theme.colorMain))
+                                            .scaleEffect(5.0)
+                                        Spacer()
                                     }
+                                    Spacer()
+                                }
+                                .frame(width: geometry.size.width, height: geometry.size.height - 120.0)
+                            } else if (self.cloudState.currentSearchState == SearchState.emptyList) {
+                                Text("Список пуст")
+                                    .foregroundColor(self.theme.colorMain)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                            } else if (self.cloudState.currentSearchState == SearchState.loadError) {
+                                Text("Возникла ошибка")
+                                    .foregroundColor(self.theme.colorMain)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                            } else if (self.cloudState.currentSearchState == SearchState.loadSuccess) {
+                                let columns = [
+                                    GridItem(.flexible())
+                                ]
+                                let currentList = self.cloudState.currentCloudSongList ?? [CloudSong]()
+                                LazyVGrid(columns: columns, spacing: 0) {
+                                    ForEach(0 ..< currentList.count, id: \.self) { index in
+                                        let cloudSong = currentList[index]
+                                        let title = cloudSong.visibleTitle
+                                        let artist = cloudSong.artist
+                                        let likeCount = Int(cloudSong.likeCount) + Int(self.cloudState.allLikes[cloudSong] ?? 0)
+                                        let dislikeCount = Int(cloudSong.dislikeCount) + Int(self.cloudState.allDislikes[cloudSong] ?? 0)
+                                        let visibleTitleWithRaiting = "\(title) 👍\(likeCount) 👎\(dislikeCount)"
+                                        VStack {
+                                            Text(visibleTitleWithRaiting)
+                                                .font(self.theme.fontCommon)
+                                                .foregroundColor(self.theme.colorMain)
+                                                .padding(8)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            Text(artist)
+                                                .font(self.theme.fontCommon)
+                                                .foregroundColor(self.theme.colorMain)
+                                                .padding(8)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            Rectangle()
+                                                .fill(self.theme.colorCommon)
+                                                .frame(height: 3)
+                                                .edgesIgnoringSafeArea(.horizontal)
+                                        }
                                         .id(cloudSong)
                                         .foregroundColor(self.theme.colorMain)
                                         .background(GeometryReader { itemGeom in
@@ -125,13 +131,18 @@ struct CloudSearchView: View {
                                                 )
                                                 .onPreferenceChange(VisibleKey.self) { isVisible in
                                                     if (self.initialScrollDone) {
-                                                        if (isVisible) {
-                                                            if (index < self.scrollPosition) {
-                                                                self.scrollPosition = index
-                                                            }
-                                                        } else {
-                                                            if (index >= self.scrollPosition && index < self.scrollPosition + 6) {
-                                                                self.scrollPosition = index + 1
+                                                        Task.detached {
+                                                            try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                                            await MainActor.run {
+                                                                if (isVisible) {
+                                                                    if (index < self.scrollPosition) {
+                                                                        self.scrollPosition = index
+                                                                    }
+                                                                } else {
+                                                                    if (index >= self.scrollPosition && index < self.scrollPosition + 6) {
+                                                                        self.scrollPosition = index + 1
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -139,46 +150,57 @@ struct CloudSearchView: View {
                                         })
                                         .background(self.theme.colorBg)
                                         .highPriorityGesture(
-                                             TapGesture()
-                                                 .onEnded { _ in
-                                                     self.onPerformAction(CloudSongClick(index: Int32(index)))
-                                                     self.cloudSearchComponent?.onCloudSongClicked(position: Int32(index))
-                                                 }
+                                            TapGesture()
+                                                .onEnded { _ in
+                                                    self.onPerformAction(CloudSongClick(index: Int32(index)))
+                                                    self.cloudSearchComponent?.onCloudSongClicked(position: Int32(index))
+                                                }
                                         )
-                                }.frame(maxWidth: .infinity, maxHeight: geometry.size.height)
-                            }
-                            .onAppear(perform: {
-                                if (self.cloudState.currentCloudSongList != nil && self.cloudState.currentCloudSongList!.count > self.cloudState.currentCloudSongIndex) {
-                                    sp.scrollTo(self.cloudState.currentCloudSongList![Int(self.cloudState.currentCloudSongIndex)], anchor: .top)
+                                    }
                                 }
+                                .onAppear(perform: {
+                                    print("\(self.cloudState.currentCloudSongIndex) \(self.scrollPosition)")
+                                    if (self.cloudState.currentCloudSongList != nil && self.cloudState.currentCloudSongList!.count > self.cloudState.currentCloudSongIndex) {
+                                        self.scrollPosition = Int(self.cloudState.currentCloudSongIndex)
+                                        sp.scrollTo(self.cloudState.currentCloudSongList![Int(self.cloudState.currentCloudSongIndex)], anchor: .top)
+                                    }
+                                    Task.detached {
+                                        try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
+                                        await MainActor.run {
+                                            self.initialScrollDone = true
+                                        }
+                                    }
+                                })
+                                Spacer()
+                            }
+                        }
+                    }
+                    .accessibilityLabel("cloudSongListScrollView")
+                    .background(GeometryReader { scrollViewGeom in
+                        self.theme.colorBg
+                            .preference(
+                                key: FrameKey.self,
+                                // See discussion!
+                                value: scrollViewGeom.frame(in: .global)
+                            )
+                            .onPreferenceChange(FrameKey.self) { frame in
                                 Task.detached {
                                     try await Task.sleep(nanoseconds: 200 * 1000 * 1000)
                                     await MainActor.run {
-                                        self.initialScrollDone = true
+                                        self.scrollViewFrame = frame
                                     }
                                 }
-                            })
-                            Spacer()
+                            }
+                    })
+                    .onAppear(perform: {
+                        self.searchFor = self.cloudState.searchForBackup
+                    })
+                    .onChange(of: self.scrollPosition, perform: { [scrollPosition] position in
+                        print("\(scrollPosition), \(position)")
+                        if (scrollPosition >= 0) {
+                            self.onPerformAction(CloudScroll(index: Int32(position)))
                         }
-                        .background(GeometryReader { scrollViewGeom in
-                            self.theme.colorBg
-                                .preference(
-                                    key: FrameKey.self,
-                                    // See discussion!
-                                    value: scrollViewGeom.frame(in: .global)
-                                )
-                                .onPreferenceChange(FrameKey.self) { frame in
-                                    self.scrollViewFrame = frame
-                                }
-                        })
-                        .onAppear(perform: {
-                            self.searchFor = self.cloudState.searchForBackup
-                        })
-                        .onChange(of: self.scrollPosition, perform: { position in
-                            //print("\(self.scrollPosition), \(position)")
-                            //onScroll(position)
-                        })
-                    }
+                    })
                 }
             }
             .onAppear(perform: {

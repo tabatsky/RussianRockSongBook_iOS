@@ -68,6 +68,9 @@ class KotlinStateMachine(
             is CloudSongClick -> {
                 selectCloudSong(appState, changeState, action.index)
             }
+            is CloudScroll -> {
+                updateCloudSongIndexByScroll(appState, changeState, action.index)
+            }
             is CloudPrevClick -> {
                 prevCloudSong(appState, changeState)
             }
@@ -409,6 +412,12 @@ class KotlinStateMachine(
         if (currentIndex + 1 < count) {
             selectCloudSong(appState, changeState, currentIndex + 1)
         }
+    }
+
+    private fun updateCloudSongIndexByScroll(appState: AppState, changeState: (AppState) -> Unit, index: Int) {
+        val newCloudState = appState.cloudState.changeCloudSongIndex(index)
+        val newState = appState.changeCloudState(newCloudState)
+        changeState(newState)
     }
 
     private fun selectOrderBy(appState: AppState, changeState: (AppState) -> Unit, orderBy: OrderBy) {

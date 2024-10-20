@@ -13,10 +13,10 @@ import jatx.russianrocksongbook.db.AppDatabase
 
 val predefinedList = listOf(
     ARTIST_FAVORITE,
-    ARTIST_ADD_ARTIST,
-    ARTIST_ADD_SONG,
-    ARTIST_CLOUD_SONGS,
-    ARTIST_DONATION
+//    ARTIST_ADD_ARTIST,
+//    ARTIST_ADD_SONG,
+    ARTIST_CLOUD_SONGS //,
+//    ARTIST_DONATION
 )
 
 class SongRepositoryImpl(

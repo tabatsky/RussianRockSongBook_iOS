@@ -31,8 +31,10 @@ struct CloudSearchView: View {
                             .foregroundColor(self.theme.colorBg)
                             .frame(height: 56.0)
                             .background(self.theme.colorMain)
+                            .cornerRadius(4.0)
                             .padding(8)
                             .background(self.theme.colorCommon)
+                            .cornerRadius(4.0)
                         Menu {
                             Button(OrderBy.byIdDesc.orderByRus) {
                                 selectOrderBy(orderBy: OrderBy.byIdDesc)
@@ -50,6 +52,7 @@ struct CloudSearchView: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 36.0)
                             .background(self.theme.colorCommon)
+                            .cornerRadius(4.0)
                     }
                     Button(action: {
                         Task.detached { @MainActor in
@@ -61,11 +64,13 @@ struct CloudSearchView: View {
                             .colorMultiply(self.theme.colorMain)
                             .padding(8)
                             .background(self.theme.colorCommon)
+                            .cornerRadius(4.0)
                             .padding([.top, .bottom, .trailing], 2)
                             .frame(width: 120.0, height: 120.0)
                     }
                 }
-                .frame(width: geometry.size.width, height: 120.0)
+                .frame(width: geometry.size.width - 8, height: 120.0)
+                .padding(4)
 
                 ScrollViewReader { sp in
                     ScrollView(.vertical) {

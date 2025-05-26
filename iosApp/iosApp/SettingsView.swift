@@ -49,6 +49,7 @@ struct SettingsView: View {
                         .frame(width: (geometry.size.width - 20) / 2)
                         .frame(height: 36.0 * self.theme.sizeScale)
                         .background(self.theme.colorCommon)
+                        .cornerRadius(4.0)
                 }
                 HStack(spacing: 0) {
                     Text("Размер шрифта:")
@@ -79,6 +80,7 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 36.0 * self.theme.sizeScale)
                     .background(self.theme.colorCommon)
+                    .cornerRadius(4.0)
                 }
                 HStack(spacing: 0) {
                     Text("Слушать музыку:")
@@ -103,6 +105,7 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 36.0 * self.theme.sizeScale)
                     .background(self.theme.colorCommon)
+                    .cornerRadius(4.0)
                 }
                 HStack(spacing: 0) {
                     Text("Скорость прокрутки (x):")
@@ -115,6 +118,7 @@ struct SettingsView: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 36.0 * self.theme.sizeScale)
                         .background(self.theme.colorMain)
+                        .cornerRadius(4.0)
                 }
                 Spacer()
                 Button(action: {
@@ -127,6 +131,7 @@ struct SettingsView: View {
                         .frame(height: 45.0 * self.theme.sizeScale)
                 })
                 .background(self.theme.colorCommon)
+                .cornerRadius(4.0)
             }
             .padding(10.0)
         }

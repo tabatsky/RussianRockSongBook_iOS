@@ -17,42 +17,47 @@ struct WarningDialog: View {
     
     var body: some View {
         VStack(spacing: 0.0) {
+            Spacer()
+            Text("Отправить уведомление")
+                .foregroundColor(colorBlack)
+                .padding([.leading], 20.0)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
             TheTextEditor(
                 theme: self.theme,
                 invertTextColor: true,
                 text: self.comment,
-                width: 180.0,
+                width: 250.0,
                 height: 180.0,
                 onTextChanged: {
                     self.comment = $0
                 })
-            .background(self.theme.colorCommon)
-            .padding(10.0)
             .background(self.theme.colorMain)
-            Button(action: {
-                self.onSend(comment)
-            }, label: {
-                Text("Отправить")
-                    .foregroundColor(self.theme.colorMain)
-                    .frame(width: 200.0, height: 45.0)
-                    .background(self.theme.colorCommon)
-            })
-            Divider()
-                .frame(height: 5.0)
-                .background(self.theme.colorMain)
-            Button(action: {
-                self.onDismiss()
-            }, label: {
-                Text("Отмена")
-                    .foregroundColor(self.theme.colorMain)
-                    .frame(width: 200.0, height: 45.0)
-                    .background(self.theme.colorCommon)
-            })
-            Divider()
-                .frame(height: 5.0)
-                .background(self.theme.colorMain)
+            .padding(10.0)
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    self.onSend(comment)
+                }, label: {
+                    Text("Отправить")
+                        .foregroundColor(colorBlack)
+                })
+                Spacer()
+                    .frame(width: 20.0)
+                Button(action: {
+                    self.onDismiss()
+                }, label: {
+                    Text("Отмена")
+                        .foregroundColor(colorBlack)
+                })
+                Spacer()
+                    .frame(width: 20.0)
+            }
+            .frame(height: 45.0)
+            Spacer()
         }
-        .frame(width: 200.0, height: 300.0)
-        .background(self.theme.colorMain)
+        .frame(width: 270.0, height: 300.0)
+        .background(self.theme.colorCommon)
     }
 }

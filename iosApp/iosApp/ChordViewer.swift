@@ -43,26 +43,35 @@ struct ChordViewer: View {
     var body: some View {
         VStack {
             Text(self.chord)
+                .font(self.theme.fontTitle)
                 .foregroundColor(colorBlack)
-                .frame(width: 320, height: 80)
+                .frame(width: 340, height: 80)
                 .background(self.theme.colorCommon)
             if !self.actualKey.isEmpty && !self.actualSuffix.isEmpty {
                 let position = guitar.findChordPositions(key: self.actualKey, suffix: self.actualSuffix)[0]
                 FretboardView(position: position, theme: self.theme)
                     .frame(width: 320, height: 320)
+                    .background(self.theme.colorMain)
+                    .frame(width: 340, height: 320)
             } else {
                 Spacer()
             }
-            Button(action: {
-                onDismiss()
-            }, label: {
-                Text("Закрыть")
-                    .foregroundColor(colorBlack)
-                    .frame(width: 320, height: 80)
-                    .background(self.theme.colorCommon)
-            })
+            HStack {
+                Spacer()
+                Button(action: {
+                    onDismiss()
+                }, label: {
+                    Text("Закрыть")
+                        .foregroundColor(colorBlack)
+                        
+                })
+                Spacer()
+                    .frame(width: 20.0)
+            }
+            .frame(height: 80)
+            .background(self.theme.colorCommon)
         }
-            .frame(width: 320, height: 480, alignment: .center)
-            .background(self.theme.colorMain)
+        .frame(width: 340, height: 480, alignment: .center)
+        .background(self.theme.colorCommon)
     }
 }

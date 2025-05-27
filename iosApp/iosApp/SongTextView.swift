@@ -182,39 +182,46 @@ struct SongTextView: View {
                     Spacer()
                     Text("Вы уверены?")
                         .font(self.theme.fontTitle)
-                        .foregroundColor(self.theme.colorBg)
+                        .foregroundColor(colorBlack)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
                         .frame(height: 20.0)
                     Text("Песня будет удалена из локальной базы данных")
                         .font(self.theme.fontCommon)
-                        .foregroundColor(self.theme.colorBg)
+                        .foregroundColor(colorBlack)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
                     Spacer()
                     Spacer()
                 }
-                .frame(width: 200.0, height: 170.0)
-                .background(self.theme.colorMain)
-                Button(action: {
-                    self.isPresentingDeleteConfirm = false
-                    self.onPerformAction(ConfirmDeleteToTrash(emptyListCallback: {
-                        self.songTextComponent?.onBackPressed()
-                    }))
-                }, label: {
-                    Text("Ок")
-                        .foregroundColor(self.theme.colorMain)
-                        .frame(height: 45.0)
-                })
-                Divider()
-                    .frame(height: 5.0)
-                    .background(self.theme.colorMain)
-                Button(action: {
-                    self.isPresentingDeleteConfirm = false
-                }, label: {
-                    Text("Отмена")
-                        .foregroundColor(self.theme.colorMain)
-                        .frame(height: 45.0)
-                })
+                .padding(20.0)
+                .frame(width: 270.0, height: 150.0)
+                .background(self.theme.colorCommon)
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.isPresentingDeleteConfirm = false
+                        self.onPerformAction(ConfirmDeleteToTrash(emptyListCallback: {
+                            self.songTextComponent?.onBackPressed()
+                        }))
+                    }, label: {
+                        Text("Да")
+                            .foregroundColor(colorBlack)
+                    })
+                    Spacer()
+                        .frame(width: 20.0)
+                    Button(action: {
+                        self.isPresentingDeleteConfirm = false
+                    }, label: {
+                        Text("Нет")
+                            .foregroundColor(colorBlack)
+                    })
+                    Spacer()
+                        .frame(width: 20.0)
+                }
+                .frame(height: 45.0)
             }
-            .frame(width: 200.0, height: 270.0)
+            .frame(width: 270.0, height: 210.0)
             .background(self.theme.colorCommon)
         })
         .customDialog(isShowing: self.$needShowWarningDialog, dialogContent: {

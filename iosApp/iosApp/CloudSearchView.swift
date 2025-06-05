@@ -48,7 +48,7 @@ struct CloudSearchView: View {
                         } label: {
                             Text(self.cloudState.currentCloudOrderBy.orderByRus)
                         }
-                            .foregroundColor(self.theme.colorMain)
+                            .foregroundColor(colorBlack)
                             .frame(maxWidth: .infinity)
                             .frame(height: 36.0)
                             .background(self.theme.colorCommon)
@@ -61,7 +61,7 @@ struct CloudSearchView: View {
                     }) {
                         Image("ic_cloud_search_white")
                             .resizable()
-                            .colorMultiply(self.theme.colorMain)
+                            .colorMultiply(colorBlack)
                             .padding(8)
                             .background(self.theme.colorCommon)
                             .cornerRadius(4.0)

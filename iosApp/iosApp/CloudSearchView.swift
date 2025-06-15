@@ -25,8 +25,55 @@ struct CloudSearchView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                HStack {
-                    VStack {
+                if geometry.size.width < geometry.size.height {
+                    HStack {
+                        VStack {
+                            TextField("", text: $searchFor)
+                                .foregroundColor(self.theme.colorBg)
+                                .frame(height: 56.0)
+                                .background(self.theme.colorMain)
+                                .cornerRadius(4.0)
+                                .padding(8)
+                                .background(self.theme.colorCommon)
+                                .cornerRadius(4.0)
+                            Menu {
+                                Button(OrderBy.byIdDesc.orderByRus) {
+                                    selectOrderBy(orderBy: OrderBy.byIdDesc)
+                                }
+                                Button(OrderBy.byTitle.orderByRus) {
+                                    selectOrderBy(orderBy: OrderBy.byTitle)
+                                }
+                                Button(OrderBy.byArtist.orderByRus) {
+                                    selectOrderBy(orderBy: OrderBy.byArtist)
+                                }
+                            } label: {
+                                Text(self.cloudState.currentCloudOrderBy.orderByRus)
+                            }
+                            .foregroundColor(colorBlack)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 36.0)
+                            .background(self.theme.colorCommon)
+                            .cornerRadius(4.0)
+                        }
+                        Button(action: {
+                            Task.detached { @MainActor in
+                                cloudSearchClick()
+                            }
+                        }) {
+                            Image("ic_cloud_search_white")
+                                .resizable()
+                                .colorMultiply(colorBlack)
+                                .padding(8)
+                                .background(self.theme.colorCommon)
+                                .cornerRadius(4.0)
+                                .padding([.top, .bottom, .trailing], 2)
+                                .frame(width: 120.0, height: 120.0)
+                        }
+                    }
+                    .frame(width: geometry.size.width - 8, height: 120.0)
+                    .padding(4)
+                } else {
+                    HStack {
                         TextField("", text: $searchFor)
                             .foregroundColor(self.theme.colorBg)
                             .frame(height: 56.0)
@@ -50,27 +97,27 @@ struct CloudSearchView: View {
                         }
                             .foregroundColor(colorBlack)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 36.0)
+                            .frame(height: 72.0)
                             .background(self.theme.colorCommon)
                             .cornerRadius(4.0)
-                    }
-                    Button(action: {
-                        Task.detached { @MainActor in
-                            cloudSearchClick()
+                            .padding([.top, .bottom], 8)
+                        Button(action: {
+                            Task.detached { @MainActor in
+                                cloudSearchClick()
+                            }
+                        }) {
+                            Image("ic_cloud_search_white")
+                                .resizable()
+                                .colorMultiply(colorBlack)
+                                .padding(8)
+                                .background(self.theme.colorCommon)
+                                .cornerRadius(4.0)
+                                .frame(width: 72.0, height: 72.0)
                         }
-                    }) {
-                        Image("ic_cloud_search_white")
-                            .resizable()
-                            .colorMultiply(colorBlack)
-                            .padding(8)
-                            .background(self.theme.colorCommon)
-                            .cornerRadius(4.0)
-                            .padding([.top, .bottom, .trailing], 2)
-                            .frame(width: 120.0, height: 120.0)
                     }
+                    .frame(width: geometry.size.width - 8, height: 72.0)
+                    .padding(4)
                 }
-                .frame(width: geometry.size.width - 8, height: 120.0)
-                .padding(4)
 
                 ScrollViewReader { sp in
                     ScrollView(.vertical) {

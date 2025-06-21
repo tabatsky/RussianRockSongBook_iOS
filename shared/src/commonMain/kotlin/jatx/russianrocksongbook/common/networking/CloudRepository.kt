@@ -8,12 +8,15 @@ import io.ktor.http.parameters
 import io.ktor.utils.io.core.use
 import jatx.russianrocksongbook.common.domain.models.Warning
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 
 const val BASE_URL = "http://tabatsky.ru/SongBook2/api"
+const val PAGE_SIZE = 15
 
 @OptIn(DelicateCoroutinesApi::class)
 object CloudRepository {
@@ -49,6 +52,44 @@ object CloudRepository {
             onError(t)
         }
     }
+
+    private suspend fun pagedSearch(
+        searchFor: String,
+        orderBy: OrderBy,
+        page: Int
+    ): ResultWithCloudSongListData {
+        return KtorClient.newHttpClient().use {
+            it.get(
+                "$BASE_URL/songs/pagedSearchWithLikes/$searchFor/${orderBy.orderBy}/$page"
+                    .encodeURLPath()
+            ).body()
+        }
+    }
+
+    fun pagedSearchAsync(
+        searchFor: String,
+        orderBy: OrderBy,
+        page: Int,
+        onSuccess: (List<CloudSong>) -> Unit,
+        onServerMessage: (String) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = GlobalScope.launch {
+        try {
+            val result = pagedSearch(searchFor, orderBy, page)
+            val data = result.data
+            data?.let {
+                withContext(Dispatchers.Main) {
+                    onSuccess(it)
+                }
+            } ?: run {
+                println(result.message)
+                onServerMessage(result.message ?: "")
+            }
+        } catch (t: Throwable) {
+            onError(t)
+        }
+    }
+
 
     private suspend fun vote(
         cloudSong: CloudSong,

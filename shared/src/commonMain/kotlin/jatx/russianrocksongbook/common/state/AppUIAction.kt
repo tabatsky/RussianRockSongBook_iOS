@@ -57,7 +57,8 @@ data class SendWarning(
 
 data class CloudSearch(
     val searchFor: String,
-    val orderBy: OrderBy
+    val orderBy: OrderBy,
+    val page: Int
 ): KotlinUIAction
 
 data class CloudSongClick(

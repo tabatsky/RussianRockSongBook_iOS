@@ -15,54 +15,26 @@ struct CloudSongTextView: View {
     let cloudState: CloudState
     let onPerformAction: (AppUIAction) -> ()
     
+    var itemsAdapter: CloudItemsAdapter {
+        CloudItemsAdapter(items: cloudState.currentCloudSongList, searchState: cloudState.currentSearchState, searchFor: cloudState.searchForBackup, orderBy: cloudState.currentCloudOrderBy, onPerformAction: onPerformAction)
+    }
+    
     @State var currentChord: String? = nil
     @State var needShowWarningDialog = false
     
     var body: some View {
         GeometryReader { geometry in
-            let artist = self.cloudState.currentCloudSong!.artist
-            let title = self.cloudState.currentCloudSong!.visibleTitle
-            
-            let likeCount = Int(self.cloudState.currentCloudSong!.likeCount) + Int((self.cloudState.allLikes[self.cloudState.currentCloudSong!] ?? 0))
-            let dislikeCount = Int(self.cloudState.currentCloudSong!.dislikeCount) + Int((self.cloudState.allDislikes[self.cloudState.currentCloudSong!] ?? 0))
-            
-            let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
-            
-            ZStack {
-                if (geometry.size.width < geometry.size.height) {
-                    VStack {
-                        Text(visibleTitleWithArtistAndRaiting)
-                            .font(self.theme.fontTitle)
-                            .bold()
-                            .foregroundColor(self.theme.colorMain)
-                            .padding(24)
-                            .frame(maxWidth: geometry.size.width, alignment: .leading)
-                        GeometryReader { scrollViewGeometry in
-                            ScrollViewReader { sp in
-                                ScrollView(.vertical) {
-                                    TheTextViewer(
-                                        theme: self.theme,
-                                        text: self.cloudState.currentCloudSong!.text,
-                                        width: geometry.size.width,
-                                        onChordTapped: onChordTapped,
-                                        onHeightChanged: { height in })
-                                }
-                            }
-                        }
-                        HorizontalCloudSongTextPanel(
-                            W: geometry.size.width,
-                            theme: self.theme,
-                            onOpenYandexMusic: onOpenYandexMusic,
-                            onOpenYoutubeMusic: onOpenYoutubeMusuc,
-                            onOpenVkMusic: onOpenVkMusuc,
-                            onDownloadFromCloud: onDownloadFromCloud,
-                            onShowWarning: onShowWarning,
-                            onLike: onLike,
-                            onDislike: onDislike
-                        )
-                    }
-                } else {
-                    HStack {
+            if let cloudSong = self.cloudState.currentCloudSong {
+                let artist = cloudSong.artist
+                let title = cloudSong.visibleTitle
+                
+                let likeCount = Int(cloudSong.likeCount) + Int((self.cloudState.allLikes[cloudSong] ?? 0))
+                let dislikeCount = Int(cloudSong.dislikeCount) + Int((self.cloudState.allDislikes[cloudSong] ?? 0))
+                
+                let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
+                
+                ZStack {
+                    if (geometry.size.width < geometry.size.height) {
                         VStack {
                             Text(visibleTitleWithArtistAndRaiting)
                                 .font(self.theme.fontTitle)
@@ -70,38 +42,74 @@ struct CloudSongTextView: View {
                                 .foregroundColor(self.theme.colorMain)
                                 .padding(24)
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)
-                            
                             GeometryReader { scrollViewGeometry in
                                 ScrollViewReader { sp in
                                     ScrollView(.vertical) {
                                         TheTextViewer(
                                             theme: self.theme,
-                                            text: self.cloudState.currentCloudSong!.text,
+                                            text: cloudSong.text,
                                             width: geometry.size.width,
                                             onChordTapped: onChordTapped,
                                             onHeightChanged: { height in })
                                     }
                                 }
                             }
+                            HorizontalCloudSongTextPanel(
+                                W: geometry.size.width,
+                                theme: self.theme,
+                                onOpenYandexMusic: onOpenYandexMusic,
+                                onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                                onOpenVkMusic: onOpenVkMusuc,
+                                onDownloadFromCloud: onDownloadFromCloud,
+                                onShowWarning: onShowWarning,
+                                onLike: onLike,
+                                onDislike: onDislike
+                            )
                         }
-                        VerticalCloudSongTextPanel(
-                            H: geometry.size.height,
-                            theme: self.theme,
-                            onOpenYandexMusic: onOpenYandexMusic,
-                            onOpenYoutubeMusic: onOpenYoutubeMusuc,
-                            onOpenVkMusic: onOpenVkMusuc,
-                            onDownloadFromCloud: onDownloadFromCloud,
-                            onShowWarning: onShowWarning,
-                            onLike: onLike,
-                            onDislike: onDislike
-                        )
+                    } else {
+                        HStack {
+                            VStack {
+                                Text(visibleTitleWithArtistAndRaiting)
+                                    .font(self.theme.fontTitle)
+                                    .bold()
+                                    .foregroundColor(self.theme.colorMain)
+                                    .padding(24)
+                                    .frame(maxWidth: geometry.size.width, alignment: .leading)
+                                
+                                GeometryReader { scrollViewGeometry in
+                                    ScrollViewReader { sp in
+                                        ScrollView(.vertical) {
+                                            TheTextViewer(
+                                                theme: self.theme,
+                                                text: cloudSong.text,
+                                                width: geometry.size.width,
+                                                onChordTapped: onChordTapped,
+                                                onHeightChanged: { height in })
+                                        }
+                                    }
+                                }
+                            }
+                            VerticalCloudSongTextPanel(
+                                H: geometry.size.height,
+                                theme: self.theme,
+                                onOpenYandexMusic: onOpenYandexMusic,
+                                onOpenYoutubeMusic: onOpenYoutubeMusuc,
+                                onOpenVkMusic: onOpenVkMusuc,
+                                onDownloadFromCloud: onDownloadFromCloud,
+                                onShowWarning: onShowWarning,
+                                onLike: onLike,
+                                onDislike: onDislike
+                            )
+                        }
+                    }
+                    if let chord = self.currentChord {
+                        ChordViewer(theme: self.theme, chord: chord, onDismiss: {
+                            self.currentChord = nil
+                        })
                     }
                 }
-                if let chord = self.currentChord {
-                    ChordViewer(theme: self.theme, chord: chord, onDismiss: {
-                        self.currentChord = nil
-                    })
-                }
+            } else {
+                ZStack {}
             }
         }
         .background(self.theme.colorBg)
@@ -125,11 +133,12 @@ struct CloudSongTextView: View {
                     .resizable()
                     .frame(width: 32.0, height: 32.0)
             }
-            let indexAndCount = "\(self.cloudState.currentCloudSongIndex + 1) / \(self.cloudState.currentCloudSongCount)"
+            let indexAndCount = "\(self.cloudState.currentCloudSongIndex + 1) / \(self.itemsAdapter.getCount())"
             Text(indexAndCount)
             Button(action: {
                 Task.detached { @MainActor in
                     self.onPerformAction(CloudNextClick())
+                    let cloudSong = self.itemsAdapter.getItem(position: Int(self.cloudState.currentCloudSongIndex))
                 }
             }) {
                 Image("ic_right")

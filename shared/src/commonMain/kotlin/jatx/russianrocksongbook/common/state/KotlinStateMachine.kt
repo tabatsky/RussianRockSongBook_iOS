@@ -9,6 +9,7 @@ import jatx.russianrocksongbook.common.domain.repository.ARTIST_FAVORITE
 import jatx.russianrocksongbook.common.networking.CloudRepository
 import jatx.russianrocksongbook.common.networking.CloudSong
 import jatx.russianrocksongbook.common.networking.OrderBy
+import jatx.russianrocksongbook.common.networking.PAGE_SIZE
 import jatx.russianrocksongbook.common.networking.asCloudSong
 import jatx.russianrocksongbook.common.networking.asSong
 
@@ -63,7 +64,7 @@ class KotlinStateMachine(
                 sendWarning(action.warning)
             }
             is CloudSearch -> {
-                searchSongs(appState, changeState, action.searchFor, action.orderBy)
+                searchSongs(appState, changeState, action.searchFor, action.orderBy, action.page)
             }
             is CloudSongClick -> {
                 selectCloudSong(appState, changeState, action.index)
@@ -341,49 +342,72 @@ class KotlinStateMachine(
         )
     }
 
-    private fun searchSongs(appState: AppState, changeState: (AppState) -> Unit, searchFor: String, orderBy: OrderBy) {
-        val newCloudState = appState.cloudState.changeSearchState(SearchState.LOADING)
+    private fun searchSongs(appState: AppState, changeState: (AppState) -> Unit, searchFor: String, orderBy: OrderBy, page: Int) {
+        if (appState.cloudState.currentSearchState == SearchState.LOADING_NEXT_PAGE) return
+        val firstPage = 1
+        val newCloudState = if (page == firstPage) {
+            appState.cloudState.changeSearchState(SearchState.LOADING_FIRST_PAGE)
+        } else {
+            appState.cloudState.changeSearchState(SearchState.LOADING_NEXT_PAGE)
+        }
         val newState = appState.changeCloudState(newCloudState)
         changeState(newState)
-        CloudRepository.searchSongsAsync(
+        CloudRepository.pagedSearchAsync(
             searchFor = searchFor,
             orderBy = orderBy,
+            page = page,
             onSuccess = { data ->
                 var _newState = newState
-                refreshCloudSongList(_newState, { _newState = it }, data)
-                _newState = if (data.isEmpty()) {
+                if (page == firstPage) {
+                    refreshCloudSongList(_newState, { _newState = it }, data, true)
+                } else {
+                    refreshCloudSongList(_newState, { _newState = it }, _newState.cloudState.currentCloudSongList!! + data, false)
+                }
+                _newState = if (data.isEmpty() && page == firstPage) {
                     val _newCloudState =
-                        _newState.cloudState.changeSearchState(SearchState.EMPTY_LIST)
+                        _newState.cloudState.changeSearchState(SearchState.EMPTY)
+                    _newState.changeCloudState(_newCloudState)
+                } else if (data.size < PAGE_SIZE) {
+                    val _newCloudState =
+                        _newState.cloudState.changeSearchState(SearchState.NO_MORE_PAGES)
                     _newState.changeCloudState(_newCloudState)
                 } else {
                     val _newCloudState =
-                        _newState.cloudState.changeSearchState(SearchState.LOAD_SUCCESS)
+                        _newState.cloudState.changeSearchState(SearchState.PAGE_LOADING_SUCCESS)
                     _newState.changeCloudState(_newCloudState)
                 }
                 changeState(_newState)
             }, onServerMessage = {
-                val _newCloudState = newState.cloudState.changeSearchState(SearchState.LOAD_ERROR)
+                val _newCloudState =
+                    newState.cloudState.changeSearchState(SearchState.ERROR)
                 val _newState = newState.changeCloudState(_newCloudState)
                 changeState(_newState)
             }, onError = { t ->
                 t.printStackTrace()
-                val _newCloudState = newState.cloudState.changeSearchState(SearchState.LOAD_ERROR)
+                val _newCloudState =
+                    newState.cloudState.changeSearchState(SearchState.ERROR)
                 val _newState = newState.changeCloudState(_newCloudState)
                 changeState(_newState)
             }
         )
     }
 
-    private fun refreshCloudSongList(appState: AppState, changeState: (AppState) -> Unit, cloudSongList: List<CloudSong>) {
+    private fun refreshCloudSongList(appState: AppState, changeState: (AppState) -> Unit, cloudSongList: List<CloudSong>, reset: Boolean) {
         println(cloudSongList.size)
 
-        val newCloudState = appState.cloudState
-            .resetLikes()
-            .resetDislikes()
-            .changeCloudSongList(cloudSongList)
-            .changeCount(cloudSongList.size)
-            .changeCloudSongIndex(0)
-            .changeCloudSong(null)
+        val newCloudState = if (reset) {
+            appState.cloudState
+                .resetLikes()
+                .resetDislikes()
+                .changeCloudSongList(cloudSongList)
+                .changeCount(cloudSongList.size)
+                .changeCloudSongIndex(0)
+                .changeCloudSong(null)
+        } else {
+            appState.cloudState
+                .changeCloudSongList(cloudSongList)
+                .changeCount(cloudSongList.size)
+        }
         val newState = appState.changeCloudState(newCloudState)
 
         changeState(newState)

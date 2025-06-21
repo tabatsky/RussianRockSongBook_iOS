@@ -4,7 +4,7 @@ import jatx.russianrocksongbook.common.networking.CloudSong
 import jatx.russianrocksongbook.common.networking.OrderBy
 
 data class CloudState(
-    val currentSearchState: SearchState = SearchState.LOADING,
+    val currentSearchState: SearchState = SearchState.LOADING_FIRST_PAGE,
     val currentCloudSongList: List<CloudSong>? = null,
     val currentCloudSongCount: Int = 0,
     val currentCloudSongIndex: Int = 0,
@@ -57,5 +57,10 @@ data class CloudState(
 }
 
 enum class SearchState {
-    LOADING, LOAD_SUCCESS, LOAD_ERROR, EMPTY_LIST
+    LOADING_FIRST_PAGE,
+    LOADING_NEXT_PAGE,
+    PAGE_LOADING_SUCCESS,
+    NO_MORE_PAGES,
+    EMPTY,
+    ERROR
 }

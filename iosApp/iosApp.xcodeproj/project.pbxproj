@@ -24,6 +24,7 @@
 		CE1A5AA92AB019720044F61B /* CloudSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1A5AA82AB019720044F61B /* CloudSearchView.swift */; };
 		CE1AF2192AD55E6E001ED685 /* AttributedSongTextBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */; };
 		CE2BAC2A2AF59774003D3E05 /* SwiftUI_SimpleToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BAC292AF59774003D3E05 /* SwiftUI_SimpleToast.framework */; };
+		CE34C2742E065CA900B72774 /* CloudItemsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE34C2732E065CA900B72774 /* CloudItemsAdapter.swift */; };
 		CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */; };
 		CE3CC61C2AF87D3B00B5A0D7 /* CustomDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */; };
 		CE3CC61E2AF87E6000B5A0D7 /* WarningDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */; };
@@ -97,6 +98,7 @@
 		CE1AF2182AD55E6E001ED685 /* AttributedSongTextBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedSongTextBuilder.swift; sourceTree = "<group>"; };
 		CE2BAC262AF595E7003D3E05 /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2BAC292AF59774003D3E05 /* SwiftUI_SimpleToast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftUI_SimpleToast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE34C2732E065CA900B72774 /* CloudItemsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudItemsAdapter.swift; sourceTree = "<group>"; };
 		CE3548802AD77D98005C87CD /* OldAttributedSongText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldAttributedSongText.swift; sourceTree = "<group>"; };
 		CE3CC61B2AF87D3B00B5A0D7 /* CustomDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDialog.swift; sourceTree = "<group>"; };
 		CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningDialog.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				CE46D4D12ADC920600582136 /* TheTextViewer.swift */,
 				CE3CC61D2AF87E6000B5A0D7 /* WarningDialog.swift */,
 				CEB7E04F2BEFF55000DB3C55 /* PanelButton.swift */,
+				CE34C2732E065CA900B72774 /* CloudItemsAdapter.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 				CE5C0D952BD9A37100A8E1BE /* StateValue.swift in Sources */,
 				CE5A9C392AF2FABB006580F4 /* Preferences.swift in Sources */,
 				CE50C4EF2AFAE3A300A11916 /* SettingsView.swift in Sources */,
+				CE34C2742E065CA900B72774 /* CloudItemsAdapter.swift in Sources */,
 				CE0F57652AD930590080E6B1 /* Chord.swift in Sources */,
 				CE3548812AD77D98005C87CD /* OldAttributedSongText.swift in Sources */,
 				CEF7EE3E2A942E6700A82218 /* NavigationBar.swift in Sources */,

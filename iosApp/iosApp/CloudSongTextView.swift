@@ -15,7 +15,7 @@ struct CloudSongTextView: View {
     let cloudState: CloudState
     let onPerformAction: (AppUIAction) -> ()
     
-    var itemsAdapter: CloudItemsAdapter {
+    private var itemsAdapter: CloudItemsAdapter {
         CloudItemsAdapter(items: cloudState.currentCloudSongList, searchState: cloudState.currentSearchState, searchFor: cloudState.searchForBackup, orderBy: cloudState.currentCloudOrderBy, onPerformAction: onPerformAction)
     }
     
@@ -34,7 +34,7 @@ struct CloudSongTextView: View {
                 let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
                 
                 ZStack {
-                    if (geometry.size.width < geometry.size.height) {
+                    if (!UIDevice.current.orientation.isLandscape) {
                         VStack {
                             Text(visibleTitleWithArtistAndRaiting)
                                 .font(self.theme.fontTitle)
@@ -42,16 +42,14 @@ struct CloudSongTextView: View {
                                 .foregroundColor(self.theme.colorMain)
                                 .padding(24)
                                 .frame(maxWidth: geometry.size.width, alignment: .leading)
-                            GeometryReader { scrollViewGeometry in
-                                ScrollViewReader { sp in
-                                    ScrollView(.vertical) {
-                                        TheTextViewer(
-                                            theme: self.theme,
-                                            text: cloudSong.text,
-                                            width: geometry.size.width,
-                                            onChordTapped: onChordTapped,
-                                            onHeightChanged: { height in })
-                                    }
+                            ScrollViewReader { sp in
+                                ScrollView(.vertical) {
+                                    TheTextViewer(
+                                        theme: self.theme,
+                                        text: cloudSong.text,
+                                        width: geometry.size.width,
+                                        onChordTapped: onChordTapped,
+                                        onHeightChanged: { height in })
                                 }
                             }
                             HorizontalCloudSongTextPanel(
@@ -75,14 +73,13 @@ struct CloudSongTextView: View {
                                     .foregroundColor(self.theme.colorMain)
                                     .padding(24)
                                     .frame(maxWidth: geometry.size.width, alignment: .leading)
-                                
                                 GeometryReader { scrollViewGeometry in
                                     ScrollViewReader { sp in
                                         ScrollView(.vertical) {
                                             TheTextViewer(
                                                 theme: self.theme,
                                                 text: cloudSong.text,
-                                                width: geometry.size.width,
+                                                width: scrollViewGeometry.size.width,
                                                 onChordTapped: onChordTapped,
                                                 onHeightChanged: { height in })
                                         }

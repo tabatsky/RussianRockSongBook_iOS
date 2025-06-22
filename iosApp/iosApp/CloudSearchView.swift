@@ -15,7 +15,7 @@ struct CloudSearchView: View {
     let cloudState: CloudState
     let onPerformAction: (AppUIAction) -> ()
     
-    var itemsAdapter: CloudItemsAdapter {
+    private var itemsAdapter: CloudItemsAdapter {
         CloudItemsAdapter(items: cloudState.currentCloudSongList, searchState: cloudState.currentSearchState, searchFor: cloudState.searchForBackup, orderBy: cloudState.currentCloudOrderBy, onPerformAction: onPerformAction)
     }
     
@@ -28,7 +28,7 @@ struct CloudSearchView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                if geometry.size.width < geometry.size.height {
+                if (!UIDevice.current.orientation.isLandscape) {
                     HStack {
                         VStack {
                             TextField("", text: $searchFor)

@@ -25,8 +25,7 @@ struct CloudItemsAdapter {
     
     func getItem(position: Int) -> CloudSong? {
         if (position < getCount()) {
-            if (position >= getCount() - Int(CloudRepositoryKt.PAGE_SIZE) - 1 && searchState == SearchState.pageLoadingSuccess) {
-                
+            if (position >= getCount() - Int(CloudRepositoryKt.PAGE_SIZE) && searchState == SearchState.pageLoadingSuccess) {
                 let nextPage = getCount() / Int(CloudRepositoryKt.PAGE_SIZE) + 1
                 Task.detached { @MainActor in
                     self.onPerformAction(CloudSearch(searchFor: self.searchFor, orderBy: self.orderBy, page: Int32(nextPage)))

@@ -23,6 +23,7 @@ struct CloudSongTextView: View {
     @State var needShowWarningDialog = false
     
     var body: some View {
+        let _ = self.itemsAdapter.getItem(position: Int(self.cloudState.currentCloudSongIndex))
         GeometryReader { geometry in
             if let cloudSong = self.cloudState.currentCloudSong {
                 let artist = cloudSong.artist
@@ -135,7 +136,6 @@ struct CloudSongTextView: View {
             Button(action: {
                 Task.detached { @MainActor in
                     self.onPerformAction(CloudNextClick())
-                    let cloudSong = self.itemsAdapter.getItem(position: Int(self.cloudState.currentCloudSongIndex))
                 }
             }) {
                 Image("ic_right")

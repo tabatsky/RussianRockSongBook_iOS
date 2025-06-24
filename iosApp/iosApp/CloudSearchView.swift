@@ -27,11 +27,11 @@ struct CloudSearchView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            VStack {
+            VStack(spacing: 0.0) {
                 let panelHeight = !UIDevice.current.orientation.isLandscape ? 120.0 : 72.0
                 let needShowProgress = self.cloudState.currentSearchState == SearchState.loadingNextPage
                 let progressHeight = 60.0
-                let listHeight = geometry.size.height - panelHeight - (needShowProgress ? 1.5 * progressHeight: 0.0)
+                let listHeight = geometry.size.height - panelHeight - (needShowProgress ? progressHeight + 8.0 : 0.0)
                 if (!UIDevice.current.orientation.isLandscape) {
                     HStack {
                         VStack {

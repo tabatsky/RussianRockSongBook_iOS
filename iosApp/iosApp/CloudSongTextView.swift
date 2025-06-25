@@ -35,7 +35,7 @@ struct CloudSongTextView: View {
                 let visibleTitleWithArtistAndRaiting = "\(title) (\(artist)) 👍\(likeCount) 👎\(dislikeCount)"
                 
                 ZStack {
-                    if (!UIDevice.current.orientation.isLandscape) {
+                    if (UIScreen.main.bounds.width < UIScreen.main.bounds.height) {
                         VStack {
                             Text(visibleTitleWithArtistAndRaiting)
                                 .font(self.theme.fontTitle)

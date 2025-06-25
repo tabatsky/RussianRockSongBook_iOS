@@ -33,7 +33,7 @@ struct CloudSearchView: View {
                 let progressHeight = 60.0
                 let paddings = 8.0
                 let listHeight = geometry.size.height - panelHeight - paddings - (needShowProgress ? progressHeight : 0.0)
-                if (!UIDevice.current.orientation.isLandscape) {
+                if (UIScreen.main.bounds.width < UIScreen.main.bounds.height) {
                     HStack {
                         VStack {
                             TextField("", text: $searchFor)

@@ -13,6 +13,8 @@ struct SongTextView: View {
     let songTextComponent: SongTextComponent?
     let theme: Theme
     let song: Song
+    let position: Int
+    let songCount: Int
     let onPerformAction: (AppUIAction) -> ()
     
     let dY: CGFloat = 8.0 * CGFloat(Preferences.loadScrollSpeed())
@@ -23,6 +25,9 @@ struct SongTextView: View {
     @State var editorText = ""
     @State var isPresentingDeleteConfirm = false
     
+    @State var currentSongPosition = -1
+    @State var positionDeltaSign = 1.0
+    
     @State var needShowWarningDialog = false
     
     var body: some View {
@@ -32,24 +37,32 @@ struct SongTextView: View {
             ZStack {
                 if (UIScreen.main.bounds.width < UIScreen.main.bounds.height) {
                     VStack {
-                        Text(title)
-                            .font(self.theme.fontTitle)
-                            .bold()
-                            .foregroundColor(self.theme.colorMain)
-                            .padding(24)
-                            .frame(maxWidth: geometry.size.width, alignment: .leading)
-                        SongTextBody(
-                            geometry: geometry,
-                            theme: self.theme,
-                            song: self.song,
-                            dY: self.dY,
-                            isEditorMode: self.isEditorMode,
-                            setEditorMode: { self.isEditorMode = $0 },
-                            isAutoScroll: self.isAutoScroll,
-                            setAutoScroll: { self.isAutoScroll = $0 },
-                            setEditorText: { self.editorText = $0 },
-                            onChordTapped: self.onChordTapped
-                        )
+                        if (self.position == self.currentSongPosition) {
+                            let _ = print(self.positionDeltaSign)
+                            VStack {
+                               Text(title)
+                                   .font(self.theme.fontTitle)
+                                   .bold()
+                                   .foregroundColor(self.theme.colorMain)
+                                   .padding(24)
+                                   .frame(width: geometry.size.width, alignment: .leading)
+                               SongTextBody(
+                                   geometry: geometry,
+                                   theme: self.theme,
+                                   song: self.song,
+                                   dY: self.dY,
+                                   isEditorMode: self.isEditorMode,
+                                   setEditorMode: { self.isEditorMode = $0 },
+                                   isAutoScroll: self.isAutoScroll,
+                                   setAutoScroll: { self.isAutoScroll = $0 },
+                                   setEditorText: { self.editorText = $0 },
+                                   onChordTapped: self.onChordTapped
+                               )
+                           }
+                            .transition(.offset(x: self.positionDeltaSign * geometry.size.width, y: 0))
+                        } else {
+                            Spacer()
+                        }
                         HorizontalSongTextPanel(
                             W: geometry.size.width,
                             theme: self.theme,
@@ -66,25 +79,32 @@ struct SongTextView: View {
                     }
                 } else {
                     HStack {
-                        VStack {
-                            Text(title)
-                                .font(self.theme.fontTitle)
-                                .bold()
-                                .foregroundColor(self.theme.colorMain)
-                                .padding(24)
-                                .frame(maxWidth: geometry.size.width, alignment: .leading)
-                            SongTextBody(
-                                geometry: geometry,
-                                theme: self.theme,
-                                song: self.song,
-                                dY: self.dY,
-                                isEditorMode: self.isEditorMode,
-                                setEditorMode: { self.isEditorMode = $0 },
-                                isAutoScroll: self.isAutoScroll,
-                                setAutoScroll: { self.isAutoScroll = $0 },
-                                setEditorText: { self.editorText = $0 },
-                                onChordTapped: self.onChordTapped
-                            )
+                        if (self.position == self.currentSongPosition) {
+                            let _ = print(self.positionDeltaSign)
+                            let A = geometry.size.height / 7
+                            VStack {
+                                Text(title)
+                                    .font(self.theme.fontTitle)
+                                    .bold()
+                                    .foregroundColor(self.theme.colorMain)
+                                    .padding(24)
+                                    .frame(width: geometry.size.width - A, alignment: .leading)
+                                SongTextBody(
+                                    geometry: geometry,
+                                    theme: self.theme,
+                                    song: self.song,
+                                    dY: self.dY,
+                                    isEditorMode: self.isEditorMode,
+                                    setEditorMode: { self.isEditorMode = $0 },
+                                    isAutoScroll: self.isAutoScroll,
+                                    setAutoScroll: { self.isAutoScroll = $0 },
+                                    setEditorText: { self.editorText = $0 },
+                                    onChordTapped: self.onChordTapped
+                                )
+                            }
+                            .transition(.offset(x: self.positionDeltaSign * geometry.size.width - A, y: 0))
+                        } else {
+                            Spacer()
                         }
                         VerticalSongTextPanel(
                             H: geometry.size.height,
@@ -108,6 +128,28 @@ struct SongTextView: View {
                 }
             }
         }
+        .onAppear {
+            self.currentSongPosition = position
+        }
+        .onChange(of: self.position, perform: { position in
+            print("position changed")
+            print("\(position) \(self.currentSongPosition) \(self.songCount)")
+            let positionChanged = position != self.currentSongPosition
+            if (positionChanged) {
+                let positionIncreased = position >= self.currentSongPosition
+                let positionWasJumped =
+                    (position == self.songCount - 1) && (self.currentSongPosition == 0)
+                    || (self.currentSongPosition == self.songCount - 1) && (position == 0)
+                print("\(positionIncreased) \(positionWasJumped)")
+                self.positionDeltaSign = (positionIncreased ? 1.0 : -1.0) * (positionWasJumped ? -1.0 : 1.0)
+            }
+            Task.detached {
+                try await Task.sleep(100)
+                withAnimation(.linear(duration: 0.5)) {
+                    self.currentSongPosition = position
+                }
+            }
+        })
         .background(self.theme.colorBg)
         .navigationBarItems(leading: Button(action: {
             Task.detached { @MainActor in

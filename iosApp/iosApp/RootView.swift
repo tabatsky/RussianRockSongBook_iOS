@@ -75,6 +75,8 @@ struct RootView: View {
                             songTextComponent: child.component,
                             theme: self.appState.theme,
                             song: self.appState.localState.currentSong!,
+                            position: Int(self.appState.localState.currentSongIndex),
+                            songCount: Int(self.appState.localState.currentCount),
                             onPerformAction: self.performAction
                         ).navigationBarBackButtonHidden(true)
                         case let child as RootComponentChild.CloudSearchChild: CloudSearchView(

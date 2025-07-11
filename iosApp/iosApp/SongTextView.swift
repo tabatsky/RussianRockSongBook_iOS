@@ -26,6 +26,7 @@ struct SongTextView: View {
     @State var isPresentingDeleteConfirm = false
     
     @State var currentSongPosition = -1
+    @State var currentSongKey = ""
     @State var positionDeltaSign = 1.0
     
     @State var needShowWarningDialog = false
@@ -33,11 +34,12 @@ struct SongTextView: View {
     var body: some View {
         GeometryReader { geometry in
             let title = song.title
+            let key = "\(self.song.artist) \(self.song.title)"
             
             ZStack {
                 if (UIScreen.main.bounds.width < UIScreen.main.bounds.height) {
                     VStack {
-                        if (self.position == self.currentSongPosition) {
+                        if (self.position == self.currentSongPosition && key == self.currentSongKey) {
                             let _ = print(self.positionDeltaSign)
                             VStack {
                                Text(title)
@@ -79,7 +81,7 @@ struct SongTextView: View {
                     }
                 } else {
                     HStack {
-                        if (self.position == self.currentSongPosition) {
+                        if (self.position == self.currentSongPosition && key == self.currentSongKey) {
                             let _ = print(self.positionDeltaSign)
                             let A = geometry.size.height / 7
                             VStack {
@@ -130,16 +132,20 @@ struct SongTextView: View {
         }
         .onAppear {
             self.currentSongPosition = position
+            self.currentSongKey = "\(self.song.artist) \(self.song.title)"
         }
-        .onChange(of: self.position, perform: { position in
-            print("position changed")
-            print("\(position) \(self.currentSongPosition) \(self.songCount)")
+        .onChange(of: [String(self.position), self.song.artist, self.song.title, String(self.songCount)], perform: { array in
+            print("position or song changed")
+            let position = Int(array[0]) ?? -1
+            let songCount = Int(array[3]) ?? 0
+            print("\(position) \(self.currentSongPosition) \(songCount)")
+            self.positionDeltaSign = 1.0
             let positionChanged = position != self.currentSongPosition
             if (positionChanged) {
                 let positionIncreased = position >= self.currentSongPosition
-                let positionWasJumped =
-                    (position == self.songCount - 1) && (self.currentSongPosition == 0)
-                    || (self.currentSongPosition == self.songCount - 1) && (position == 0)
+                let positionWasJumped = (songCount > 2) &&
+                    ((position == songCount - 1) && (self.currentSongPosition == 0)
+                    || (self.currentSongPosition == songCount - 1) && (position == 0))
                 print("\(positionIncreased) \(positionWasJumped)")
                 self.positionDeltaSign = (positionIncreased ? 1.0 : -1.0) * (positionWasJumped ? -1.0 : 1.0)
             }
@@ -147,6 +153,7 @@ struct SongTextView: View {
                 try await Task.sleep(100)
                 withAnimation(.linear(duration: 0.5)) {
                     self.currentSongPosition = position
+                    self.currentSongKey = "\(array[1]) \(array[2])"
                 }
             }
         })

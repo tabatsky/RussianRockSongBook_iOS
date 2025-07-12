@@ -22,6 +22,9 @@ struct CloudSongTextView: View {
     @State var currentChord: String? = nil
     @State var needShowWarningDialog = false
     
+    @State var currentSongPosition = -1
+    @State var positionDeltaSign = 1.0
+    
     var body: some View {
         let _ = self.itemsAdapter.getItem(position: Int(self.cloudState.currentCloudSongIndex))
         GeometryReader { geometry in
@@ -37,21 +40,29 @@ struct CloudSongTextView: View {
                 ZStack {
                     if (UIScreen.main.bounds.width < UIScreen.main.bounds.height) {
                         VStack {
-                            Text(visibleTitleWithArtistAndRaiting)
-                                .font(self.theme.fontTitle)
-                                .bold()
-                                .foregroundColor(self.theme.colorMain)
-                                .padding(24)
-                                .frame(maxWidth: geometry.size.width, alignment: .leading)
-                            ScrollViewReader { sp in
-                                ScrollView(.vertical) {
-                                    TheTextViewer(
-                                        theme: self.theme,
-                                        text: cloudSong.text,
-                                        width: geometry.size.width,
-                                        onChordTapped: onChordTapped,
-                                        onHeightChanged: { height in })
+                            if (Int(self.cloudState.currentCloudSongIndex) == self.currentSongPosition) {
+                                let _ = print(self.positionDeltaSign)
+                                VStack {
+                                    Text(visibleTitleWithArtistAndRaiting)
+                                        .font(self.theme.fontTitle)
+                                        .bold()
+                                        .foregroundColor(self.theme.colorMain)
+                                        .padding(24)
+                                        .frame(maxWidth: geometry.size.width, alignment: .leading)
+                                    ScrollViewReader { sp in
+                                        ScrollView(.vertical) {
+                                            TheTextViewer(
+                                                theme: self.theme,
+                                                text: cloudSong.text,
+                                                width: geometry.size.width,
+                                                onChordTapped: onChordTapped,
+                                                onHeightChanged: { height in })
+                                        }
+                                    }
                                 }
+                                .transition(.offset(x: self.positionDeltaSign * geometry.size.width, y: 0))
+                            }else {
+                                Spacer()
                             }
                             HorizontalCloudSongTextPanel(
                                 W: geometry.size.width,
@@ -67,25 +78,32 @@ struct CloudSongTextView: View {
                         }
                     } else {
                         HStack {
-                            VStack {
-                                Text(visibleTitleWithArtistAndRaiting)
-                                    .font(self.theme.fontTitle)
-                                    .bold()
-                                    .foregroundColor(self.theme.colorMain)
-                                    .padding(24)
-                                    .frame(maxWidth: geometry.size.width, alignment: .leading)
-                                GeometryReader { scrollViewGeometry in
-                                    ScrollViewReader { sp in
-                                        ScrollView(.vertical) {
-                                            TheTextViewer(
-                                                theme: self.theme,
-                                                text: cloudSong.text,
-                                                width: scrollViewGeometry.size.width,
-                                                onChordTapped: onChordTapped,
-                                                onHeightChanged: { height in })
+                            if (Int(self.cloudState.currentCloudSongIndex) == self.currentSongPosition) {
+                                let _ = print(self.positionDeltaSign)
+                                let A = geometry.size.height / 7
+                                VStack {
+                                    Text(visibleTitleWithArtistAndRaiting)
+                                        .font(self.theme.fontTitle)
+                                        .bold()
+                                        .foregroundColor(self.theme.colorMain)
+                                        .padding(24)
+                                        .frame(maxWidth: geometry.size.width - A, alignment: .leading)
+                                    GeometryReader { scrollViewGeometry in
+                                        ScrollViewReader { sp in
+                                            ScrollView(.vertical) {
+                                                TheTextViewer(
+                                                    theme: self.theme,
+                                                    text: cloudSong.text,
+                                                    width: scrollViewGeometry.size.width,
+                                                    onChordTapped: onChordTapped,
+                                                    onHeightChanged: { height in })
+                                            }
                                         }
                                     }
                                 }
+                                .transition(.offset(x: self.positionDeltaSign * geometry.size.width - A, y: 0))
+                            } else {
+                                Spacer()
                             }
                             VerticalCloudSongTextPanel(
                                 H: geometry.size.height,
@@ -110,6 +128,26 @@ struct CloudSongTextView: View {
                 ZStack {}
             }
         }
+        .onAppear {
+            self.currentSongPosition = Int(self.cloudState.currentCloudSongIndex)
+        }
+        .onChange(of: Int(self.cloudState.currentCloudSongIndex), perform: { position in
+            print("position changed")
+            print("\(position) \(self.currentSongPosition)")
+            self.positionDeltaSign = 1.0
+            let positionChanged = position != self.currentSongPosition
+            if (positionChanged) {
+                let positionIncreased = position >= self.currentSongPosition
+                print("\(positionIncreased)")
+                self.positionDeltaSign = (positionIncreased ? 1.0 : -1.0)
+            }
+            Task.detached {
+                try await Task.sleep(100)
+                withAnimation(.linear(duration: 0.5)) {
+                    self.currentSongPosition = position
+                }
+            }
+        })
         .background(self.theme.colorBg)
         .navigationBarItems(leading:
             Button(action: {

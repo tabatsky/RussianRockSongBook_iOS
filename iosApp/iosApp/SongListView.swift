@@ -64,8 +64,10 @@ struct SongListView: View {
                                         .highPriorityGesture(
                                             TapGesture()
                                                 .onEnded { _ in
-                                                    self.onPerformAction(SongClick(songIndex: Int32(index)))
-                                                    self.songListComponent?.onSongClicked(position: Int32(index))
+                                                    if !self.localState.isDrawerOpen {
+                                                        self.onPerformAction(SongClick(songIndex: Int32(index)))
+                                                        self.songListComponent?.onSongClicked(position: Int32(index))
+                                                    }
                                                 }
                                         )
                                     Rectangle()

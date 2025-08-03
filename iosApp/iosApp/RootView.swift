@@ -52,55 +52,110 @@ struct RootView: View {
                 }
                 .background(self.appState.theme.colorBg)
             } else {
-                StackView(
-                    stackValue: StateValue(root.stack),
-                    getTitle: { _ in
-                        return ""
-                    },
-                    onBack: root.onBackClicked,
-                    childContent: {
-                        switch $0 {
-                        case let child as RootComponentChild.StartChild: StartScreenView(
-                            startComponent: child.component,
-                            theme: self.appState.theme,
-                            onPerformAction: self.performAction
-                        )
-                        case let child as RootComponentChild.SongListChild: SongListView(
-                            songListComponent: child.component,
-                            theme: self.appState.theme,
-                            localState: self.appState.localState,
-                            onPerformAction: self.performAction
-                        ).navigationBarBackButtonHidden(true)
-                        case let child as RootComponentChild.SongTextChild: SongTextView(
-                            songTextComponent: child.component,
-                            theme: self.appState.theme,
-                            song: self.appState.localState.currentSong!,
-                            position: Int(self.appState.localState.currentSongIndex),
-                            songCount: Int(self.appState.localState.currentCount),
-                            onPerformAction: self.performAction
-                        ).navigationBarBackButtonHidden(true)
-                        case let child as RootComponentChild.CloudSearchChild: CloudSearchView(
-                            cloudSearchComponent: child.component,
-                            theme: self.appState.theme,
-                            cloudState: self.appState.cloudState,
-                            onPerformAction: self.performAction
-                        ).navigationBarBackButtonHidden(true)
-                        case let child as RootComponentChild.CloudSongTextChild: CloudSongTextView(
-                            cloudSongTextComponent: child.component,
-                            theme: self.appState.theme,
-                            cloudState: self.appState.cloudState,
-                            onPerformAction: self.performAction
-                        ).navigationBarBackButtonHidden(true)
-                        case let child as RootComponentChild.SettingsChild: SettingsView(
-                            settingsComponent: child.component,
-                            theme: self.appState.theme,
-                            onPerformAction: self.performAction,
-                            forceReload: self.forceReload
-                        ).navigationBarBackButtonHidden(true)
-                        default: EmptyView()
+                if self.appState.localState.isDrawerOpen {
+                    StackView(
+                        stackValue: StateValue(root.stack),
+                        getTitle: { _ in
+                            return ""
+                        },
+                        onBack: root.onBackClicked,
+                        childContent: {
+                            switch $0 {
+                            case let child as RootComponentChild.StartChild: StartScreenView(
+                                startComponent: child.component,
+                                theme: self.appState.theme,
+                                onPerformAction: self.performAction
+                            )
+                            case let child as RootComponentChild.SongListChild: SongListView(
+                                songListComponent: child.component,
+                                theme: self.appState.theme,
+                                localState: self.appState.localState,
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.SongTextChild: SongTextView(
+                                songTextComponent: child.component,
+                                theme: self.appState.theme,
+                                song: self.appState.localState.currentSong!,
+                                position: Int(self.appState.localState.currentSongIndex),
+                                songCount: Int(self.appState.localState.currentCount),
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.CloudSearchChild: CloudSearchView(
+                                cloudSearchComponent: child.component,
+                                theme: self.appState.theme,
+                                cloudState: self.appState.cloudState,
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.CloudSongTextChild: CloudSongTextView(
+                                cloudSongTextComponent: child.component,
+                                theme: self.appState.theme,
+                                cloudState: self.appState.cloudState,
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.SettingsChild: SettingsView(
+                                settingsComponent: child.component,
+                                theme: self.appState.theme,
+                                onPerformAction: self.performAction,
+                                forceReload: self.forceReload
+                            ).navigationBarBackButtonHidden(true)
+                            default: EmptyView()
+                            }
                         }
-                    }
-                )
+                    )
+                    .highPriorityGesture(TapGesture().onEnded {
+                        self.performAction(DrawerClick())
+                    })
+                } else {
+                    StackView(
+                        stackValue: StateValue(root.stack),
+                        getTitle: { _ in
+                            return ""
+                        },
+                        onBack: root.onBackClicked,
+                        childContent: {
+                            switch $0 {
+                            case let child as RootComponentChild.StartChild: StartScreenView(
+                                startComponent: child.component,
+                                theme: self.appState.theme,
+                                onPerformAction: self.performAction
+                            )
+                            case let child as RootComponentChild.SongListChild: SongListView(
+                                songListComponent: child.component,
+                                theme: self.appState.theme,
+                                localState: self.appState.localState,
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.SongTextChild: SongTextView(
+                                songTextComponent: child.component,
+                                theme: self.appState.theme,
+                                song: self.appState.localState.currentSong!,
+                                position: Int(self.appState.localState.currentSongIndex),
+                                songCount: Int(self.appState.localState.currentCount),
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.CloudSearchChild: CloudSearchView(
+                                cloudSearchComponent: child.component,
+                                theme: self.appState.theme,
+                                cloudState: self.appState.cloudState,
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.CloudSongTextChild: CloudSongTextView(
+                                cloudSongTextComponent: child.component,
+                                theme: self.appState.theme,
+                                cloudState: self.appState.cloudState,
+                                onPerformAction: self.performAction
+                            ).navigationBarBackButtonHidden(true)
+                            case let child as RootComponentChild.SettingsChild: SettingsView(
+                                settingsComponent: child.component,
+                                theme: self.appState.theme,
+                                onPerformAction: self.performAction,
+                                forceReload: self.forceReload
+                            ).navigationBarBackButtonHidden(true)
+                            default: EmptyView()
+                            }
+                        }
+                    )
+                }
             }
             NavigationDrawer(
                 rootComponent: root,
@@ -110,11 +165,6 @@ struct RootView: View {
                 onPerformAction: self.performAction)
         }
         .background(self.appState.theme.colorCommon)
-        .onTapGesture {
-            if self.appState.localState.isDrawerOpen {
-                self.performAction(DrawerClick())
-            }
-        }
         .onReceive(self.orientationChanged) { _ in
             forceReload()
         }

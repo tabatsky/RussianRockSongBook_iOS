@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("com.android.library")
+//    id("com.android.library")
     id("com.squareup.sqldelight")
     id("dev.icerock.mobile.multiplatform-resources")
 }
@@ -12,13 +12,13 @@ plugins {
 kotlin {
     targetHierarchy.default()
 
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-            }
-        }
-    }
+//    androidTarget {
+//        compilations.all {
+//            kotlinOptions {
+//                jvmTarget = "17"
+//            }
+//        }
+//    }
 
     val xcframeworkName = "shared"
     val xcf = XCFramework(xcframeworkName)
@@ -29,6 +29,8 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
+            export("dev.icerock.moko:resources:0.26.0")
+
             export("com.arkivanov.decompose:decompose:2.2.2")
             export("com.arkivanov.essenty:lifecycle:1.3.0")
 
@@ -54,7 +56,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
-                api("dev.icerock.moko:resources:0.23.0")
+                api("dev.icerock.moko:resources:0.26.0")
                 implementation(platform("org.kotlincrypto.hash:bom:0.2.3"))
                 implementation("org.kotlincrypto.hash:md5")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0-RC")
@@ -83,11 +85,11 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting {
-            dependencies {
-                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
-            }
-        }
+//        val androidMain by getting {
+//            dependencies {
+//                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+//            }
+//        }
         val iosMain by getting {
             dependsOn(commonMain)
 
@@ -100,17 +102,17 @@ kotlin {
     }
 }
 
-android {
-    namespace = "jatx.russianrocksongbook"
-    compileSdk = 34
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
+//android {
+//    namespace = "jatx.russianrocksongbook"
+//    compileSdk = 34
+//    defaultConfig {
+//        minSdk = 24
+//    }
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_17
+//        targetCompatibility = JavaVersion.VERSION_17
+//    }
+//}
 
 sqldelight {
     database("AppDatabase") {
@@ -119,6 +121,7 @@ sqldelight {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = "jatx.russianrocksongbook"
-    multiplatformResourcesVisibility = dev.icerock.gradle.MRVisibility.Public
+    resourcesPackage.set("jatx.russianrocksongbook")
+    resourcesVisibility.set(dev.icerock.gradle.MRVisibility.Public)
+//    configureCopyXCFrameworkResources("shared")
 }
